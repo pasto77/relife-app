@@ -1,0 +1,1810 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>ReLife Cameroun</title>
+    <meta name="theme-color" content="#0F0F0F" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <style>
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --glass: rgba(255, 255, 255, 0.06);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --green: #2D5016;
+            --gold: #FFD700;
+            --bg: #0F0F0F;
+            --card: #1A1A1A;
+            --text: #FFFFFF;
+            --text-muted: #666666;
+            --radius: 20px;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+        html,
+        body {
+            height: 100%;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow: hidden;
+            touch-action: manipulation;
+        }
+        #app {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            max-width: 430px;
+            margin: 0 auto;
+            position: relative;
+            background: var(--bg);
+        }
+        .screen {
+            display: none;
+            flex: 1;
+            flex-direction: column;
+            overflow-y: auto;
+            padding: 20px 16px 80px;
+            animation: fadeUp 0.4s ease;
+        }
+        .screen.active {
+            display: flex;
+        }
+        @keyframes fadeUp {
+            0% {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes pulse {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.08);
+            }
+        }
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+
+        /* ===== SPLASH ===== */
+        #splash {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            background: linear-gradient(135deg, #0A0A0A, #1A2A1A);
+            padding: 0;
+            animation: none;
+        }
+        #splash .emoji {
+            font-size: 72px;
+            animation: pulse 1.2s ease-in-out infinite;
+        }
+        #splash h1 {
+            font-size: 36px;
+            margin-top: 12px;
+            background: linear-gradient(135deg, var(--gold), #B8860B);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        #splash .sub {
+            font-size: 14px;
+            color: var(--text-muted);
+            letter-spacing: 6px;
+            margin-top: 4px;
+        }
+        .loader-bar {
+            width: 160px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            margin-top: 40px;
+            overflow: hidden;
+        }
+        .loader-bar .fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--green), var(--gold));
+            border-radius: 4px;
+            transition: width 0.1s;
+        }
+
+        /* ===== ONBOARDING ===== */
+        .onboarding-slide {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            text-align: center;
+            padding: 20px;
+        }
+        .onboarding-slide.active {
+            display: flex;
+        }
+        .onboarding-slide .emoji {
+            font-size: 72px;
+            margin-bottom: 24px;
+        }
+        .onboarding-slide h2 {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        .onboarding-slide p {
+            color: var(--text-muted);
+            font-size: 16px;
+            line-height: 1.6;
+            max-width: 320px;
+        }
+        .dot-indicators {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin: 20px 0 32px;
+        }
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--text-muted);
+            transition: 0.3s;
+        }
+        .dot.active {
+            background: var(--gold);
+            width: 24px;
+            border-radius: 4px;
+        }
+        .btn-primary {
+            background: var(--green);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 16px;
+            font-size: 18px;
+            font-weight: 600;
+            width: 100%;
+            max-width: 300px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-primary:active {
+            transform: scale(0.97);
+        }
+
+        /* ===== GLASS CARD ===== */
+        .glass {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        /* ===== BOTTOM NAV ===== */
+        #bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 430px;
+            background: rgba(15, 15, 15, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 8px 0 env(safe-area-inset-bottom, 8px) 0;
+            justify-content: space-around;
+            z-index: 100;
+        }
+        #bottom-nav.active {
+            display: flex;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            padding: 4px 12px;
+            border: none;
+            background: none;
+            color: var(--text-muted);
+            font-size: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+            min-height: 44px;
+            min-width: 44px;
+            position: relative;
+        }
+        .nav-item .icon {
+            font-size: 22px;
+            transition: 0.2s;
+        }
+        .nav-item .label {
+            font-size: 9px;
+            font-weight: 500;
+        }
+        .nav-item.active {
+            color: var(--gold);
+        }
+        .nav-item.active .icon {
+            transform: scale(1.1);
+        }
+        .nav-item .badge {
+            position: absolute;
+            top: 2px;
+            right: 4px;
+            background: #EF4444;
+            color: white;
+            font-size: 9px;
+            font-weight: 700;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .nav-item .badge.hidden {
+            display: none;
+        }
+
+        /* ===== SCROLLBAR ===== */
+        .screen::-webkit-scrollbar {
+            width: 0;
+        }
+
+        /* ===== DASHBOARD ===== */
+        .greeting {
+            font-size: 22px;
+            font-weight: 700;
+        }
+        .greeting .highlight {
+            color: var(--gold);
+        }
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin: 16px 0 20px;
+        }
+        .qa-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            padding: 14px 8px;
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        .qa-item:active {
+            transform: scale(0.95);
+        }
+        .qa-item .icon {
+            font-size: 28px;
+        }
+        .qa-item .label {
+            font-size: 10px;
+            font-weight: 500;
+        }
+
+        .balance-card {
+            background: linear-gradient(135deg, rgba(45, 80, 22, 0.3), rgba(255, 215, 0, 0.08));
+            border: 1px solid rgba(255, 215, 0, 0.15);
+            border-radius: var(--radius);
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .balance-card .amount {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--gold);
+        }
+        .balance-card .label {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .stat-item {
+            text-align: center;
+            padding: 14px 8px;
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+        }
+        .stat-item .value {
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .stat-item .label {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 16px 0 12px;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .activity-item .emoji {
+            font-size: 28px;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--glass);
+            border-radius: 12px;
+        }
+        .activity-item .info {
+            flex: 1;
+        }
+        .activity-item .info .title {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .activity-item .info .sub {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        .activity-item .time {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        /* ===== FEED ===== */
+        .feed-categories {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 4px 0 16px;
+            scrollbar-width: none;
+        }
+        .feed-categories::-webkit-scrollbar {
+            display: none;
+        }
+        .category-chip {
+            padding: 8px 18px;
+            border-radius: 100px;
+            border: 1px solid var(--glass-border);
+            background: var(--glass);
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .category-chip.active {
+            background: var(--green);
+            color: white;
+            border-color: var(--green);
+        }
+        .product-card {
+            display: flex;
+            gap: 14px;
+            padding: 14px;
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius);
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .product-card:active {
+            transform: scale(0.98);
+        }
+        .product-card .emoji {
+            font-size: 36px;
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 14px;
+            flex-shrink: 0;
+        }
+        .product-card .info {
+            flex: 1;
+        }
+        .product-card .info .title {
+            font-weight: 600;
+            font-size: 15px;
+        }
+        .product-card .info .location {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        .product-card .price {
+            font-weight: 700;
+            color: var(--gold);
+            font-size: 16px;
+            text-align: right;
+        }
+        .product-card .status {
+            font-size: 10px;
+            font-weight: 600;
+            padding: 2px 10px;
+            border-radius: 100px;
+            background: rgba(34, 197, 94, 0.15);
+            color: #22C55E;
+            display: inline-block;
+        }
+
+        /* ===== DETAIL ===== */
+        .detail-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #1A2A1A, #2A3A2A);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+        .detail-price {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--gold);
+        }
+        .rating-stars {
+            display: flex;
+            gap: 4px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .rating-stars .star {
+            color: var(--text-muted);
+            transition: 0.2s;
+        }
+        .rating-stars .star.active {
+            color: var(--gold);
+        }
+
+        /* ===== CHAT ===== */
+        .chat-message {
+            display: flex;
+            margin-bottom: 12px;
+        }
+        .chat-message.sent {
+            justify-content: flex-end;
+        }
+        .chat-message .bubble {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 16px;
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+        }
+        .chat-message.sent .bubble {
+            background: var(--green);
+            border-color: var(--green);
+        }
+        .chat-message .bubble .text {
+            font-size: 14px;
+        }
+        .chat-message .bubble .time {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-top: 4px;
+            text-align: right;
+        }
+        .chat-input {
+            display: flex;
+            gap: 10px;
+            padding: 12px 0;
+            border-top: 1px solid var(--glass-border);
+        }
+        .chat-input input {
+            flex: 1;
+            padding: 12px 16px;
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            background: var(--glass);
+            color: white;
+            font-size: 14px;
+            outline: none;
+        }
+        .chat-input input::placeholder {
+            color: var(--text-muted);
+        }
+        .chat-input button {
+            background: var(--green);
+            border: none;
+            color: white;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        /* ===== MAP ===== */
+        .map-container {
+            height: 300px;
+            background: linear-gradient(135deg, #1A2A1A, #2A3A2A);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+        .map-container .grid {
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background-image: radial-gradient(circle, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+            background-size: 40px 40px;
+            animation: scrollGrid 20s linear infinite;
+        }
+        @keyframes scrollGrid {
+            0% {
+                transform: translate(0, 0);
+            }
+            100% {
+                transform: translate(-40px, -40px);
+            }
+        }
+        .map-pin {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+        .map-pin .emoji {
+            font-size: 48px;
+            filter: drop-shadow(0 4px 16px rgba(255, 215, 0, 0.4));
+        }
+        .map-pin .city {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--gold);
+            margin-top: 4px;
+        }
+
+        .city-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .city-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+        }
+        .city-item .emoji {
+            font-size: 24px;
+        }
+        .city-item .info {
+            flex: 1;
+        }
+        .city-item .info .name {
+            font-weight: 500;
+        }
+        .city-item .info .address {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* ===== NOTIFICATIONS ===== */
+        .notif-item {
+            display: flex;
+            gap: 12px;
+            padding: 14px;
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius);
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .notif-item:active {
+            transform: scale(0.98);
+        }
+        .notif-item .icon {
+            font-size: 24px;
+        }
+        .notif-item .info {
+            flex: 1;
+        }
+        .notif-item .info .title {
+            font-weight: 500;
+            font-size: 14px;
+        }
+        .notif-item .info .body {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        .notif-item .info .time {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+        .notif-item .dot {
+            width: 8px;
+            height: 8px;
+            background: var(--green);
+            border-radius: 50%;
+            flex-shrink: 0;
+            margin-top: 6px;
+        }
+        .notif-item .dot.read {
+            background: transparent;
+        }
+
+        /* ===== STATS ===== */
+        .chart-bars {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            height: 120px;
+            padding: 8px 0;
+        }
+        .chart-bar {
+            flex: 1;
+            border-radius: 4px 4px 0 0;
+            min-height: 8px;
+            transition: height 0.8s ease;
+            background: linear-gradient(180deg, var(--gold), var(--green));
+        }
+        .chart-label {
+            text-align: center;
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+        .donut-container {
+            display: flex;
+            justify-content: center;
+            padding: 16px 0;
+        }
+        .donut {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: conic-gradient(var(--green) 0% 40%, var(--gold) 40% 60%, #3B82F6 60% 80%, #EF4444 80% 100%);
+        }
+        .donut-legend {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 12px;
+        }
+        .donut-legend span {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        .donut-legend .color {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 4px;
+            margin-right: 4px;
+            vertical-align: middle;
+        }
+
+        /* ===== PROFILE ===== */
+        .profile-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 24px 0;
+        }
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--green), var(--gold));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            margin-bottom: 12px;
+        }
+        .profile-name {
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .profile-username {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+        .profile-badge {
+            padding: 4px 16px;
+            border-radius: 100px;
+            background: linear-gradient(135deg, var(--gold), #B8860B);
+            color: black;
+            font-size: 12px;
+            font-weight: 700;
+            margin-top: 8px;
+        }
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            width: 100%;
+            margin: 16px 0;
+        }
+        .profile-stats .stat {
+            text-align: center;
+            padding: 12px;
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+        }
+        .profile-stats .stat .value {
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .profile-stats .stat .label {
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+        .profile-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-top: 8px;
+            width: 100%;
+        }
+        .profile-menu .item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 16px;
+            border-radius: 14px;
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .profile-menu .item:active {
+            transform: scale(0.98);
+        }
+        .profile-menu .item .icon {
+            font-size: 20px;
+        }
+        .profile-menu .item .label {
+            flex: 1;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .profile-menu .item .arrow {
+            color: var(--text-muted);
+        }
+        .profile-menu .item.danger .label {
+            color: #EF4444;
+        }
+
+        /* ===== PUBLISH ===== */
+        .publish-photos {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .publish-photos .slot {
+            aspect-ratio: 1;
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 2px dashed var(--glass-border);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .publish-photos .slot:active {
+            transform: scale(0.95);
+        }
+        .publish-photos .slot.filled {
+            border-style: solid;
+            border-color: var(--green);
+            background: rgba(45, 80, 22, 0.2);
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: block;
+            margin-bottom: 6px;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 14px;
+            border: 1px solid var(--glass-border);
+            background: var(--glass);
+            color: white;
+            font-size: 14px;
+            outline: none;
+            transition: 0.2s;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--green);
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .form-group select option {
+            background: var(--bg);
+        }
+
+        /* ===== WITHDRAWAL ===== */
+        .provider-select {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .provider-item {
+            padding: 20px;
+            text-align: center;
+            border-radius: 14px;
+            border: 2px solid var(--glass-border);
+            background: var(--glass);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .provider-item:active {
+            transform: scale(0.95);
+        }
+        .provider-item.selected {
+            border-color: var(--gold);
+            background: rgba(255, 215, 0, 0.06);
+        }
+        .provider-item .emoji {
+            font-size: 32px;
+        }
+        .provider-item .name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 14px 24px;
+            border-radius: 14px;
+            border: 1px solid var(--glass-border);
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            opacity: 0;
+            transition: 0.4s ease;
+            z-index: 200;
+            max-width: 90%;
+            text-align: center;
+            pointer-events: none;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        .toast.success {
+            border-color: var(--green);
+        }
+        .toast.error {
+            border-color: #EF4444;
+        }
+
+        /* ===== UTILITY ===== */
+        .mt-8 {
+            margin-top: 8px;
+        }
+        .mt-12 {
+            margin-top: 12px;
+        }
+        .mt-16 {
+            margin-top: 16px;
+        }
+        .mb-8 {
+            margin-bottom: 8px;
+        }
+        .mb-12 {
+            margin-bottom: 12px;
+        }
+        .mb-16 {
+            margin-bottom: 16px;
+        }
+        .flex-1 {
+            flex: 1;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .w-full {
+            width: 100%;
+        }
+        .gap-8 {
+            gap: 8px;
+        }
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+
+        <!-- ===== TOAST ===== -->
+        <div id="toast" class="toast"></div>
+
+        <!-- ===== SPLASH ===== -->
+        <div id="splash" class="screen active">
+            <div class="emoji">♻️</div>
+            <h1>ReLife</h1>
+            <div class="sub">CAMEROUN</div>
+            <div class="loader-bar"><div class="fill" id="loader-fill"></div></div>
+        </div>
+
+        <!-- ===== ONBOARDING ===== -->
+        <div id="onboarding" class="screen">
+            <div id="slide-0" class="onboarding-slide active">
+                <div class="emoji">♻️</div>
+                <h2>Valorisez vos déchets</h2>
+                <p>Transformez vos déchets recyclables en une source de revenus</p>
+            </div>
+            <div id="slide-1" class="onboarding-slide">
+                <div class="emoji">💰</div>
+                <h2>Gagnez de l'argent</h2>
+                <p>Recevez un paiement immédiat pour chaque kilogramme collecté</p>
+            </div>
+            <div id="slide-2" class="onboarding-slide">
+                <div class="emoji">🌍</div>
+                <h2>Protégez l'environnement</h2>
+                <p>Contribuez à un Cameroun plus propre et plus vert</p>
+            </div>
+            <div id="slide-3" class="onboarding-slide">
+                <div class="emoji">⭐</div>
+                <h2>Devenez Premium</h2>
+                <p>Accédez à des tarifs préférentiels et des collectes prioritaires</p>
+            </div>
+            <div class="dot-indicators">
+                <span class="dot active" data-slide="0"></span>
+                <span class="dot" data-slide="1"></span>
+                <span class="dot" data-slide="2"></span>
+                <span class="dot" data-slide="3"></span>
+            </div>
+            <button class="btn-primary" id="onboarding-btn">Suivant</button>
+        </div>
+
+        <!-- ===== LOGIN ===== -->
+        <div id="login" class="screen">
+            <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:20px 0;">
+                <div class="text-center" style="margin-bottom:32px;">
+                    <div style="font-size:56px;margin-bottom:12px;">♻️</div>
+                    <h1 style="font-size:28px;font-weight:700;">Bienvenue</h1>
+                    <p style="color:var(--text-muted);font-size:14px;">Entrez votre numéro de téléphone</p>
+                </div>
+                <div class="form-group">
+                    <label>Numéro de téléphone</label>
+                    <div style="display:flex;align-items:center;background:var(--glass);border-radius:14px;border:1px solid var(--glass-border);padding:0 4px;">
+                        <span style="padding:14px 12px;color:var(--text-muted);font-weight:600;">+237</span>
+                        <input type="tel" id="phone-input" placeholder="6XXXXXXXX" style="border:none;background:transparent;padding:14px 12px;color:white;font-size:16px;flex:1;outline:none;">
+                    </div>
+                </div>
+                <button class="btn-primary" id="login-btn" style="margin-top:12px;">Se connecter</button>
+                <button id="login-skip" style="background:none;border:none;color:var(--text-muted);font-size:13px;margin-top:16px;cursor:pointer;">Continuer sans compte (test)</button>
+            </div>
+        </div>
+
+        <!-- ===== OTP ===== -->
+        <div id="otp" class="screen">
+            <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:20px 0;">
+                <div class="text-center" style="margin-bottom:32px;">
+                    <div style="font-size:48px;margin-bottom:12px;">🔐</div>
+                    <h2 style="font-size:24px;font-weight:700;">Vérification</h2>
+                    <p style="color:var(--text-muted);font-size:14px;">Code envoyé au <span id="otp-phone">+237 6XXXXXXXX</span></p>
+                </div>
+                <div style="display:flex;gap:10px;justify-content:center;margin-bottom:24px;">
+                    <input type="text" maxlength="1" class="otp-input" style="width:44px;height:52px;text-align:center;font-size:22px;font-weight:700;border-radius:12px;border:1px solid var(--glass-border);background:var(--glass);color:white;outline:none;">
+                    <input type="text" maxlength="1" class="otp-input" style="width:44px;height:52px;text-align:center;font-size:22px;font-weight:700;border-radius:12px;border:1px solid var(--glass-border);background:var(--glass);color:white;outline:none;">
+                    <input type="text" maxlength="1" class="otp-input" style="width:44px;height:52px;text-align:center;font-size:22px;font-weight:700;border-radius:12px;border:1px solid var(--glass-border);background:var(--glass);color:white;outline:none;">
+                    <input type="text" maxlength="1" class="otp-input" style="width:44px;height:52px;text-align:center;font-size:22px;font-weight:700;border-radius:12px;border:1px solid var(--glass-border);background:var(--glass);color:white;outline:none;">
+                    <input type="text" maxlength="1" class="otp-input" style="width:44px;height:52px;text-align:center;font-size:22px;font-weight:700;border-radius:12px;border:1px solid var(--glass-border);background:var(--glass);color:white;outline:none;">
+                    <input type="text" maxlength="1" class="otp-input" style="width:44px;height:52px;text-align:center;font-size:22px;font-weight:700;border-radius:12px;border:1px solid var(--glass-border);background:var(--glass);color:white;outline:none;">
+                </div>
+                <button class="btn-primary" id="otp-btn">Vérifier</button>
+                <button style="background:none;border:none;color:var(--text-muted);font-size:13px;margin-top:12px;cursor:pointer;">Renvoyer le code</button>
+            </div>
+        </div>
+
+        <!-- ===== DASHBOARD ===== -->
+        <div id="dashboard" class="screen">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                <div>
+                    <div class="greeting">Bonjour <span class="highlight">👋</span></div>
+                    <div style="color:var(--text-muted);font-size:13px;">Prêt à recycler aujourd'hui ?</div>
+                </div>
+                <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--gold));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;">R</div>
+            </div>
+
+            <div class="quick-actions">
+                <div class="qa-item" data-target="map">
+                    <span class="icon">📍</span>
+                    <span class="label">Carte</span>
+                </div>
+                <div class="qa-item" data-target="chat">
+                    <span class="icon">💬</span>
+                    <span class="label">Messages</span>
+                </div>
+                <div class="qa-item" data-target="stats">
+                    <span class="icon">📊</span>
+                    <span class="label">Stats</span>
+                </div>
+                <div class="qa-item" data-target="feed">
+                    <span class="icon">🛒</span>
+                    <span class="label">Marché</span>
+                </div>
+            </div>
+
+            <div class="balance-card">
+                <div>
+                    <div class="label">💰 Solde Mobile Money</div>
+                    <div class="amount">5 000 FCFA</div>
+                </div>
+                <button class="btn-primary" style="padding:10px 20px;font-size:13px;max-width:120px;" id="goto-withdrawal">Retirer</button>
+            </div>
+
+            <div class="stats-row">
+                <div class="stat-item"><div class="value">12</div><div class="label">Ventes</div></div>
+                <div class="stat-item"><div class="value">45 kg</div><div class="label">Recyclés</div></div>
+                <div class="stat-item"><div class="value">⭐ 4.8</div><div class="label">Note</div></div>
+            </div>
+
+            <div class="section-title">⚡ Activité récente</div>
+            <div class="activity-item"><div class="emoji">♻️</div><div class="info"><div class="title">Collecte de bouteilles PET</div><div class="sub">15kg • 2 250 FCFA</div></div><div class="time">Il y a 2h</div></div>
+            <div class="activity-item"><div class="emoji">🥫</div><div class="info"><div class="title">Canettes aluminium</div><div class="sub">5kg • 1 000 FCFA</div></div><div class="time">Hier</div></div>
+            <div class="activity-item"><div class="emoji">📦</div><div class="info"><div class="title">Cartons recyclables</div><div class="sub">10kg • 500 FCFA</div></div><div class="time">Hier</div></div>
+        </div>
+
+        <!-- ===== FEED ===== -->
+        <div id="feed" class="screen">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                <h2 style="font-size:20px;">🛒 Marché</h2>
+                <button class="btn-primary" style="padding:8px 16px;font-size:13px;max-width:100px;" id="goto-publish">+ Publier</button>
+            </div>
+            <div class="feed-categories" id="feed-categories">
+                <span class="category-chip active" data-cat="Tous">Tous</span>
+                <span class="category-chip" data-cat="Plastique">Plastique</span>
+                <span class="category-chip" data-cat="Carton">Carton</span>
+                <span class="category-chip" data-cat="Métal">Métal</span>
+                <span class="category-chip" data-cat="Verre">Verre</span>
+                <span class="category-chip" data-cat="Huile">Huile</span>
+                <span class="category-chip" data-cat="Emballage">Emballage</span>
+            </div>
+            <div id="feed-list"></div>
+        </div>
+
+        <!-- ===== DETAIL ===== -->
+        <div id="detail" class="screen">
+            <button style="background:none;border:none;color:white;font-size:16px;padding:4px 0;margin-bottom:12px;cursor:pointer;text-align:left;" id="detail-back">← Retour</button>
+            <div class="detail-image" id="detail-emoji">🥤</div>
+            <h2 id="detail-title" style="font-size:20px;">Bouteilles PET vides</h2>
+            <div style="color:var(--text-muted);font-size:14px;" id="detail-location">Douala, Bonapriso</div>
+            <div class="detail-price" id="detail-price">300 FCFA/kg</div>
+            <div style="display:flex;gap:8px;margin:8px 0 16px;">
+                <span style="padding:2px 12px;border-radius:100px;background:rgba(34,197,94,0.15);color:#22C55E;font-size:12px;font-weight:600;">Disponible</span>
+                <span style="padding:2px 12px;border-radius:100px;background:rgba(59,130,246,0.15);color:#3B82F6;font-size:12px;font-weight:600;">12kg en stock</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-border);border-radius:14px;margin-bottom:16px;">
+                <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--gold));display:flex;align-items:center;justify-content:center;font-size:20px;">👤</div>
+                <div style="flex:1;"><div style="font-weight:600;">Marie K.</div><div style="font-size:12px;color:var(--text-muted);">⭐ 4.9 · 23 ventes</div></div>
+                <button class="btn-primary" style="padding:8px 16px;font-size:13px;max-width:100px;" id="goto-chat-from-detail">Contacter</button>
+            </div>
+            <div class="section-title">⭐ Noter ce vendeur</div>
+            <div class="rating-stars" id="rating-stars">
+                <span class="star" data-val="1">☆</span>
+                <span class="star" data-val="2">☆</span>
+                <span class="star" data-val="3">☆</span>
+                <span class="star" data-val="4">☆</span>
+                <span class="star" data-val="5">☆</span>
+            </div>
+            <div class="section-title" style="margin-top:16px;">📝 Avis (12)</div>
+            <div style="padding:12px 16px;background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-border);border-radius:14px;margin-bottom:8px;"><div style="display:flex;justify-content:space-between;"><span style="font-weight:600;">Paul N.</span><span style="color:var(--text-muted);font-size:12px;">Il y a 2j</span></div><div style="font-size:13px;color:var(--text-muted);">⭐ 5/5 · Transaction rapide et fiable !</div></div>
+            <div style="padding:12px 16px;background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-border);border-radius:14px;margin-bottom:8px;"><div style="display:flex;justify-content:space-between;"><span style="font-weight:600;">Aicha M.</span><span style="color:var(--text-muted);font-size:12px;">Il y a 5j</span></div><div style="font-size:13px;color:var(--text-muted);">⭐ 4/5 · Bon produit, livraison un peu lente</div></div>
+        </div>
+
+        <!-- ===== PUBLISH ===== -->
+        <div id="publish" class="screen">
+            <h2 style="font-size:20px;margin-bottom:16px;">➕ Nouvelle annonce</h2>
+            <div class="publish-photos">
+                <div class="slot" id="photo-0">📷</div>
+                <div class="slot" id="photo-1">📷</div>
+                <div class="slot" id="photo-2">📷</div>
+            </div>
+            <div class="form-group"><label>Catégorie</label><select id="publish-cat"><option>Plastique</option><option>Carton</option><option>Métal</option><option>Verre</option><option>Huile</option><option>Emballage</option></select></div>
+            <div class="form-group"><label>Titre</label><input type="text" placeholder="Ex: Bouteilles PET vides" id="publish-title"></div>
+            <div class="form-group"><label>Quantité</label><input type="text" placeholder="Ex: 15 kg" id="publish-qty"></div>
+            <div class="form-group"><label>Prix (FCFA/kg)</label><input type="number" placeholder="Ex: 300" id="publish-price"></div>
+            <div class="form-group"><label>Ville</label><input type="text" placeholder="Ex: Douala" id="publish-city"></div>
+            <button class="btn-primary" id="publish-submit">Publier l'annonce</button>
+        </div>
+
+        <!-- ===== WITHDRAWAL ===== -->
+        <div id="withdrawal" class="screen">
+            <h2 style="font-size:20px;margin-bottom:4px;">💰 Retrait MoMo</h2>
+            <div style="color:var(--text-muted);font-size:14px;margin-bottom:16px;">Solde : 5 000 FCFA</div>
+            <div class="provider-select">
+                <div class="provider-item selected" data-provider="MTN"><div class="emoji">📡</div><div class="name">MTN</div></div>
+                <div class="provider-item" data-provider="Orange"><div class="emoji">📡</div><div class="name">Orange</div></div>
+            </div>
+            <div class="form-group"><label>Montant (FCFA)</label><input type="number" placeholder="Ex: 1000" id="withdrawal-amount"></div>
+            <div class="form-group"><label>Numéro de téléphone</label><input type="tel" placeholder="6XXXXXXXX" id="withdrawal-phone"></div>
+            <button class="btn-primary" id="withdrawal-submit">Confirmer le retrait</button>
+            <div style="text-align:center;font-size:12px;color:var(--text-muted);margin-top:12px;">Frais : 1.5% · Délai : instantané</div>
+        </div>
+
+        <!-- ===== MAP ===== -->
+        <div id="map" class="screen">
+            <h2 style="font-size:20px;margin-bottom:12px;">📍 Points de collecte</h2>
+            <div class="map-container">
+                <div class="grid"></div>
+                <div class="map-pin">
+                    <div class="emoji">📍</div>
+                    <div class="city" id="map-current-city">Douala</div>
+                    <div style="font-size:12px;color:var(--text-muted);" id="map-current-address">Bonaberi, en face du marché</div>
+                </div>
+            </div>
+            <div class="city-list" id="city-list">
+                <div class="city-item" data-city="Douala"><div class="emoji">📍</div><div class="info"><div class="name">Douala - Bonaberi</div><div class="address">En face du marché central</div></div></div>
+                <div class="city-item" data-city="Douala"><div class="emoji">📍</div><div class="info"><div class="name">Douala - Akwa</div><div class="address">Rue des palmiers, immeuble ReLife</div></div></div>
+                <div class="city-item" data-city="Yaoundé"><div class="emoji">📍</div><div class="info"><div class="name">Yaoundé - Bastos</div><div class="address">Carrefour de la poste</div></div></div>
+                <div class="city-item" data-city="Yaoundé"><div class="emoji">📍</div><div class="info"><div class="name">Yaoundé - Mvog-Mbi</div><div class="address">En face de l'hôpital</div></div></div>
+                <div class="city-item" data-city="Bafoussam"><div class="emoji">📍</div><div class="info"><div class="name">Bafoussam</div><div class="address">Marché A, côté station Total</div></div></div>
+                <div class="city-item" data-city="Garoua"><div class="emoji">📍</div><div class="info"><div class="name">Garoua</div><div class="address">Rue du commerce, chez Marie</div></div></div>
+            </div>
+        </div>
+
+        <!-- ===== CHAT ===== -->
+        <div id="chat" class="screen">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                <h2 style="font-size:20px;">💬 Messages</h2>
+                <span style="font-size:12px;color:var(--text-muted);">3 discussions</span>
+            </div>
+            <div id="chat-list">
+                <div class="product-card" data-chat="paul" style="cursor:pointer;">
+                    <div class="emoji">👤</div>
+                    <div class="info"><div class="title">Paul N.</div><div class="location">Dernier message : "Ok je suis dispo"</div></div>
+                    <div style="text-align:right;"><div style="font-size:12px;color:var(--text-muted);">12:30</div><div style="background:var(--green);width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;margin-top:4px;margin-left:auto;">2</div></div>
+                </div>
+                <div class="product-card" data-chat="marie" style="cursor:pointer;">
+                    <div class="emoji">👤</div>
+                    <div class="info"><div class="title">Marie K.</div><div class="location">Dernier message : "Merci pour votre confiance"</div></div>
+                    <div style="text-align:right;"><div style="font-size:12px;color:var(--text-muted);">Hier</div></div>
+                </div>
+                <div class="product-card" data-chat="jean" style="cursor:pointer;">
+                    <div class="emoji">👤</div>
+                    <div class="info"><div class="title">Jean D.</div><div class="location">Dernier message : "Quand pouvez-vous passer ?"</div></div>
+                    <div style="text-align:right;"><div style="font-size:12px;color:var(--text-muted);">Hier</div></div>
+                </div>
+            </div>
+            <div id="chat-conversation" style="display:none;flex:1;flex-direction:column;gap:8px;padding-bottom:8px;">
+                <button style="background:none;border:none;color:white;font-size:16px;padding:4px 0;margin-bottom:8px;cursor:pointer;text-align:left;" id="chat-back">← Retour</button>
+                <div id="chat-messages" style="flex:1;display:flex;flex-direction:column;gap:8px;overflow-y:auto;padding-bottom:12px;"></div>
+                <div class="chat-input">
+                    <input type="text" id="chat-input-text" placeholder="Écrire un message...">
+                    <button id="chat-send-btn">📤</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== NOTIFICATIONS ===== -->
+        <div id="notifications" class="screen">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+                <h2 style="font-size:20px;">🔔 Notifications</h2>
+                <button id="notif-mark-all" style="background:none;border:none;color:var(--text-muted);font-size:12px;cursor:pointer;">Tout marquer comme lu</button>
+            </div>
+            <div id="notif-list">
+                <div class="notif-item" data-notif="1"><div class="icon">💬</div><div class="info"><div class="title">Nouveau message de Paul</div><div class="body">"Ok je suis dispo pour la collecte"</div><div class="time">Il y a 10 min</div></div><div class="dot"></div></div>
+                <div class="notif-item" data-notif="2"><div class="icon">♻️</div><div class="info"><div class="title">Collecte confirmée</div><div class="body">Votre collecte de 15kg est planifiée demain</div><div class="time">Il y a 2h</div></div><div class="dot"></div></div>
+                <div class="notif-item" data-notif="3"><div class="icon">⭐</div><div class="info"><div class="title">Offre Premium disponible</div><div class="body">Devenez Premium pour 5000 FCFA/mois</div><div class="time">Il y a 1j</div></div><div class="dot"></div></div>
+                <div class="notif-item" data-notif="4"><div class="icon">📝</div><div class="info"><div class="title">Nouvel avis reçu</div><div class="body">"Excellent service, je recommande !"</div><div class="time">Il y a 2j</div></div><div class="dot"></div></div>
+            </div>
+        </div>
+
+        <!-- ===== STATS ===== -->
+        <div id="stats" class="screen">
+            <h2 style="font-size:20px;margin-bottom:12px;">📊 Statistiques</h2>
+            <div class="stats-row">
+                <div class="stat-item"><div class="value">12</div><div class="label">Ventes</div></div>
+                <div class="stat-item"><div class="value">45 kg</div><div class="label">Recyclés</div></div>
+                <div class="stat-item"><div class="value">⭐ 4.8</div><div class="label">Note</div></div>
+            </div>
+            <div class="section-title">📈 Collectes par semaine</div>
+            <div class="chart-bars" id="chart-bars">
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;"><div class="chart-bar" style="height:40%;"></div><div class="chart-label">Lun</div></div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;"><div class="chart-bar" style="height:60%;"></div><div class="chart-label">Mar</div></div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;"><div class="chart-bar" style="height:30%;"></div><div class="chart-label">Mer</div></div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;"><div class="chart-bar" style="height:90%;"></div><div class="chart-label">Jeu</div></div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;"><div class="chart-bar" style="height:70%;"></div><div class="chart-label">Ven</div></div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;"><div class="chart-bar" style="height:50%;"></div><div class="chart-label">Sam</div></div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;"><div class="chart-bar" style="height:20%;"></div><div class="chart-label">Dim</div></div>
+            </div>
+            <div class="section-title" style="margin-top:16px;">🧩 Répartition des déchets</div>
+            <div class="donut-container"><div class="donut"></div></div>
+            <div class="donut-legend">
+                <span><span class="color" style="background:var(--green);"></span>Plastique 40%</span>
+                <span><span class="color" style="background:var(--gold);"></span>Métal 20%</span>
+                <span><span class="color" style="background:#3B82F6;"></span>Verre 20%</span>
+                <span><span class="color" style="background:#EF4444;"></span>Carton 20%</span>
+            </div>
+            <div class="section-title" style="margin-top:16px;">💰 Revenus mensuels</div>
+            <div style="display:flex;flex-direction:column;gap:6px;">
+                <div><div style="display:flex;justify-content:space-between;font-size:13px;"><span>Jan</span><span>12 500 FCFA</span></div><div style="width:100%;height:6px;background:var(--glass);border-radius:4px;overflow:hidden;"><div style="width:25%;height:100%;background:linear-gradient(90deg,var(--green),var(--gold));border-radius:4px;"></div></div></div>
+                <div><div style="display:flex;justify-content:space-between;font-size:13px;"><span>Fév</span><span>18 200 FCFA</span></div><div style="width:100%;height:6px;background:var(--glass);border-radius:4px;overflow:hidden;"><div style="width:36%;height:100%;background:linear-gradient(90deg,var(--green),var(--gold));border-radius:4px;"></div></div></div>
+                <div><div style="display:flex;justify-content:space-between;font-size:13px;"><span>Mar</span><span>22 800 FCFA</span></div><div style="width:100%;height:6px;background:var(--glass);border-radius:4px;overflow:hidden;"><div style="width:46%;height:100%;background:linear-gradient(90deg,var(--green),var(--gold));border-radius:4px;"></div></div></div>
+                <div><div style="display:flex;justify-content:space-between;font-size:13px;"><span>Avr</span><span>30 500 FCFA</span></div><div style="width:100%;height:6px;background:var(--glass);border-radius:4px;overflow:hidden;"><div style="width:61%;height:100%;background:linear-gradient(90deg,var(--green),var(--gold));border-radius:4px;"></div></div></div>
+            </div>
+        </div>
+
+        <!-- ===== PROFILE ===== -->
+        <div id="profile" class="screen">
+            <div class="profile-header">
+                <div class="profile-avatar">👤</div>
+                <div class="profile-name">Jean Dupont</div>
+                <div class="profile-username">@jean_dupont_237</div>
+                <div class="profile-badge">⭐ PREMIUM</div>
+            </div>
+            <div class="profile-stats">
+                <div class="stat"><div class="value">12</div><div class="label">Ventes</div></div>
+                <div class="stat"><div class="value">45kg</div><div class="label">Recyclés</div></div>
+                <div class="stat"><div class="value">⭐ 4.8</div><div class="label">Note</div></div>
+            </div>
+            <div class="profile-menu">
+                <div class="item"><span class="icon">📍</span><span class="label">Douala, Cameroun</span><span class="arrow">›</span></div>
+                <div class="item"><span class="icon">📞</span><span class="label">+237 677 123 456</span><span class="arrow">›</span></div>
+                <div class="item"><span class="icon">🔒</span><span class="label">Changer le mot de passe</span><span class="arrow">›</span></div>
+                <div class="item"><span class="icon">🔔</span><span class="label">Notifications</span><span style="color:#22C55E;font-size:12px;font-weight:600;">Actives</span></div>
+                <div class="item"><span class="icon">🌐</span><span class="label">Langue</span><span class="arrow">Français ›</span></div>
+                <div class="item"><span class="icon">🌙</span><span class="label">Mode sombre</span><span style="color:#22C55E;font-size:12px;font-weight:600;">Activé</span></div>
+                <div class="item"><span class="icon">📋</span><span class="label">Mes annonces</span><span class="arrow">3 ›</span></div>
+                <div class="item"><span class="icon">⭐</span><span class="label">Mon abonnement Premium</span><span style="color:var(--gold);font-size:12px;font-weight:600;">Actif</span></div>
+                <div class="item danger"><span class="icon">🚪</span><span class="label" style="color:#EF4444;">Déconnexion</span><span class="arrow">›</span></div>
+            </div>
+        </div>
+
+        <!-- ===== BOTTOM NAV ===== -->
+        <div id="bottom-nav" class="active">
+            <button class="nav-item active" data-screen="dashboard"><span class="icon">🏠</span><span class="label">Accueil</span></button>
+            <button class="nav-item" data-screen="feed"><span class="icon">🛒</span><span class="label">Marché</span></button>
+            <button class="nav-item" data-screen="publish"><span class="icon">➕</span><span class="label">Publier</span></button>
+            <button class="nav-item" data-screen="notifications"><span class="icon">🔔</span><span class="label">Notif.</span><span class="badge" id="notif-badge">4</span></button>
+            <button class="nav-item" data-screen="profile"><span class="icon">👤</span><span class="label">Profil</span></button>
+        </div>
+    </div>
+
+    <script>
+        // ===== GLOBAL STATE =====
+        let currentScreen = 'splash';
+        let onboardingSlide = 0;
+        let isLoggedIn = false;
+        let selectedRating = 0;
+        let chatActive = null;
+        let chatMessages = {
+            paul: [
+                { text: "Bonjour, je suis intéressé par vos bouteilles PET", sent: false, time: "12:20" },
+                { text: "Bonjour ! Oui je les ai encore", sent: true, time: "12:22" },
+                { text: "Ok je suis dispo", sent: false, time: "12:30" },
+            ],
+            marie: [
+                { text: "Merci pour votre confiance", sent: false, time: "Hier" },
+            ],
+            jean: [
+                { text: "Quand pouvez-vous passer ?", sent: false, time: "Hier" },
+            ]
+        };
+
+        // ===== TOAST =====
+        function showToast(msg, type = '') {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.className = 'toast ' + type + ' show';
+            clearTimeout(t._timeout);
+            t._timeout = setTimeout(() => t.className = 'toast', 2500);
+        }
+
+        // ===== NAVIGATION =====
+        function navigateTo(screenId) {
+            if (screenId === currentScreen) return;
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            const target = document.getElementById(screenId);
+            if (target) {
+                target.classList.add('active');
+                // Re-trigger animation
+                target.style.animation = 'none';
+                requestAnimationFrame(() => {
+                    target.style.animation = 'fadeUp 0.4s ease';
+                });
+            }
+            currentScreen = screenId;
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.querySelector(`.nav-item[data-screen="${screenId}"]`)?.classList.add('active');
+            // Update badge
+            updateBadge();
+        }
+
+        function updateBadge() {
+            const unread = document.querySelectorAll('.notif-item .dot:not(.read)').length;
+            const badge = document.getElementById('notif-badge');
+            if (unread > 0) {
+                badge.textContent = unread;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        // ===== SPLASH =====
+        let progress = 0;
+        const loaderInterval = setInterval(() => {
+            progress += 2;
+            if (progress > 100) { progress = 100;
+                clearInterval(loaderInterval); }
+            document.getElementById('loader-fill').style.width = progress + '%';
+            if (progress >= 100) {
+                setTimeout(() => {
+                    navigateTo('onboarding');
+                }, 400);
+            }
+        }, 30);
+
+        // ===== ONBOARDING =====
+        const totalSlides = 4;
+        document.getElementById('onboarding-btn').addEventListener('click', () => {
+            if (onboardingSlide < totalSlides - 1) {
+                onboardingSlide++;
+                updateOnboarding();
+            } else {
+                navigateTo('login');
+            }
+        });
+
+        function updateOnboarding() {
+            document.querySelectorAll('.onboarding-slide').forEach((el, i) => {
+                el.classList.toggle('active', i === onboardingSlide);
+            });
+            document.querySelectorAll('.dot').forEach((el, i) => {
+                el.classList.toggle('active', i === onboardingSlide);
+            });
+            const btn = document.getElementById('onboarding-btn');
+            btn.textContent = onboardingSlide === totalSlides - 1 ? '🚀 Démarrer' : 'Suivant';
+        }
+
+        document.querySelectorAll('.dot').forEach(d => {
+            d.addEventListener('click', () => {
+                onboardingSlide = parseInt(d.dataset.slide);
+                updateOnboarding();
+            });
+        });
+
+        // ===== LOGIN =====
+        document.getElementById('login-btn').addEventListener('click', () => {
+            const phone = document.getElementById('phone-input').value.trim();
+            if (phone.length < 8) {
+                showToast('Veuillez entrer un numéro valide', 'error');
+                return;
+            }
+            document.getElementById('otp-phone').textContent = '+237 ' + phone;
+            navigateTo('otp');
+        });
+
+        document.getElementById('login-skip').addEventListener('click', () => {
+            isLoggedIn = true;
+            document.getElementById('bottom-nav').classList.add('active');
+            navigateTo('dashboard');
+            showToast('Mode test activé', 'success');
+        });
+
+        // ===== OTP =====
+        const otpInputs = document.querySelectorAll('.otp-input');
+        otpInputs.forEach((input, idx) => {
+            input.addEventListener('input', () => {
+                if (input.value.length === 1 && idx < otpInputs.length - 1) {
+                    otpInputs[idx + 1].focus();
+                }
+            });
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && input.value.length === 0 && idx > 0) {
+                    otpInputs[idx - 1].focus();
+                }
+            });
+        });
+
+        document.getElementById('otp-btn').addEventListener('click', () => {
+            let code = '';
+            otpInputs.forEach(inp => code += inp.value);
+            if (code.length < 6) {
+                showToast('Entrez les 6 chiffres du code', 'error');
+                return;
+            }
+            // Code test : 123456
+            if (code === '123456') {
+                isLoggedIn = true;
+                document.getElementById('bottom-nav').classList.add('active');
+                navigateTo('dashboard');
+                showToast('✅ Connexion réussie !', 'success');
+            } else {
+                showToast('❌ Code incorrect. Essayez 123456', 'error');
+            }
+        });
+
+        // ===== NAVIGATION BOTTOM =====
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const screen = item.dataset.screen;
+                if (screen === 'notifications') {
+                    // Mark all as read when opening notif center
+                    setTimeout(() => {
+                        document.querySelectorAll('.notif-item .dot').forEach(d => d.classList.add('read'));
+                        updateBadge();
+                    }, 300);
+                }
+                navigateTo(screen);
+            });
+        });
+
+        // ===== QUICK ACTIONS =====
+        document.querySelectorAll('.qa-item').forEach(item => {
+            item.addEventListener('click', () => {
+                navigateTo(item.dataset.target);
+            });
+        });
+
+        // ===== FEED =====
+        const feedProducts = [
+            { emoji: '🥤', title: 'Bouteilles PET vides', loc: 'Douala, Bonapriso', price: '300 FCFA/kg', qty: '12kg',
+                cat: 'Plastique', status: 'Disponible' },
+            { emoji: '📦', title: 'Cartons de déménagement', loc: 'Yaoundé, Bastos', price: '150 FCFA/kg', qty: '20kg',
+                cat: 'Carton', status: 'Disponible' },
+            { emoji: '🥫', title: 'Boîtes de conserve', loc: 'Bafoussam', price: '500 FCFA/kg', qty: '8kg', cat: 'Métal',
+                status: 'Négociable' },
+            { emoji: '🍾', title: 'Bouteilles en verre', loc: 'Bamenda', price: '200 FCFA/kg', qty: '15kg', cat: 'Verre',
+                status: 'Disponible' },
+            { emoji: '🛢️', title: 'Huile de friture usagée', loc: 'Douala, Akwa', price: '400 FCFA/L', qty: '10L',
+                cat: 'Huile', status: 'Disponible' },
+            { emoji: '📦', title: 'Emballages plastiques', loc: 'Yaoundé, Mvog-Mbi', price: '100 FCFA/kg', qty: '25kg',
+                cat: 'Emballage', status: 'Disponible' },
+        ];
+
+        function renderFeed(filter = 'Tous') {
+            const container = document.getElementById('feed-list');
+            const filtered = filter === 'Tous' ? feedProducts : feedProducts.filter(p => p.cat === filter);
+            if (filtered.length === 0) {
+                container.innerHTML =
+                    '<div style="text-align:center;padding:40px 0;color:var(--text-muted);">Aucune annonce dans cette catégorie</div>';
+                return;
+            }
+            container.innerHTML = filtered.map((p, i) => `
+                <div class="product-card" data-index="${i}">
+                    <div class="emoji">${p.emoji}</div>
+                    <div class="info">
+                        <div class="title">${p.title}</div>
+                        <div class="location">${p.loc}</div>
+                        <span class="status">${p.status}</span>
+                    </div>
+                    <div>
+                        <div class="price">${p.price}</div>
+                        <div style="font-size:11px;color:var(--text-muted);text-align:right;">${p.qty}</div>
+                    </div>
+                </div>
+            `).join('');
+            // Click to detail
+            container.querySelectorAll('.product-card').forEach(el => {
+                el.addEventListener('click', () => {
+                    const idx = parseInt(el.dataset.index);
+                    const p = filtered[idx];
+                    openDetail(p);
+                });
+            });
+        }
+
+        // ===== CATEGORY FILTER =====
+        document.querySelectorAll('.category-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                renderFeed(chip.dataset.cat);
+            });
+        });
+
+        // ===== DETAIL =====
+        function openDetail(product) {
+            document.getElementById('detail-emoji').textContent = product.emoji;
+            document.getElementById('detail-title').textContent = product.title;
+            document.getElementById('detail-location').textContent = product.loc;
+            document.getElementById('detail-price').textContent = product.price;
+            navigateTo('detail');
+            // Reset rating
+            selectedRating = 0;
+            document.querySelectorAll('#rating-stars .star').forEach(s => s.textContent = '☆');
+        }
+
+        document.getElementById('detail-back').addEventListener('click', () => navigateTo('feed'));
+
+        // ===== RATING =====
+        document.querySelectorAll('#rating-stars .star').forEach(star => {
+            star.addEventListener('click', () => {
+                const val = parseInt(star.dataset.val);
+                selectedRating = val;
+                document.querySelectorAll('#rating-stars .star').forEach(s => {
+                    const sv = parseInt(s.dataset.val);
+                    s.textContent = sv <= val ? '★' : '☆';
+                    s.classList.toggle('active', sv <= val);
+                });
+                showToast(`⭐ Noté ${val}/5 ! Merci !`, 'success');
+            });
+        });
+
+        // ===== CHAT =====
+        document.querySelectorAll('#chat-list .product-card').forEach(el => {
+            el.addEventListener('click', () => {
+                const chatId = el.dataset.chat;
+                openChat(chatId);
+            });
+        });
+
+        document.getElementById('goto-chat-from-detail').addEventListener('click', () => {
+            navigateTo('chat');
+        });
+
+        document.getElementById('chat-back').addEventListener('click', () => {
+            document.getElementById('chat-conversation').style.display = 'none';
+            document.getElementById('chat-list').style.display = 'block';
+        });
+
+        function openChat(chatId) {
+            chatActive = chatId;
+            document.getElementById('chat-list').style.display = 'none';
+            const conv = document.getElementById('chat-conversation');
+            conv.style.display = 'flex';
+            renderChatMessages();
+        }
+
+        function renderChatMessages() {
+            const container = document.getElementById('chat-messages');
+            const msgs = chatMessages[chatActive] || [];
+            container.innerHTML = msgs.map(m => `
+                <div class="chat-message ${m.sent ? 'sent' : ''}">
+                    <div class="bubble">
+                        <div class="text">${m.text}</div>
+                        <div class="time">${m.time}</div>
+                    </div>
+                </div>
+            `).join('');
+            container.scrollTop = container.scrollHeight;
+        }
+
+        document.getElementById('chat-send-btn').addEventListener('click', sendMessage);
+        document.getElementById('chat-input-text').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        function sendMessage() {
+            const input = document.getElementById('chat-input-text');
+            const text = input.value.trim();
+            if (!text || !chatActive) return;
+            // Add sent message
+            const now = new Date();
+            const time = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+            if (!chatMessages[chatActive]) chatMessages[chatActive] = [];
+            chatMessages[chatActive].push({ text, sent: true, time });
+            input.value = '';
+            renderChatMessages();
+
+            // Auto-reply after 1.5s
+            setTimeout(() => {
+                const replies = [
+                    "Merci pour votre message ! Je vous réponds dans la journée.",
+                    "Parfait, je confirme la collecte pour demain.",
+                    "Très bien, je suis disponible.",
+                    "D'accord, à bientôt !",
+                    "Je prends note de votre demande.",
+                ];
+                const reply = replies[Math.floor(Math.random() * replies.length)];
+                chatMessages[chatActive].push({ text: reply, sent: false, time: 'Maintenant' });
+                renderChatMessages();
+                showToast('📩 Nouveau message reçu', 'success');
+            }, 1500);
+        }
+
+        // ===== WITHDRAWAL =====
+        document.getElementById('goto-withdrawal').addEventListener('click', () => navigateTo('withdrawal'));
+
+        document.querySelectorAll('.provider-item').forEach(el => {
+            el.addEventListener('click', () => {
+                document.querySelectorAll('.provider-item').forEach(p => p.classList.remove('selected'));
+                el.classList.add('selected');
+            });
+        });
+
+        document.getElementById('withdrawal-submit').addEventListener('click', () => {
+            const amount = document.getElementById('withdrawal-amount').value;
+            const phone = document.getElementById('withdrawal-phone').value;
+            if (!amount || parseFloat(amount) <= 0) {
+                showToast('Veuillez entrer un montant valide', 'error');
+                return;
+            }
+            if (!phone || phone.length < 8) {
+                showToast('Veuillez entrer un numéro valide', 'error');
+                return;
+            }
+            showToast(`✅ Demande de retrait de ${amount} FCFA envoyée !`, 'success');
+            document.getElementById('withdrawal-amount').value = '';
+            document.getElementById('withdrawal-phone').value = '';
+        });
+
+        // ===== PUBLISH =====
+        document.getElementById('goto-publish').addEventListener('click', () => navigateTo('publish'));
+
+        document.querySelectorAll('.publish-photos .slot').forEach(slot => {
+            slot.addEventListener('click', () => {
+                slot.classList.toggle('filled');
+                slot.textContent = slot.classList.contains('filled') ? '✅' : '📷';
+                if (slot.classList.contains('filled')) {
+                    showToast('📸 Photo ajoutée', 'success');
+                }
+            });
+        });
+
+        document.getElementById('publish-submit').addEventListener('click', () => {
+            const title = document.getElementById('publish-title').value.trim();
+            const qty = document.getElementById('publish-qty').value.trim();
+            const price = document.getElementById('publish-price').value.trim();
+            const city = document.getElementById('publish-city').value.trim();
+            if (!title || !qty || !price || !city) {
+                showToast('Veuillez remplir tous les champs', 'error');
+                return;
+            }
+            showToast('✅ Annonce publiée avec succès !', 'success');
+            document.getElementById('publish-title').value = '';
+            document.getElementById('publish-qty').value = '';
+            document.getElementById('publish-price').value = '';
+            document.getElementById('publish-city').value = '';
+            document.querySelectorAll('.publish-photos .slot').forEach(s => {
+                s.classList.remove('filled');
+                s.textContent = '📷';
+            });
+            navigateTo('feed');
+        });
+
+        // ===== NOTIFICATIONS =====
+        document.querySelectorAll('.notif-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const dot = item.querySelector('.dot');
+                if (dot) dot.classList.add('read');
+                showToast('✅ Notification marquée comme lue', 'success');
+                updateBadge();
+            });
+        });
+
+        document.getElementById('notif-mark-all').addEventListener('click', () => {
+            document.querySelectorAll('.notif-item .dot').forEach(d => d.classList.add('read'));
+            showToast('✅ Toutes les notifications sont lues', 'success');
+            updateBadge();
+        });
+
+        // ===== MAP =====
+        document.querySelectorAll('.city-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const city = item.querySelector('.name').textContent;
+                const address = item.querySelector('.address').textContent;
+                document.getElementById('map-current-city').textContent = city;
+                document.getElementById('map-current-address').textContent = address;
+                showToast(`📍 ${city} sélectionné`, 'success');
+            });
+        });
+
+        // ===== INIT =====
+        renderFeed();
+        updateBadge();
+
+        // ===== KEYBOARD SHORTCUT (for testing) =====
+        document.addEventListener('keydown', (e) => {
+            if (e.key === '1' && e.ctrlKey) {
+                // Quick login test
+                isLoggedIn = true;
+                document.getElementById('bottom-nav').classList.add('active');
+                navigateTo('dashboard');
+                showToast('🔓 Mode test activé', 'success');
+            }
+        });
+
+        // Auto-login if coming from skip
+        console.log('♻️ ReLife Cameroun - Application chargée !');
+        console.log('🔑 Test : Utilisez le code OTP 123456');
+        console.log('📱 Pour installer : Chrome → Menu ⋮ → Ajouter à l\'écran d\'accueil');
+    </script>
+</body>
+</html>
