@@ -6,10 +6,10 @@
     <title>ReLife Cameroun</title>
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
-        body{background:#0F0F0F;color:#fff;font-family:sans-serif;display:flex;justify-content:center;align-items:center;min-height:100vh}
-        .container{max-width:430px;width:100%;padding:20px;background:#1A1A1A;border-radius:20px;text-align:center}
-        .emoji{font-size:72px;display:block;margin-bottom:16px}
-        h1{font-size:36px;color:#FFD700;margin-bottom:8px}
+        body{background:#0F0F0F;color:#fff;font-family:sans-serif;display:flex;justify-content:center;align-items:center;height:100vh}
+        #app{max-width:430px;width:100%;padding:20px;background:#1A1A1A;border-radius:20px;text-align:center}
+        .emoji{font-size:72px;display:block;margin-bottom:12px}
+        h1{font-size:36px;color:#FFD700;margin-bottom:4px}
         .sub{color:#888;letter-spacing:4px;font-size:14px;margin-bottom:24px}
         .btn{background:#2D5016;color:#fff;border:none;padding:14px 24px;border-radius:12px;font-size:16px;font-weight:600;width:100%;cursor:pointer;margin-top:12px}
         .btn:active{transform:scale(0.97)}
@@ -24,45 +24,33 @@
         .toast.show{opacity:1}
         .toast.success{border-color:#2D5016}
         .toast.error{border-color:#EF4444}
+        .loader-bar{width:160px;height:4px;background:#333;border-radius:4px;margin:24px auto;overflow:hidden}
+        .loader-fill{height:100%;width:0%;background:linear-gradient(90deg,#2D5016,#FFD700);transition:width .1s}
+        .flex{display:flex;gap:8px;flex-wrap:wrap}
+        .flex-col{flex-direction:column}
+        .items-center{align-items:center}
+        .justify-between{justify-content:space-between}
     </style>
 </head>
 <body>
 
 <div id="toast" class="toast"></div>
 
-<div class="container" id="app">
+<div id="app">
     <!-- SPLASH -->
     <div id="splash">
         <span class="emoji">♻️</span>
         <h1>ReLife</h1>
         <div class="sub">CAMEROUN</div>
-        <div style="width:160px;height:4px;background:#333;border-radius:4px;margin:24px auto;overflow:hidden">
-            <div id="loader" style="height:100%;width:0%;background:linear-gradient(90deg,#2D5016,#FFD700);transition:width .1s"></div>
-        </div>
+        <div class="loader-bar"><div class="loader-fill" id="loader-fill"></div></div>
     </div>
 
     <!-- ONBOARDING -->
     <div id="onboarding" class="hidden">
-        <div id="slide0">
-            <span class="emoji">♻️</span>
-            <h2 style="font-size:24px;margin-bottom:8px">Valorisez vos déchets</h2>
-            <p style="color:#888;font-size:16px">Transformez vos déchets recyclables en revenus</p>
-        </div>
-        <div id="slide1" class="hidden">
-            <span class="emoji">💰</span>
-            <h2 style="font-size:24px;margin-bottom:8px">Gagnez de l'argent</h2>
-            <p style="color:#888;font-size:16px">Paiement immédiat au kilogramme</p>
-        </div>
-        <div id="slide2" class="hidden">
-            <span class="emoji">🌍</span>
-            <h2 style="font-size:24px;margin-bottom:8px">Protégez l'environnement</h2>
-            <p style="color:#888;font-size:16px">Un Cameroun plus propre et plus vert</p>
-        </div>
-        <div id="slide3" class="hidden">
-            <span class="emoji">⭐</span>
-            <h2 style="font-size:24px;margin-bottom:8px">Devenez Premium</h2>
-            <p style="color:#888;font-size:16px">Tarifs préférentiels et collectes prioritaires</p>
-        </div>
+        <div id="slide0"><span class="emoji">♻️</span><h2 style="font-size:24px;margin-bottom:8px">Valorisez vos déchets</h2><p style="color:#888;font-size:16px">Transformez vos déchets recyclables en revenus</p></div>
+        <div id="slide1" class="hidden"><span class="emoji">💰</span><h2 style="font-size:24px;margin-bottom:8px">Gagnez de l'argent</h2><p style="color:#888;font-size:16px">Paiement immédiat au kilogramme</p></div>
+        <div id="slide2" class="hidden"><span class="emoji">🌍</span><h2 style="font-size:24px;margin-bottom:8px">Protégez l'environnement</h2><p style="color:#888;font-size:16px">Un Cameroun plus propre</p></div>
+        <div id="slide3" class="hidden"><span class="emoji">⭐</span><h2 style="font-size:24px;margin-bottom:8px">Devenez Premium</h2><p style="color:#888;font-size:16px">Tarifs préférentiels</p></div>
         <div style="display:flex;gap:8px;justify-content:center;margin:16px 0">
             <span class="dot" data-slide="0" style="width:8px;height:8px;border-radius:50%;background:#FFD700;display:inline-block;cursor:pointer"></span>
             <span class="dot" data-slide="1" style="width:8px;height:8px;border-radius:50%;background:#666;display:inline-block;cursor:pointer"></span>
@@ -79,7 +67,7 @@
         <p style="color:#888;font-size:14px;margin-bottom:16px">Entrez votre numéro de téléphone</p>
         <div style="display:flex;align-items:center;background:#222;border-radius:12px;border:1px solid #333;padding:0 8px">
             <span style="color:#888;font-weight:600">+237</span>
-            <input type="tel" id="phone-input" class="input" style="border:none;background:transparent;padding:14px 8px" placeholder="6XXXXXXXX">
+            <input type="tel" id="phone-input" style="border:none;background:transparent;padding:14px 8px;width:100%;color:#fff;font-size:16px;outline:none" placeholder="6XXXXXXXX">
         </div>
         <button class="btn" id="login-btn">Se connecter</button>
         <button class="link" id="login-skip">Continuer sans compte (test)</button>
@@ -105,17 +93,17 @@
     <!-- DASHBOARD -->
     <div id="dashboard" class="hidden">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-            <div><h2 style="font-size:20px">Bonjour 👋</h2><p style="color:#888;font-size:13px">Prêt à recycler aujourd'hui ?</p></div>
+            <div><h2 style="font-size:20px">Bonjour 👋</h2><p style="color:#888;font-size:13px">Prêt à recycler ?</p></div>
             <button id="lang-toggle" style="background:#FFD700;color:#000;border:none;padding:6px 16px;border-radius:20px;font-weight:700;cursor:pointer">🇫🇷 FR</button>
         </div>
         <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px">
-            <button class="qa" data-target="map" style="background:#222;border:1px solid #333;border-radius:12px;padding:12px;cursor:pointer;color:#fff">📍 Carte</button>
-            <button class="qa" data-target="chat" style="background:#222;border:1px solid #333;border-radius:12px;padding:12px;cursor:pointer;color:#fff">💬 Messages</button>
-            <button class="qa" data-target="stats" style="background:#222;border:1px solid #333;border-radius:12px;padding:12px;cursor:pointer;color:#fff">📊 Stats</button>
-            <button class="qa" data-target="feed" style="background:#222;border:1px solid #333;border-radius:12px;padding:12px;cursor:pointer;color:#fff">🛒 Marché</button>
+            <button class="qa" data-target="map" style="background:#222;border:1px solid #333;border-radius:12px;padding:12px;cursor:pointer;color:#fff;border:none">📍 Carte</button>
+            <button class="qa" data-target="chat" style="background:#222;border:1px solid #333;border-radius:12px;padding:12px;cursor:pointer;color:#fff;border:none">💬 Messages</button>
+            <button class="qa" data-target="stats" style="background:#222;border:1px solid #333;border-radius:12px;padding:12px;cursor:pointer;color:#fff;border:none">📊 Stats</button>
+            <button class="qa" data-target="feed" style="background:#222;border:1px solid #333;border-radius:12px;padding:12px;cursor:pointer;color:#fff;border:none">🛒 Marché</button>
         </div>
         <div style="background:linear-gradient(135deg,rgba(45,80,22,0.3),rgba(255,215,0,0.08));border:1px solid rgba(255,215,0,0.15);border-radius:16px;padding:16px;display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-            <div><div style="font-size:12px;color:#888">💰 Solde Mobile Money</div><div style="font-size:28px;font-weight:700;color:#FFD700">5 000 FCFA</div></div>
+            <div><div style="font-size:12px;color:#888">💰 Solde</div><div style="font-size:28px;font-weight:700;color:#FFD700">5 000 FCFA</div></div>
             <button class="btn" style="max-width:100px;padding:8px 16px;font-size:13px" id="goto-withdrawal">Retirer</button>
         </div>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px">
@@ -124,59 +112,43 @@
             <div style="text-align:center;padding:12px;background:#222;border-radius:12px;border:1px solid #333"><div style="font-size:20px;font-weight:700">⭐ 4.8</div><div style="font-size:10px;color:#888">Note</div></div>
         </div>
         <div style="font-weight:600;margin-bottom:8px">⚡ Activité récente</div>
-        <div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04)"><span style="font-size:24px">♻️</span><div style="flex:1"><div style="font-size:14px">Collecte de bouteilles PET</div><div style="font-size:12px;color:#888">15kg • 2 250 FCFA</div></div><div style="font-size:11px;color:#888">2h</div></div>
-        <div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04)"><span style="font-size:24px">🥫</span><div style="flex:1"><div style="font-size:14px">Canettes aluminium</div><div style="font-size:12px;color:#888">5kg • 1 000 FCFA</div></div><div style="font-size:11px;color:#888">Hier</div></div>
+        <div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04)"><span style="font-size:24px">♻️</span><div style="flex:1"><div style="font-size:14px">Collecte PET</div><div style="font-size:12px;color:#888">15kg • 2 250 FCFA</div></div><div style="font-size:11px;color:#888">2h</div></div>
+        <div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04)"><span style="font-size:24px">🥫</span><div style="flex:1"><div style="font-size:14px">Canettes alu</div><div style="font-size:12px;color:#888">5kg • 1 000 FCFA</div></div><div style="font-size:11px;color:#888">Hier</div></div>
+        <div style="display:flex;align-items:center;gap:12px;padding:8px 0"><span style="font-size:24px">📦</span><div style="flex:1"><div style="font-size:14px">Cartons</div><div style="font-size:12px;color:#888">10kg • 500 FCFA</div></div><div style="font-size:11px;color:#888">Hier</div></div>
     </div>
 
     <!-- FEED -->
     <div id="feed" class="hidden">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><h2 style="font-size:20px">🛒 Marché</h2><button class="btn" style="max-width:100px;padding:8px 16px;font-size:13px" id="goto-publish">+ Publier</button></div>
+        <h2 style="font-size:20px;margin-bottom:12px">🛒 Marché</h2>
         <div style="display:flex;gap:8px;overflow-x:auto;padding:4px 0 12px" id="feed-categories">
-            <button class="cat-chip active" data-cat="Tous" style="padding:6px 16px;border-radius:20px;border:1px solid #333;background:#2D5016;color:#fff;font-size:13px;cursor:pointer;white-space:nowrap;border:none">Tous</button>
-            <button class="cat-chip" data-cat="Plastique" style="padding:6px 16px;border-radius:20px;border:1px solid #333;background:transparent;color:#888;font-size:13px;cursor:pointer;white-space:nowrap">Plastique</button>
-            <button class="cat-chip" data-cat="Métal" style="padding:6px 16px;border-radius:20px;border:1px solid #333;background:transparent;color:#888;font-size:13px;cursor:pointer;white-space:nowrap">Métal</button>
-            <button class="cat-chip" data-cat="Carton" style="padding:6px 16px;border-radius:20px;border:1px solid #333;background:transparent;color:#888;font-size:13px;cursor:pointer;white-space:nowrap">Carton</button>
-            <button class="cat-chip" data-cat="Verre" style="padding:6px 16px;border-radius:20px;border:1px solid #333;background:transparent;color:#888;font-size:13px;cursor:pointer;white-space:nowrap">Verre</button>
+            <button class="cat-chip active" data-cat="Tous" style="padding:6px 16px;border-radius:20px;background:#2D5016;color:#fff;font-size:13px;cursor:pointer;border:none">Tous</button>
+            <button class="cat-chip" data-cat="Plastique" style="padding:6px 16px;border-radius:20px;background:#222;color:#888;font-size:13px;cursor:pointer;border:none">Plastique</button>
+            <button class="cat-chip" data-cat="Métal" style="padding:6px 16px;border-radius:20px;background:#222;color:#888;font-size:13px;cursor:pointer;border:none">Métal</button>
+            <button class="cat-chip" data-cat="Carton" style="padding:6px 16px;border-radius:20px;background:#222;color:#888;font-size:13px;cursor:pointer;border:none">Carton</button>
         </div>
         <div id="feed-list"></div>
+        <button class="btn" id="goto-publish" style="margin-top:12px">+ Publier</button>
     </div>
 
     <!-- PUBLISH -->
     <div id="publish" class="hidden">
         <h2 style="font-size:20px;margin-bottom:16px">➕ Nouvelle annonce</h2>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px">
-            <button class="photo-slot" style="aspect-ratio:1;background:#222;border:2px dashed #333;border-radius:12px;font-size:28px;color:#888;cursor:pointer;border:none">📷</button>
-            <button class="photo-slot" style="aspect-ratio:1;background:#222;border:2px dashed #333;border-radius:12px;font-size:28px;color:#888;cursor:pointer;border:none">📷</button>
-            <button class="photo-slot" style="aspect-ratio:1;background:#222;border:2px dashed #333;border-radius:12px;font-size:28px;color:#888;cursor:pointer;border:none">📷</button>
-        </div>
-        <div style="margin-bottom:12px"><label style="font-size:12px;color:#888;display:block;margin-bottom:4px">Catégorie</label><select id="publish-cat" style="width:100%;padding:12px;border-radius:12px;border:1px solid #333;background:#222;color:#fff;font-size:14px"><option>Plastique</option><option>Métal</option><option>Carton</option><option>Verre</option><option>Huile</option></select></div>
+        <div style="margin-bottom:12px"><label style="font-size:12px;color:#888;display:block;margin-bottom:4px">Catégorie</label><select id="publish-cat" style="width:100%;padding:12px;border-radius:12px;border:1px solid #333;background:#222;color:#fff;font-size:14px"><option>Plastique</option><option>Métal</option><option>Carton</option><option>Verre</option></select></div>
         <div style="margin-bottom:12px"><label style="font-size:12px;color:#888;display:block;margin-bottom:4px">Titre</label><input type="text" id="publish-title" style="width:100%;padding:12px;border-radius:12px;border:1px solid #333;background:#222;color:#fff;font-size:14px;outline:none" placeholder="Ex: Bouteilles PET"></div>
         <div style="margin-bottom:12px"><label style="font-size:12px;color:#888;display:block;margin-bottom:4px">Quantité</label><input type="text" id="publish-qty" style="width:100%;padding:12px;border-radius:12px;border:1px solid #333;background:#222;color:#fff;font-size:14px;outline:none" placeholder="Ex: 15 kg"></div>
-        <div style="margin-bottom:12px"><label style="font-size:12px;color:#888;display:block;margin-bottom:4px">Prix (FCFA/kg)</label><input type="number" id="publish-price" style="width:100%;padding:12px;border-radius:12px;border:1px solid #333;background:#222;color:#fff;font-size:14px;outline:none" placeholder="Ex: 200"></div>
+        <div style="margin-bottom:12px"><label style="font-size:12px;color:#888;display:block;margin-bottom:4px">Prix</label><input type="number" id="publish-price" style="width:100%;padding:12px;border-radius:12px;border:1px solid #333;background:#222;color:#fff;font-size:14px;outline:none" placeholder="Ex: 200"></div>
         <div style="margin-bottom:16px"><label style="font-size:12px;color:#888;display:block;margin-bottom:4px">Ville</label><input type="text" id="publish-city" style="width:100%;padding:12px;border-radius:12px;border:1px solid #333;background:#222;color:#fff;font-size:14px;outline:none" placeholder="Ex: Douala"></div>
-        <button class="btn" id="publish-submit">Publier l'annonce</button>
-    </div>
-
-    <!-- WITHDRAWAL -->
-    <div id="withdrawal" class="hidden">
-        <h2 style="font-size:20px;margin-bottom:4px">💰 Retrait MoMo</h2>
-        <p style="color:#888;font-size:14px;margin-bottom:16px">Solde : 5 000 FCFA</p>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
-            <button class="provider selected" data-provider="MTN" style="padding:16px;border-radius:12px;border:2px solid #FFD700;background:rgba(255,215,0,0.06);cursor:pointer;color:#fff"><div style="font-size:28px">📡</div><div style="font-weight:600">MTN</div></button>
-            <button class="provider" data-provider="Orange" style="padding:16px;border-radius:12px;border:2px solid #333;background:transparent;cursor:pointer;color:#fff"><div style="font-size:28px">📡</div><div style="font-weight:600">Orange</div></button>
-        </div>
-        <div style="margin-bottom:12px"><label style="font-size:12px;color:#888;display:block;margin-bottom:4px">Montant (FCFA)</label><input type="number" id="withdrawal-amount" style="width:100%;padding:12px;border-radius:12px;border:1px solid #333;background:#222;color:#fff;font-size:14px;outline:none" placeholder="Ex: 1000"></div>
-        <div style="margin-bottom:16px"><label style="font-size:12px;color:#888;display:block;margin-bottom:4px">Numéro de téléphone</label><input type="tel" id="withdrawal-phone" style="width:100%;padding:12px;border-radius:12px;border:1px solid #333;background:#222;color:#fff;font-size:14px;outline:none" placeholder="6XXXXXXXX"></div>
-        <button class="btn" id="withdrawal-submit">Confirmer le retrait</button>
-        <p style="font-size:12px;color:#888;text-align:center;margin-top:12px">Frais : 1.5% · Délai : instantané</p>
+        <button class="btn" id="publish-submit">Publier</button>
+        <button class="link" id="goto-feed-from-publish">← Retour au marché</button>
     </div>
 
     <!-- MAP -->
     <div id="map" class="hidden">
         <h2 style="font-size:20px;margin-bottom:12px">📍 Points de collecte</h2>
-        <div style="height:200px;background:linear-gradient(135deg,#1A2A1A,#2A3A2A);border-radius:16px;display:flex;align-items:center;justify-content:center;flex-direction:column;margin-bottom:16px;position:relative;overflow:hidden">
-            <div style="position:absolute;width:200%;height:200%;background-image:radial-gradient(circle,rgba(255,255,255,0.04)1px,transparent 1px);background-size:40px 40px;animation:scrollGrid 20s linear infinite"></div>
-            <div style="position:relative;z-index:2;text-align:center"><span style="font-size:48px">📍</span><div style="font-size:14px;font-weight:600;color:#FFD700" id="map-current-city">Douala</div><div style="font-size:12px;color:#888" id="map-current-address">Bonaberi, en face du marché</div></div>
+        <div style="height:150px;background:linear-gradient(135deg,#1A2A1A,#2A3A2A);border-radius:16px;display:flex;align-items:center;justify-content:center;flex-direction:column;margin-bottom:16px">
+            <span style="font-size:48px">📍</span>
+            <div style="font-size:14px;font-weight:600;color:#FFD700" id="map-city">Douala</div>
+            <div style="font-size:12px;color:#888" id="map-address">Bonaberi, en face du marché</div>
         </div>
         <div id="city-list" style="display:flex;flex-direction:column;gap:8px"></div>
     </div>
@@ -186,12 +158,9 @@
         <h2 style="font-size:20px;margin-bottom:12px">💬 Messages</h2>
         <div id="chat-list"></div>
         <div id="chat-conversation" style="display:none;flex-direction:column;gap:8px">
-            <button id="chat-back" style="background:none;border:none;color:#fff;font-size:16px;cursor:pointer;text-align:left;padding:4px 0">← Retour</button>
-            <div id="chat-messages" style="display:flex;flex-direction:column;gap:8px;max-height:300px;overflow-y:auto;padding-bottom:12px"></div>
-            <div style="display:flex;gap:8px;padding-top:8px;border-top:1px solid #333">
-                <input type="text" id="chat-input-text" style="flex:1;padding:12px;border-radius:12px;border:1px solid #333;background:#222;color:#fff;font-size:14px;outline:none" placeholder="Écrire un message...">
-                <button id="chat-send-btn" style="background:#2D5016;border:none;color:#fff;width:48px;height:48px;border-radius:50%;font-size:20px;cursor:pointer">📤</button>
-            </div>
+            <button id="chat-back" style="background:none;border:none;color:#fff;font-size:16px;cursor:pointer;text-align:left">← Retour</button>
+            <div id="chat-messages" style="display:flex;flex-direction:column;gap:8px;max-height:200px;overflow-y:auto;padding-bottom:8px"></div>
+            <div style="display:flex;gap:8px"><input type="text" id="chat-input" style="flex:1;padding:10px;border-radius:12px;border:1px solid #333;background:#222;color:#fff;outline:none" placeholder="Écrire..."><button id="chat-send" style="background:#2D5016;border:none;color:#fff;padding:10px 16px;border-radius:12px;cursor:pointer">Envoyer</button></div>
         </div>
     </div>
 
@@ -205,129 +174,109 @@
     <div id="stats" class="hidden">
         <h2 style="font-size:20px;margin-bottom:12px">📊 Statistiques</h2>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px">
-            <div style="text-align:center;padding:12px;background:#222;border-radius:12px;border:1px solid #333"><div style="font-size:20px;font-weight:700">12</div><div style="font-size:10px;color:#888">Ventes</div></div>
-            <div style="text-align:center;padding:12px;background:#222;border-radius:12px;border:1px solid #333"><div style="font-size:20px;font-weight:700">45 kg</div><div style="font-size:10px;color:#888">Recyclés</div></div>
-            <div style="text-align:center;padding:12px;background:#222;border-radius:12px;border:1px solid #333"><div style="font-size:20px;font-weight:700">⭐ 4.8</div><div style="font-size:10px;color:#888">Note</div></div>
+            <div style="text-align:center;padding:12px;background:#222;border-radius:12px"><div style="font-size:20px;font-weight:700">12</div><div style="font-size:10px;color:#888">Ventes</div></div>
+            <div style="text-align:center;padding:12px;background:#222;border-radius:12px"><div style="font-size:20px;font-weight:700">45 kg</div><div style="font-size:10px;color:#888">Recyclés</div></div>
+            <div style="text-align:center;padding:12px;background:#222;border-radius:12px"><div style="font-size:20px;font-weight:700">⭐ 4.8</div><div style="font-size:10px;color:#888">Note</div></div>
         </div>
-        <div style="font-weight:600;margin-bottom:8px">📈 Collectes par semaine</div>
-        <div style="display:flex;align-items:flex-end;gap:8px;height:100px;padding:8px 0;margin-bottom:16px">
-            <div style="flex:1;display:flex;flex-direction:column;align-items:center"><div style="width:100%;height:40%;background:linear-gradient(180deg,#FFD700,#2D5016);border-radius:4px 4px 0 0;min-height:8px"></div><div style="font-size:10px;color:#888;margin-top:4px">Lun</div></div>
-            <div style="flex:1;display:flex;flex-direction:column;align-items:center"><div style="width:100%;height:60%;background:linear-gradient(180deg,#FFD700,#2D5016);border-radius:4px 4px 0 0;min-height:8px"></div><div style="font-size:10px;color:#888;margin-top:4px">Mar</div></div>
-            <div style="flex:1;display:flex;flex-direction:column;align-items:center"><div style="width:100%;height:30%;background:linear-gradient(180deg,#FFD700,#2D5016);border-radius:4px 4px 0 0;min-height:8px"></div><div style="font-size:10px;color:#888;margin-top:4px">Mer</div></div>
-            <div style="flex:1;display:flex;flex-direction:column;align-items:center"><div style="width:100%;height:90%;background:linear-gradient(180deg,#FFD700,#2D5016);border-radius:4px 4px 0 0;min-height:8px"></div><div style="font-size:10px;color:#888;margin-top:4px">Jeu</div></div>
-            <div style="flex:1;display:flex;flex-direction:column;align-items:center"><div style="width:100%;height:70%;background:linear-gradient(180deg,#FFD700,#2D5016);border-radius:4px 4px 0 0;min-height:8px"></div><div style="font-size:10px;color:#888;margin-top:4px">Ven</div></div>
-            <div style="flex:1;display:flex;flex-direction:column;align-items:center"><div style="width:100%;height:50%;background:linear-gradient(180deg,#FFD700,#2D5016);border-radius:4px 4px 0 0;min-height:8px"></div><div style="font-size:10px;color:#888;margin-top:4px">Sam</div></div>
-            <div style="flex:1;display:flex;flex-direction:column;align-items:center"><div style="width:100%;height:20%;background:linear-gradient(180deg,#FFD700,#2D5016);border-radius:4px 4px 0 0;min-height:8px"></div><div style="font-size:10px;color:#888;margin-top:4px">Dim</div></div>
+        <div style="font-weight:600;margin-bottom:8px">📈 Collectes</div>
+        <div style="display:flex;gap:6px;height:80px;margin-bottom:16px">
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center"><div style="width:100%;height:40%;background:linear-gradient(180deg,#FFD700,#2D5016);border-radius:4px 4px 0 0"></div><div style="font-size:9px;color:#888">Lun</div></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center"><div style="width:100%;height:60%;background:linear-gradient(180deg,#FFD700,#2D5016);border-radius:4px 4px 0 0"></div><div style="font-size:9px;color:#888">Mar</div></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center"><div style="width:100%;height:90%;background:linear-gradient(180deg,#FFD700,#2D5016);border-radius:4px 4px 0 0"></div><div style="font-size:9px;color:#888">Mer</div></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center"><div style="width:100%;height:70%;background:linear-gradient(180deg,#FFD700,#2D5016);border-radius:4px 4px 0 0"></div><div style="font-size:9px;color:#888">Jeu</div></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center"><div style="width:100%;height:50%;background:linear-gradient(180deg,#FFD700,#2D5016);border-radius:4px 4px 0 0"></div><div style="font-size:9px;color:#888">Ven</div></div>
         </div>
-        <div style="font-weight:600;margin-bottom:8px">🧩 Répartition des déchets</div>
-        <div style="display:flex;justify-content:center;padding:12px 0"><div style="width:100px;height:100px;border-radius:50%;background:conic-gradient(#2D5016 0% 40%,#FFD700 40% 60%,#3B82F6 60% 80%,#EF4444 80% 100%)"></div></div>
-        <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:8px"><span><span style="display:inline-block;width:12px;height:12px;border-radius:4px;background:#2D5016;vertical-align:middle;margin-right:4px"></span>Plastique 40%</span><span><span style="display:inline-block;width:12px;height:12px;border-radius:4px;background:#FFD700;vertical-align:middle;margin-right:4px"></span>Métal 20%</span><span><span style="display:inline-block;width:12px;height:12px;border-radius:4px;background:#3B82F6;vertical-align:middle;margin-right:4px"></span>Verre 20%</span><span><span style="display:inline-block;width:12px;height:12px;border-radius:4px;background:#EF4444;vertical-align:middle;margin-right:4px"></span>Carton 20%</span></div>
+        <div style="font-weight:600;margin-bottom:8px">🧩 Répartition</div>
+        <div style="display:flex;justify-content:center"><div style="width:80px;height:80px;border-radius:50%;background:conic-gradient(#2D5016 0% 40%,#FFD700 40% 60%,#3B82F6 60% 80%,#EF4444 80% 100%)"></div></div>
     </div>
 
     <!-- PROFILE -->
     <div id="profile" class="hidden">
         <div style="display:flex;flex-direction:column;align-items:center;padding:16px 0">
-            <div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#2D5016,#FFD700);display:flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:8px">👤</div>
+            <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#2D5016,#FFD700);display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:8px">👤</div>
             <div style="font-size:18px;font-weight:700">Jean Dupont</div>
             <div style="color:#888;font-size:13px">@jean_dupont_237</div>
-            <div style="padding:4px 16px;border-radius:20px;background:linear-gradient(135deg,#FFD700,#B8860B);color:#000;font-size:12px;font-weight:700;margin-top:8px">⭐ PREMIUM</div>
+            <div style="padding:4px 16px;border-radius:20px;background:linear-gradient(135deg,#FFD700,#B8860B);color:#000;font-size:11px;font-weight:700;margin-top:8px">⭐ PREMIUM</div>
         </div>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px">
-            <div style="text-align:center;padding:12px;background:#222;border-radius:12px;border:1px solid #333"><div style="font-size:18px;font-weight:700">12</div><div style="font-size:10px;color:#888">Ventes</div></div>
-            <div style="text-align:center;padding:12px;background:#222;border-radius:12px;border:1px solid #333"><div style="font-size:18px;font-weight:700">45kg</div><div style="font-size:10px;color:#888">Recyclés</div></div>
-            <div style="text-align:center;padding:12px;background:#222;border-radius:12px;border:1px solid #333"><div style="font-size:18px;font-weight:700">⭐ 4.8</div><div style="font-size:10px;color:#888">Note</div></div>
+            <div style="text-align:center;padding:10px;background:#222;border-radius:12px"><div style="font-size:16px;font-weight:700">12</div><div style="font-size:10px;color:#888">Ventes</div></div>
+            <div style="text-align:center;padding:10px;background:#222;border-radius:12px"><div style="font-size:16px;font-weight:700">45kg</div><div style="font-size:10px;color:#888">Recyclés</div></div>
+            <div style="text-align:center;padding:10px;background:#222;border-radius:12px"><div style="font-size:16px;font-weight:700">⭐ 4.8</div><div style="font-size:10px;color:#888">Note</div></div>
         </div>
-        <div style="display:flex;flex-direction:column;gap:4px">
-            <button id="goto-priceguide" style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:12px;background:#222;border:1px solid #333;cursor:pointer;color:#fff;width:100%;text-align:left;border:none"><span>📊</span><span style="flex:1;font-size:14px">Guide des prix</span><span style="color:#888">›</span></button>
-            <button style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:12px;background:#222;border:1px solid #333;cursor:pointer;color:#fff;width:100%;text-align:left;border:none"><span>📍</span><span style="flex:1;font-size:14px">Douala, Cameroun</span><span style="color:#888">›</span></button>
-            <button style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:12px;background:#222;border:1px solid #333;cursor:pointer;color:#fff;width:100%;text-align:left;border:none"><span>📞</span><span style="flex:1;font-size:14px">+237 677 123 456</span><span style="color:#888">›</span></button>
-            <button style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:12px;background:#222;border:1px solid #333;cursor:pointer;color:#fff;width:100%;text-align:left;border:none"><span>🔒</span><span style="flex:1;font-size:14px">Changer le mot de passe</span><span style="color:#888">›</span></button>
-            <button style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:12px;background:#222;border:1px solid #333;cursor:pointer;color:#fff;width:100%;text-align:left;border:none"><span>🚪</span><span style="flex:1;font-size:14px;color:#EF4444">Déconnexion</span><span style="color:#888">›</span></button>
-        </div>
+        <button id="goto-priceguide" style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:12px;background:#222;border:1px solid #333;cursor:pointer;color:#fff;width:100%;text-align:left;border:none;margin-bottom:4px"><span>📊</span><span style="flex:1">Guide des prix</span><span style="color:#888">›</span></button>
+        <button style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:12px;background:#222;border:1px solid #333;cursor:pointer;color:#fff;width:100%;text-align:left;border:none;margin-bottom:4px"><span>📍</span><span style="flex:1">Douala, Cameroun</span><span style="color:#888">›</span></button>
     </div>
 
     <!-- BOTTOM NAV -->
     <div style="display:flex;justify-content:space-around;padding:8px 0;border-top:1px solid #333;margin-top:16px;background:#0F0F0F">
-        <button class="nav-btn active" data-screen="dashboard" style="display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;color:#FFD700;font-size:10px;cursor:pointer;padding:4px 8px"><span style="font-size:20px">🏠</span><span>Accueil</span></button>
-        <button class="nav-btn" data-screen="feed" style="display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;color:#888;font-size:10px;cursor:pointer;padding:4px 8px"><span style="font-size:20px">🛒</span><span>Marché</span></button>
-        <button class="nav-btn" data-screen="publish" style="display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;color:#888;font-size:10px;cursor:pointer;padding:4px 8px"><span style="font-size:20px">➕</span><span>Publier</span></button>
-        <button class="nav-btn" data-screen="notifications" style="display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;color:#888;font-size:10px;cursor:pointer;padding:4px 8px;position:relative"><span style="font-size:20px">🔔</span><span>Notif.</span><span id="notif-badge" style="position:absolute;top:0;right:-4px;background:#EF4444;color:#fff;font-size:9px;font-weight:700;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center">4</span></button>
-        <button class="nav-btn" data-screen="profile" style="display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;color:#888;font-size:10px;cursor:pointer;padding:4px 8px"><span style="font-size:20px">👤</span><span>Profil</span></button>
+        <button class="nav-btn active" data-screen="dashboard" style="display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;color:#FFD700;font-size:9px;cursor:pointer;padding:4px 6px"><span style="font-size:18px">🏠</span><span>Accueil</span></button>
+        <button class="nav-btn" data-screen="feed" style="display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;color:#888;font-size:9px;cursor:pointer;padding:4px 6px"><span style="font-size:18px">🛒</span><span>Marché</span></button>
+        <button class="nav-btn" data-screen="publish" style="display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;color:#888;font-size:9px;cursor:pointer;padding:4px 6px"><span style="font-size:18px">➕</span><span>Publier</span></button>
+        <button class="nav-btn" data-screen="notifications" style="display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;color:#888;font-size:9px;cursor:pointer;padding:4px 6px;position:relative"><span style="font-size:18px">🔔</span><span>Notif.</span><span id="notif-badge" style="position:absolute;top:-4px;right:-6px;background:#EF4444;color:#fff;font-size:8px;font-weight:700;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center">4</span></button>
+        <button class="nav-btn" data-screen="profile" style="display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;color:#888;font-size:9px;cursor:pointer;padding:4px 6px"><span style="font-size:18px">👤</span><span>Profil</span></button>
     </div>
 </div>
 
-<style>
-    @keyframes scrollGrid{0%{transform:translate(0,0)}100%{transform:translate(-40px,-40px)}}
-    .hidden{display:none!important}
-    .cat-chip.active{background:#2D5016;color:#fff!important}
-    .provider.selected{border-color:#FFD700!important;background:rgba(255,215,0,0.06)!important}
-    .nav-btn.active{color:#FFD700!important}
-    .photo-slot.filled{border-color:#2D5016!important;background:rgba(45,80,22,0.2)!important}
-</style>
-
 <script>
-    // ===== GLOBAL STATE =====
+    // ===== VARIABLES GLOBALES =====
     let currentScreen = 'splash';
     let onboardingSlide = 0;
     let isLoggedIn = false;
     let chatActive = null;
     let lang = 'fr';
 
+    // ===== DONNÉES =====
     const feedProducts = [
-        { emoji: '🥤', title: 'Bouteilles PET transparentes', loc: 'Douala, Bonapriso', price: '200 FCFA/kg', qty: '15kg', cat: 'Plastique' },
-        { emoji: '🥤', title: 'Bouteilles PET colorées', loc: 'Yaoundé, Bastos', price: '100 FCFA/kg', qty: '10kg', cat: 'Plastique' },
-        { emoji: '🥫', title: 'Canettes aluminium', loc: 'Bafoussam', price: '700 FCFA/kg', qty: '8kg', cat: 'Métal' },
-        { emoji: '🔩', title: 'Cuivre dénudé', loc: 'Douala, Akwa', price: '2 200 FCFA/kg', qty: '5kg', cat: 'Métal' },
-        { emoji: '📦', title: 'Carton ondulé propre', loc: 'Bamenda', price: '75 FCFA/kg', qty: '20kg', cat: 'Carton' },
-        { emoji: '🍾', title: 'Verre transparent', loc: 'Garoua', price: '50 FCFA/kg', qty: '25kg', cat: 'Verre' },
-        { emoji: '🛢️', title: 'Huile de friture usagée', loc: 'Douala, Akwa', price: '300 FCFA/L', qty: '10L', cat: 'Huile' },
-        { emoji: '💻', title: 'Ordinateurs complets', loc: 'Douala, Bonapriso', price: '400 FCFA/kg', qty: '30kg', cat: 'Électronique' }
+        { emoji: '🥤', title: 'Bouteilles PET', loc: 'Douala', price: '200 FCFA/kg', qty: '15kg', cat: 'Plastique' },
+        { emoji: '🥫', title: 'Canettes alu', loc: 'Bafoussam', price: '700 FCFA/kg', qty: '8kg', cat: 'Métal' },
+        { emoji: '📦', title: 'Cartons', loc: 'Bamenda', price: '75 FCFA/kg', qty: '20kg', cat: 'Carton' },
+        { emoji: '🍾', title: 'Verre', loc: 'Garoua', price: '50 FCFA/kg', qty: '25kg', cat: 'Verre' },
+        { emoji: '🛢️', title: 'Huile de friture', loc: 'Douala', price: '300 FCFA/L', qty: '10L', cat: 'Huile' }
     ];
 
     const chatMessages = {
-        paul: [
-            { text: "Bonjour, je suis intéressé par vos bouteilles PET", sent: false, time: "12:20" },
-            { text: "Bonjour ! Oui je les ai encore", sent: true, time: "12:22" },
-            { text: "Ok je suis dispo", sent: false, time: "12:30" }
-        ],
+        paul: [{ text: "Bonjour, je suis intéressé", sent: false, time: "12:20" }, { text: "Oui je les ai encore",
+            sent: true, time: "12:22" }],
         marie: [{ text: "Merci pour votre confiance", sent: false, time: "Hier" }],
         jean: [{ text: "Quand pouvez-vous passer ?", sent: false, time: "Hier" }]
     };
 
     const cityData = [
-        { name: 'Douala - Bonaberi', address: 'En face du marché central', city: 'Douala' },
-        { name: 'Douala - Akwa', address: 'Rue des palmiers, immeuble ReLife', city: 'Douala' },
+        { name: 'Douala - Bonaberi', address: 'En face du marché', city: 'Douala' },
+        { name: 'Douala - Akwa', address: 'Rue des palmiers', city: 'Douala' },
         { name: 'Yaoundé - Bastos', address: 'Carrefour de la poste', city: 'Yaoundé' },
-        { name: 'Yaoundé - Mvog-Mbi', address: 'En face de l\'hôpital', city: 'Yaoundé' },
-        { name: 'Bafoussam', address: 'Marché A, côté station Total', city: 'Bafoussam' },
-        { name: 'Garoua', address: 'Rue du commerce, chez Marie', city: 'Garoua' }
+        { name: 'Bafoussam', address: 'Marché A', city: 'Bafoussam' },
+        { name: 'Garoua', address: 'Rue du commerce', city: 'Garoua' }
     ];
 
     const notifs = [
-        { icon: '💬', title: 'Nouveau message de Paul', body: '"Ok je suis dispo pour la collecte"', time: 'Il y a 10 min' },
-        { icon: '♻️', title: 'Collecte confirmée', body: 'Votre collecte de 15kg est planifiée demain', time: 'Il y a 2h' },
-        { icon: '⭐', title: 'Offre Premium disponible', body: 'Devenez Premium pour 5000 FCFA/mois', time: 'Il y a 1j' },
-        { icon: '📝', title: 'Nouvel avis reçu', body: '"Excellent service, je recommande !"', time: 'Il y a 2j' }
+        { icon: '💬', title: 'Message de Paul', body: '"Ok je suis dispo"', time: '10 min' },
+        { icon: '♻️', title: 'Collecte confirmée', body: '15kg planifiée demain', time: '2h' },
+        { icon: '⭐', title: 'Offre Premium', body: '5000 FCFA/mois', time: '1j' },
+        { icon: '📝', title: 'Nouvel avis', body: '"Excellent service"', time: '2j' }
     ];
 
     // ===== TOAST =====
-    function showToast(msg, type = '') {
+    function showToast(msg, type) {
         const t = document.getElementById('toast');
         t.textContent = msg;
-        t.className = 'toast ' + type + ' show';
+        t.className = 'toast ' + (type || '') + ' show';
         clearTimeout(t._timeout);
         t._timeout = setTimeout(() => t.className = 'toast', 2500);
     }
 
     // ===== NAVIGATION =====
     function navigateTo(screen) {
-        if (screen === currentScreen && screen !== 'splash') return;
-        document.querySelectorAll('.container > div:not(#toast)').forEach(el => el.classList.add('hidden'));
+        document.querySelectorAll('#app > div:not(#toast)').forEach(el => el.classList.add('hidden'));
         const target = document.getElementById(screen);
         if (target) target.classList.remove('hidden');
         currentScreen = screen;
         document.querySelectorAll('.nav-btn').forEach(n => n.classList.remove('active'));
-        document.querySelector(`.nav-btn[data-screen="${screen}"]`)?.classList.add('active');
+        document.querySelector('.nav-btn[data-screen="' + screen + '"]')?.classList.add('active');
+        if (screen === 'notifications') {
+            document.querySelectorAll('.notif-item .dot').forEach(d => d.style.background = 'transparent');
+            updateBadge();
+        }
         updateBadge();
     }
 
@@ -339,45 +288,43 @@
     // ===== SPLASH =====
     let progress = 0;
     const loaderInterval = setInterval(() => {
-        progress += 2;
+        progress += 3;
         if (progress > 100) { progress = 100;
             clearInterval(loaderInterval); }
-        document.getElementById('loader').style.width = progress + '%';
+        document.querySelector('.loader-fill').style.width = progress + '%';
         if (progress >= 100) {
-            setTimeout(() => { navigateTo('onboarding'); }, 400);
+            setTimeout(() => navigateTo('onboarding'), 500);
         }
     }, 30);
 
     // ===== ONBOARDING =====
     function updateOnboarding() {
         document.querySelectorAll('.onboarding-slide').forEach((el, i) => el.classList.toggle('hidden', i !== onboardingSlide));
-        document.querySelectorAll('.dot').forEach((el, i) => {
-            el.style.background = i === onboardingSlide ? '#FFD700' : '#666';
-        });
+        document.querySelectorAll('.dot').forEach((el, i) => el.style.background = i === onboardingSlide ? '#FFD700' : '#666');
         document.getElementById('onboarding-btn').textContent = onboardingSlide === 3 ? '🚀 Démarrer' : 'Suivant';
     }
 
-    document.getElementById('onboarding-btn').addEventListener('click', () => {
+    document.getElementById('onboarding-btn').addEventListener('click', function() {
         if (onboardingSlide < 3) { onboardingSlide++;
             updateOnboarding(); } else { navigateTo('login'); }
     });
 
     document.querySelectorAll('.dot').forEach(d => {
-        d.addEventListener('click', () => {
-            onboardingSlide = parseInt(d.dataset.slide);
+        d.addEventListener('click', function() {
+            onboardingSlide = parseInt(this.dataset.slide);
             updateOnboarding();
         });
     });
 
     // ===== LOGIN =====
-    document.getElementById('login-btn').addEventListener('click', () => {
+    document.getElementById('login-btn').addEventListener('click', function() {
         const phone = document.getElementById('phone-input').value.trim();
-        if (phone.length < 8) { showToast('Veuillez entrer un numéro valide', 'error'); return; }
+        if (phone.length < 8) { showToast('Numéro invalide', 'error'); return; }
         document.getElementById('otp-phone').textContent = '+237 ' + phone;
         navigateTo('otp');
     });
 
-    document.getElementById('login-skip').addEventListener('click', () => {
+    document.getElementById('login-skip').addEventListener('click', function() {
         isLoggedIn = true;
         navigateTo('dashboard');
         showToast('Mode test activé', 'success');
@@ -386,35 +333,36 @@
     // ===== OTP =====
     const otpInputs = document.querySelectorAll('.otp-input');
     otpInputs.forEach((input, idx) => {
-        input.addEventListener('input', () => {
-            if (input.value.length === 1 && idx < otpInputs.length - 1) otpInputs[idx + 1].focus();
+        input.addEventListener('input', function() {
+            if (this.value.length === 1 && idx < otpInputs.length - 1) otpInputs[idx + 1].focus();
         });
-        input.addEventListener('keydown', (e) => {
-            if (e.key === 'Backspace' && input.value.length === 0 && idx > 0) otpInputs[idx - 1].focus();
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Backspace' && this.value.length === 0 && idx > 0) otpInputs[idx - 1].focus();
         });
     });
 
-    document.getElementById('otp-btn').addEventListener('click', () => {
+    document.getElementById('otp-btn').addEventListener('click', function() {
         let code = '';
         otpInputs.forEach(inp => code += inp.value);
-        if (code.length < 6) { showToast('Entrez les 6 chiffres du code', 'error'); return; }
+        if (code.length < 6) { showToast('Code incomplet', 'error'); return; }
         if (code === '123456') {
             isLoggedIn = true;
             navigateTo('dashboard');
             showToast('✅ Connexion réussie !', 'success');
         } else {
-            showToast('❌ Code incorrect. Essayez 123456', 'error');
+            showToast('❌ Code incorrect', 'error');
+            otpInputs.forEach(i => { i.value = '';
+                i.style.borderColor = '#EF4444'; });
+            setTimeout(() => otpInputs.forEach(i => i.style.borderColor = '#333'), 1000);
         }
     });
 
     // ===== BILINGUISME =====
     const translations = {
-        fr: { home: 'Accueil', marketplace: 'Marché', publish: 'Publier', notif: 'Notif.', profile: 'Profil', map: 'Carte',
-            messages: 'Messages', stats: 'Stats', balance: '💰 Solde Mobile Money', withdraw: 'Retirer', sales: 'Ventes',
-            recycled: 'Recyclés', rating: 'Note' },
-        en: { home: 'Home', marketplace: 'Marketplace', publish: 'Publish', notif: 'Notif.', profile: 'Profile', map: 'Map',
-            messages: 'Messages', stats: 'Stats', balance: '💰 Mobile Money Balance', withdraw: 'Withdraw', sales: 'Sales',
-            recycled: 'Recycled', rating: 'Rating' }
+        fr: { home: 'Accueil', marketplace: 'Marché', publish: 'Publier', notif: 'Notif.', profile: 'Profil',
+            map: 'Carte', messages: 'Messages', stats: 'Stats' },
+        en: { home: 'Home', marketplace: 'Marketplace', publish: 'Publish', notif: 'Notif.', profile: 'Profile',
+            map: 'Map', messages: 'Messages', stats: 'Stats' }
     };
 
     document.getElementById('lang-toggle').addEventListener('click', function() {
@@ -426,76 +374,68 @@
         showToast(lang === 'fr' ? '🇫🇷 Langue changée' : '🇬🇧 Language changed', 'success');
     });
 
-    // ===== NAV =====
+    // ===== BOTTOM NAV =====
     document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const screen = btn.dataset.screen;
-            if (screen === 'notifications') {
-                document.querySelectorAll('.notif-item .dot').forEach(d => d.classList.add('read'));
-                updateBadge();
-            }
-            navigateTo(screen);
+        btn.addEventListener('click', function() {
+            navigateTo(this.dataset.screen);
         });
     });
 
+    // ===== QUICK ACTIONS =====
     document.querySelectorAll('.qa').forEach(el => {
-        el.addEventListener('click', () => navigateTo(el.dataset.target));
+        el.addEventListener('click', function() {
+            navigateTo(this.dataset.target);
+        });
     });
 
     // ===== FEED =====
-    function renderFeed(filter = 'Tous') {
+    function renderFeed(filter) {
+        filter = filter || 'Tous';
         const container = document.getElementById('feed-list');
         const filtered = filter === 'Tous' ? feedProducts : feedProducts.filter(p => p.cat === filter);
         if (filtered.length === 0) {
-            container.innerHTML = '<div style="text-align:center;padding:20px 0;color:#888">Aucune annonce</div>';
+            container.innerHTML = '<div style="padding:20px 0;color:#888;text-align:center">Aucune annonce</div>';
             return;
         }
         container.innerHTML = filtered.map((p, i) =>
-            `<div class="product-card" data-index="${i}" style="display:flex;gap:12px;padding:12px;background:#222;border-radius:16px;border:1px solid #333;margin-bottom:8px;cursor:pointer;align-items:center">
-                <span style="font-size:32px;width:48px;text-align:center">${p.emoji}</span>
-                <div style="flex:1"><div style="font-weight:600">${p.title}</div><div style="font-size:12px;color:#888">${p.loc}</div></div>
-                <div style="text-align:right"><div style="color:#FFD700;font-weight:700">${p.price}</div><div style="font-size:11px;color:#888">${p.qty}</div></div>
-            </div>`
+            '<div class="product-card" data-index="' + i + '" style="display:flex;gap:12px;padding:12px;background:#222;border-radius:12px;border:1px solid #333;margin-bottom:8px;cursor:pointer;align-items:center">' +
+            '<span style="font-size:28px;width:40px;text-align:center">' + p.emoji + '</span>' +
+            '<div style="flex:1"><div style="font-weight:600">' + p.title + '</div><div style="font-size:12px;color:#888">' + p
+            .loc + '</div></div>' +
+            '<div style="text-align:right"><div style="color:#FFD700;font-weight:700">' + p.price + '</div><div style="font-size:11px;color:#888">' +
+            p.qty + '</div></div>' +
+            '</div>'
         ).join('');
         container.querySelectorAll('.product-card').forEach(el => {
-            el.addEventListener('click', () => {
+            el.addEventListener('click', function() {
                 showToast('📦 Détail du produit', 'success');
             });
         });
     }
 
     document.querySelectorAll('.cat-chip').forEach(chip => {
-        chip.addEventListener('click', () => {
-            document.querySelectorAll('.cat-chip').forEach(c => { c.classList.remove('active');
-                c.style.background = 'transparent';
+        chip.addEventListener('click', function() {
+            document.querySelectorAll('.cat-chip').forEach(c => { c.style.background = '#222';
                 c.style.color = '#888'; });
-            chip.classList.add('active');
-            chip.style.background = '#2D5016';
-            chip.style.color = '#fff';
-            renderFeed(chip.dataset.cat);
+            this.style.background = '#2D5016';
+            this.style.color = '#fff';
+            renderFeed(this.dataset.cat);
         });
     });
 
-    document.getElementById('goto-publish').addEventListener('click', () => navigateTo('publish'));
-    document.getElementById('goto-withdrawal').addEventListener('click', () => navigateTo('withdrawal'));
-    document.getElementById('goto-priceguide').addEventListener('click', () => navigateTo('priceguide'));
+    document.getElementById('goto-publish').addEventListener('click', function() { navigateTo('publish'); });
+    document.getElementById('goto-feed-from-publish').addEventListener('click', function() { navigateTo('feed'); });
+    document.getElementById('goto-withdrawal').addEventListener('click', function() { navigateTo('withdrawal'); });
+    document.getElementById('goto-priceguide').addEventListener('click', function() { navigateTo('priceguide'); });
 
     // ===== PUBLISH =====
-    document.querySelectorAll('.photo-slot').forEach(slot => {
-        slot.addEventListener('click', () => {
-            slot.classList.toggle('filled');
-            slot.textContent = slot.classList.contains('filled') ? '✅' : '📷';
-            if (slot.classList.contains('filled')) showToast('📸 Photo ajoutée', 'success');
-        });
-    });
-
-    document.getElementById('publish-submit').addEventListener('click', () => {
+    document.getElementById('publish-submit').addEventListener('click', function() {
         const title = document.getElementById('publish-title').value.trim();
         const qty = document.getElementById('publish-qty').value.trim();
         const price = document.getElementById('publish-price').value.trim();
         const city = document.getElementById('publish-city').value.trim();
         if (!title || !qty || !price || !city) {
-            showToast('Veuillez remplir tous les champs', 'error');
+            showToast('Tous les champs sont requis', 'error');
             return;
         }
         showToast('✅ Annonce publiée !', 'success');
@@ -503,40 +443,27 @@
         document.getElementById('publish-qty').value = '';
         document.getElementById('publish-price').value = '';
         document.getElementById('publish-city').value = '';
-        document.querySelectorAll('.photo-slot').forEach(s => { s.classList.remove('filled');
-            s.textContent = '📷'; });
         navigateTo('feed');
     });
 
     // ===== WITHDRAWAL =====
-    document.querySelectorAll('.provider').forEach(el => {
-        el.addEventListener('click', () => {
-            document.querySelectorAll('.provider').forEach(p => { p.classList.remove('selected');
-                p.style.borderColor = '#333';
-                p.style.background = 'transparent'; });
-            el.classList.add('selected');
-            el.style.borderColor = '#FFD700';
-            el.style.background = 'rgba(255,215,0,0.06)';
-        });
-    });
-
-    document.getElementById('withdrawal-submit').addEventListener('click', () => {
+    document.getElementById('withdrawal-submit').addEventListener('click', function() {
         const amount = document.getElementById('withdrawal-amount').value;
         const phone = document.getElementById('withdrawal-phone').value;
         if (!amount || parseFloat(amount) <= 0) { showToast('Montant invalide', 'error'); return; }
         if (!phone || phone.length < 8) { showToast('Numéro invalide', 'error'); return; }
-        showToast('✅ Retrait de ' + amount + ' FCFA demandé !', 'success');
+        showToast('✅ Retrait de ' + amount + ' FCFA demandé', 'success');
     });
 
     // ===== CHAT =====
     document.querySelectorAll('#chat-list .product-card').forEach(el => {
-        el.addEventListener('click', () => {
-            const chatId = el.dataset.chat;
+        el.addEventListener('click', function() {
+            const chatId = this.dataset.chat;
             openChat(chatId);
         });
     });
 
-    document.getElementById('chat-back').addEventListener('click', () => {
+    document.getElementById('chat-back').addEventListener('click', function() {
         document.getElementById('chat-conversation').style.display = 'none';
         document.getElementById('chat-list').style.display = 'block';
     });
@@ -552,23 +479,23 @@
         const container = document.getElementById('chat-messages');
         const msgs = chatMessages[chatActive] || [];
         container.innerHTML = msgs.map(m =>
-            `<div style="display:flex;${m.sent ? 'justify-content:flex-end' : ''};margin-bottom:8px">
-                <div style="max-width:80%;padding:10px 14px;border-radius:12px;background:${m.sent ? '#2D5016' : '#222'};border:1px solid #333">
-                    <div>${m.text}</div>
-                    <div style="font-size:10px;color:#888;margin-top:4px;text-align:right">${m.time}</div>
-                </div>
-            </div>`
+            '<div style="display:flex;' + (m.sent ? 'justify-content:flex-end' : '') + ';margin-bottom:6px">' +
+            '<div style="max-width:80%;padding:8px 12px;border-radius:12px;background:' + (m.sent ? '#2D5016' :
+                '#222') + ';border:1px solid #333">' +
+            '<div>' + m.text + '</div>' +
+            '<div style="font-size:9px;color:#888;margin-top:3px;text-align:right">' + m.time + '</div>' +
+            '</div></div>'
         ).join('');
         container.scrollTop = container.scrollHeight;
     }
 
-    document.getElementById('chat-send-btn').addEventListener('click', sendMessage);
-    document.getElementById('chat-input-text').addEventListener('keydown', (e) => {
+    document.getElementById('chat-send').addEventListener('click', sendMessage);
+    document.getElementById('chat-input').addEventListener('keydown', function(e) {
         if (e.key === 'Enter') sendMessage();
     });
 
     function sendMessage() {
-        const input = document.getElementById('chat-input-text');
+        const input = document.getElementById('chat-input');
         const text = input.value.trim();
         if (!text || !chatActive) return;
         const now = new Date();
@@ -578,31 +505,31 @@
         input.value = '';
         renderChatMessages();
         setTimeout(() => {
-            const replies = ["Merci pour votre message ! Je vous réponds dans la journée.",
-                "Parfait, je confirme la collecte pour demain.", "Très bien, je suis disponible.",
-                "D'accord, à bientôt !"
+            const replies = ["Merci ! Je vous réponds bientôt.", "Parfait, confirmé.", "Très bien, disponible.",
+                "D'accord."
             ];
             const reply = replies[Math.floor(Math.random() * replies.length)];
             chatMessages[chatActive].push({ text: reply, sent: false, time: 'Maintenant' });
             renderChatMessages();
-            showToast('📩 Nouveau message reçu', 'success');
+            showToast('📩 Nouveau message', 'success');
         }, 1500);
     }
 
     // ===== NOTIFICATIONS =====
     document.getElementById('notif-list').innerHTML = notifs.map((n, i) =>
-        `<div class="notif-item" style="display:flex;gap:12px;padding:12px;background:#222;border-radius:16px;border:1px solid #333;margin-bottom:8px;cursor:pointer">
-            <span style="font-size:24px">${n.icon}</span>
-            <div style="flex:1"><div style="font-weight:500">${n.title}</div><div style="font-size:13px;color:#888">${n.body}</div><div style="font-size:11px;color:#888;margin-top:4px">${n.time}</div></div>
-            <div class="dot" style="width:8px;height:8px;background:#2D5016;border-radius:50%;margin-top:6px"></div>
-        </div>`
+        '<div class="notif-item" data-index="' + i + '" style="display:flex;gap:10px;padding:10px;background:#222;border-radius:12px;border:1px solid #333;margin-bottom:6px;cursor:pointer;align-items:flex-start">' +
+        '<span style="font-size:22px">' + n.icon + '</span>' +
+        '<div style="flex:1"><div style="font-weight:500">' + n.title + '</div><div style="font-size:12px;color:#888">' + n
+        .body + '</div><div style="font-size:10px;color:#888;margin-top:2px">' + n.time + '</div></div>' +
+        '<span class="dot" style="width:8px;height:8px;background:#2D5016;border-radius:50%;margin-top:4px;flex-shrink:0"></span>' +
+        '</div>'
     ).join('');
 
-    document.querySelectorAll('.notif-item').forEach((el, i) => {
-        el.addEventListener('click', () => {
-            const dot = el.querySelector('.dot');
-            if (dot) { dot.style.background = 'transparent'; }
-            showToast('✅ Notification marquée comme lue', 'success');
+    document.querySelectorAll('.notif-item').forEach(el => {
+        el.addEventListener('click', function() {
+            const dot = this.querySelector('.dot');
+            if (dot) dot.style.background = 'transparent';
+            showToast('✅ Lu', 'success');
             updateBadge();
         });
     });
@@ -611,22 +538,47 @@
     function renderCities() {
         const list = document.getElementById('city-list');
         list.innerHTML = cityData.map(c =>
-            `<div class="city-item" data-city="${c.city}" style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:#222;border-radius:12px;border:1px solid #333;cursor:pointer">
-                <span style="font-size:20px">📍</span>
-                <div style="flex:1"><div style="font-weight:500">${c.name}</div><div style="font-size:12px;color:#888">${c.address}</div></div>
-            </div>`
+            '<div class="city-item" style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:#222;border-radius:10px;border:1px solid #333;cursor:pointer">' +
+            '<span style="font-size:18px">📍</span>' +
+            '<div style="flex:1"><div style="font-weight:500">' + c.name + '</div><div style="font-size:11px;color:#888">' +
+            c.address + '</div></div>' +
+            '</div>'
         ).join('');
         list.querySelectorAll('.city-item').forEach(el => {
-            el.addEventListener('click', () => {
-                const name = el.querySelector('div div').textContent;
-                const address = el.querySelector('div div:last-child').textContent;
-                document.getElementById('map-current-city').textContent = name;
-                document.getElementById('map-current-address').textContent = address;
-                showToast('📍 ' + name + ' sélectionné', 'success');
+            el.addEventListener('click', function() {
+                const name = this.querySelector('div div').textContent;
+                const address = this.querySelector('div div:last-child').textContent;
+                document.getElementById('map-city').textContent = name;
+                document.getElementById('map-address').textContent = address;
+                showToast('📍 ' + name, 'success');
             });
         });
     }
     renderCities();
+
+    // ===== CHAT LIST =====
+    document.getElementById('chat-list').innerHTML =
+        '<div class="product-card" data-chat="paul" style="display:flex;gap:12px;padding:12px;background:#222;border-radius:12px;border:1px solid #333;margin-bottom:8px;cursor:pointer;align-items:center">' +
+        '<span style="font-size:28px;width:40px;text-align:center">👤</span>' +
+        '<div style="flex:1"><div style="font-weight:600">Paul N.</div><div style="font-size:12px;color:#888">Ok je suis dispo</div></div>' +
+        '<div style="text-align:right"><div style="font-size:11px;color:#888">12:30</div><div style="background:#EF4444;color:#fff;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;margin-top:2px;margin-left:auto">2</div></div>' +
+        '</div>' +
+        '<div class="product-card" data-chat="marie" style="display:flex;gap:12px;padding:12px;background:#222;border-radius:12px;border:1px solid #333;margin-bottom:8px;cursor:pointer;align-items:center">' +
+        '<span style="font-size:28px;width:40px;text-align:center">👤</span>' +
+        '<div style="flex:1"><div style="font-weight:600">Marie K.</div><div style="font-size:12px;color:#888">Merci pour votre confiance</div></div>' +
+        '<div style="text-align:right"><div style="font-size:11px;color:#888">Hier</div></div>' +
+        '</div>' +
+        '<div class="product-card" data-chat="jean" style="display:flex;gap:12px;padding:12px;background:#222;border-radius:12px;border:1px solid #333;margin-bottom:8px;cursor:pointer;align-items:center">' +
+        '<span style="font-size:28px;width:40px;text-align:center">👤</span>' +
+        '<div style="flex:1"><div style="font-weight:600">Jean D.</div><div style="font-size:12px;color:#888">Quand pouvez-vous passer ?</div></div>' +
+        '<div style="text-align:right"><div style="font-size:11px;color:#888">Hier</div></div>' +
+        '</div>';
+
+    document.querySelectorAll('#chat-list .product-card').forEach(el => {
+        el.addEventListener('click', function() {
+            openChat(this.dataset.chat);
+        });
+    });
 
     // ===== INIT =====
     renderFeed();
@@ -634,15 +586,7 @@
         el.textContent = translations.fr[el.dataset.i18n] || el.dataset.i18n;
     });
 
-    // ===== GEOLOCATION =====
-    if ('geolocation' in navigator) {
-        navigator.geolocation.getCurrentPosition(
-            (pos) => { showToast('📍 Position trouvée !', 'success'); },
-            () => { showToast('⚠️ Impossible de localiser', 'error'); }
-        );
-    }
-
-    console.log('♻️ ReLife Cameroun - Application chargée !');
+    console.log('♻️ ReLife chargé !');
     console.log('🔑 Code OTP : 123456');
 </script>
 </body>
