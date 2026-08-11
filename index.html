@@ -16,7 +16,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js">
     </script>
     <style>
-        /* ===== RESET ===== */
         * {
             margin: 0;
             padding: 0;
@@ -990,7 +989,6 @@
         .w-full { width: 100%; }
         .gap-8 { gap: 8px; }
         .hidden { display: none !important; }
-
         #lang-toggle {
             background: var(--gold) !important;
             color: black !important;
@@ -1064,6 +1062,7 @@
                         <input type="tel" id="phone-input" placeholder="6XXXXXXXX" style="border:none;background:transparent;padding:14px 12px;color:white;font-size:16px;flex:1;outline:none;">
                     </div>
                 </div>
+                <div id="recaptcha-container"></div>
                 <button class="btn-primary" id="login-btn" style="margin-top:12px;">Se connecter</button>
                 <button id="login-skip" style="background:none;border:none;color:var(--text-muted);font-size:13px;margin-top:16px;cursor:pointer;">Continuer sans compte (test)</button>
             </div>
@@ -1340,7 +1339,7 @@
     </div>
     <script>
         // ==========================================
-        // 1. BILINGUISME (FR/EN)
+        // BILINGUISME (FR/EN)
         // ==========================================
         let currentLang = 'fr';
         const translations = {
@@ -1426,11 +1425,7 @@
                 'lbl-home': 'Accueil',
                 'lbl-notif': 'Notif.',
                 'lbl-profile': 'Profil',
-                'lbl-back': '← Retour',
-                'lbl-verify-btn': 'Vérifier',
-                'lbl-resend': 'Renvoyer le code',
-                'lbl-login-btn': 'Se connecter',
-                'lbl-skip': 'Continuer sans compte (test)'
+                'lbl-back': '← Retour'
             },
             en: {
                 'lbl-welcome': 'Welcome',
@@ -1514,11 +1509,7 @@
                 'lbl-home': 'Home',
                 'lbl-notif': 'Notif.',
                 'lbl-profile': 'Profile',
-                'lbl-back': '← Back',
-                'lbl-verify-btn': 'Verify',
-                'lbl-resend': 'Resend code',
-                'lbl-login-btn': 'Sign in',
-                'lbl-skip': 'Continue without account (test)'
+                'lbl-back': '← Back'
             }
         };
 
@@ -1545,7 +1536,7 @@
         });
 
         // ==========================================
-        // 2. APP STATE & NAVIGATION
+        // APP STATE & NAVIGATION
         // ==========================================
         let currentScreen = 'splash';
         let isLoggedIn = false;
@@ -1591,7 +1582,7 @@
         }
 
         // ==========================================
-        // 3. SPLASH & ONBOARDING
+        // SPLASH & ONBOARDING
         // ==========================================
         var progress = 0;
         var loaderInterval = setInterval(function() {
@@ -1637,14 +1628,12 @@
         });
 
         // ==========================================
-        // 4. AUTH — VALIDATION + OTP
+        // AUTH
         // ==========================================
         function validateCameroonPhone(phone) {
-            // 237 + 9 chiffres (6XXXXXXXX)
-            return /^237[6][0-9]{8}$/.test(phone);
+            return /^2376[0-9]{8}$/.test(phone);
         }
 
-        // OTP auto-focus
         document.addEventListener('DOMContentLoaded', function() {
             otpInputs = document.querySelectorAll('.otp-input');
             otpInputs.forEach(function(input, idx) {
@@ -1661,7 +1650,6 @@
             });
         });
 
-        // RECAPTCHA VERIFIER — attaché à un élément permanent
         var recaptchaWidget = null;
 
         function getRecaptchaVerifier() {
@@ -1673,7 +1661,6 @@
             return recaptchaWidget;
         }
 
-        // Login
         document.getElementById('login-btn').addEventListener('click', function() {
             var raw = document.getElementById('phone-input').value.trim();
             var fullPhone = '+237' + raw;
@@ -1704,7 +1691,6 @@
             showToast('🔓 Mode test (sans SMS)', 'success');
         });
 
-        // OTP verification
         document.getElementById('otp-btn').addEventListener('click', function() {
             var code = '';
             otpInputs.forEach(function(inp) { code += inp.value; });
@@ -1713,7 +1699,6 @@
                 return;
             }
 
-            // Mode test 123456
             if (code === '123456') {
                 isLoggedIn = true;
                 document.getElementById('bottom-nav').classList.add('active');
@@ -1735,7 +1720,7 @@
         });
 
         // ==========================================
-        // 5. BOTTOM NAV + QUICK ACTIONS
+        // BOTTOM NAV + QUICK ACTIONS
         // ==========================================
         document.querySelectorAll('.nav-item').forEach(function(item) {
             item.addEventListener('click', function() {
@@ -1758,7 +1743,7 @@
         });
 
         // ==========================================
-        // 6. FEED — Static (Firestore ready)
+        // FEED
         // ==========================================
         var feedProducts = [
             { emoji: '🥤', title: 'Bouteilles PET transparentes', loc: 'Douala, Bonapriso', price: '200 FCFA/kg',
@@ -1832,9 +1817,6 @@
             });
         });
 
-        // ==========================================
-        // 7. DETAIL
-        // ==========================================
         function openDetail(product) {
             document.getElementById('detail-emoji').textContent = product.emoji;
             document.getElementById('detail-title').textContent = product.title;
@@ -1860,7 +1842,7 @@
         });
 
         // ==========================================
-        // 8. CHAT
+        // CHAT
         // ==========================================
         var chatMessages = {
             paul: [
@@ -1945,7 +1927,7 @@
         }
 
         // ==========================================
-        // 9. WITHDRAWAL
+        // WITHDRAWAL
         // ==========================================
         document.getElementById('goto-withdrawal').addEventListener('click', function() { navigateTo('withdrawal'); });
 
@@ -1973,7 +1955,7 @@
         });
 
         // ==========================================
-        // 10. PUBLISH
+        // PUBLISH
         // ==========================================
         document.getElementById('goto-publish').addEventListener('click', function() { navigateTo('publish'); });
 
@@ -2009,7 +1991,7 @@
         });
 
         // ==========================================
-        // 11. NOTIFICATIONS
+        // NOTIFICATIONS
         // ==========================================
         document.querySelectorAll('.notif-item').forEach(function(item) {
             item.addEventListener('click', function() {
@@ -2027,7 +2009,7 @@
         });
 
         // ==========================================
-        // 12. MAP
+        // MAP
         // ==========================================
         document.querySelectorAll('.city-item').forEach(function(item) {
             item.addEventListener('click', function() {
@@ -2040,12 +2022,12 @@
         });
 
         // ==========================================
-        // 13. PRICE GUIDE
+        // PRICE GUIDE
         // ==========================================
         document.getElementById('goto-priceguide').addEventListener('click', function() { navigateTo('priceguide'); });
 
         // ==========================================
-        // 14. DEEP LINKING
+        // DEEP LINKING
         // ==========================================
         function handleDeepLink() {
             var params = new URLSearchParams(window.location.search);
@@ -2070,7 +2052,7 @@
         setTimeout(handleDeepLink, 500);
 
         // ==========================================
-        // 15. GEOLOCALISATION
+        // GEOLOCALISATION
         // ==========================================
         function getUserLocation() {
             if ('geolocation' in navigator) {
@@ -2143,13 +2125,13 @@
         }
 
         // ==========================================
-        // 16. INIT
+        // INIT
         // ==========================================
         renderFeed();
         updateBadge();
 
         // ==========================================
-        // 17. FIREBASE CONFIG
+        // FIREBASE CONFIG
         // ==========================================
         var firebaseConfig = {
             apiKey: "AIzaSyADPKnfoIsqMaK1J7imfRcSKaaR4GRzpU8",
@@ -2169,6 +2151,8 @@
 
         console.log('♻️ ReLife Cameroun - Application chargée !');
         console.log('🔑 Code OTP : 123456 (test) ou vrai SMS');
+        console.log('📊 Prix réels du recyclage au Cameroun intégrés');
+        console.log('📱 Guide des prix disponible dans le profil');
     </script>
 </body>
 </html>
