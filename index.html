@@ -8,6 +8,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <style>
+        /* ===== RESET ===== */
         *,
         *::before,
         *::after {
@@ -15,11 +16,14 @@
             padding: 0;
             box-sizing: border-box;
         }
+
         :root {
             --glass: rgba(255, 255, 255, 0.06);
             --glass-border: rgba(255, 255, 255, 0.08);
             --green: #2D5016;
+            --green-light: #4A7A2A;
             --gold: #FFD700;
+            --gold-light: #FFE44D;
             --bg: #0F0F0F;
             --card: #1A1A1A;
             --text: #FFFFFF;
@@ -27,6 +31,7 @@
             --radius: 20px;
             --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
         }
+
         html,
         body {
             height: 100%;
@@ -35,7 +40,9 @@
             color: var(--text);
             overflow: hidden;
             touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
         }
+
         #app {
             height: 100%;
             display: flex;
@@ -45,6 +52,8 @@
             position: relative;
             background: var(--bg);
         }
+
+        /* ===== SCREENS ===== */
         .screen {
             display: none;
             flex: 1;
@@ -56,6 +65,7 @@
         .screen.active {
             display: flex;
         }
+
         @keyframes fadeUp {
             0% {
                 opacity: 0;
@@ -81,6 +91,25 @@
             }
             100% {
                 background-position: 200% 0;
+            }
+        }
+        @keyframes float {
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
             }
         }
 
@@ -143,6 +172,7 @@
         .onboarding-slide .emoji {
             font-size: 72px;
             margin-bottom: 24px;
+            animation: float 3s ease-in-out infinite;
         }
         .onboarding-slide h2 {
             font-size: 26px;
@@ -173,6 +203,7 @@
             width: 24px;
             border-radius: 4px;
         }
+
         .btn-primary {
             background: var(--green);
             color: white;
@@ -187,6 +218,29 @@
             transition: 0.3s;
         }
         .btn-primary:active {
+            transform: scale(0.97);
+        }
+        .btn-primary.gold {
+            background: var(--gold);
+            color: black;
+        }
+        .btn-primary.small {
+            padding: 10px 20px;
+            font-size: 14px;
+            max-width: 120px;
+        }
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--glass-border);
+            padding: 14px 24px;
+            border-radius: 16px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.3s;
+            width: 100%;
+        }
+        .btn-secondary:active {
             transform: scale(0.97);
         }
 
@@ -225,7 +279,7 @@
             flex-direction: column;
             align-items: center;
             gap: 2px;
-            padding: 4px 12px;
+            padding: 4px 8px;
             border: none;
             background: none;
             color: var(--text-muted);
@@ -285,7 +339,7 @@
         .quick-actions {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
+            gap: 10px;
             margin: 16px 0 20px;
         }
         .qa-item {
@@ -300,12 +354,12 @@
             border: 1px solid var(--glass-border);
             border-radius: 16px;
             cursor: pointer;
-            transition: 0.2s;
+            transition: 0.3s;
             font-size: 12px;
             color: var(--text-muted);
         }
         .qa-item:active {
-            transform: scale(0.95);
+            transform: scale(0.93);
         }
         .qa-item .icon {
             font-size: 28px;
@@ -338,7 +392,7 @@
         .stats-row {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
+            gap: 10px;
             margin-bottom: 20px;
         }
         .stat-item {
@@ -427,6 +481,7 @@
             color: white;
             border-color: var(--green);
         }
+
         .product-card {
             display: flex;
             gap: 14px;
@@ -436,12 +491,12 @@
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--glass-border);
             border-radius: var(--radius);
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             cursor: pointer;
-            transition: 0.2s;
+            transition: 0.3s;
         }
         .product-card:active {
-            transform: scale(0.98);
+            transform: scale(0.97);
         }
         .product-card .emoji {
             font-size: 36px;
@@ -480,6 +535,14 @@
             color: #22C55E;
             display: inline-block;
         }
+        .product-card .status.premium {
+            background: rgba(255, 215, 0, 0.15);
+            color: var(--gold);
+        }
+        .product-card .status.negotiable {
+            background: rgba(255, 165, 0, 0.15);
+            color: #FFA500;
+        }
 
         /* ===== DETAIL ===== */
         .detail-image {
@@ -510,6 +573,39 @@
         }
         .rating-stars .star.active {
             color: var(--gold);
+        }
+
+        /* ===== PRICE GUIDE ===== */
+        .price-guide-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .price-guide-item {
+            padding: 14px;
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            text-align: center;
+        }
+        .price-guide-item .emoji {
+            font-size: 32px;
+        }
+        .price-guide-item .name {
+            font-size: 12px;
+            font-weight: 500;
+            margin: 4px 0 2px;
+        }
+        .price-guide-item .price {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--gold);
+        }
+        .price-guide-item .sub {
+            font-size: 10px;
+            color: var(--text-muted);
         }
 
         /* ===== CHAT ===== */
@@ -570,6 +666,10 @@
             border-radius: 50%;
             font-size: 20px;
             cursor: pointer;
+            transition: 0.2s;
+        }
+        .chat-input button:active {
+            transform: scale(0.92);
         }
 
         /* ===== MAP ===== */
@@ -633,6 +733,11 @@
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--glass-border);
             border-radius: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .city-item:active {
+            transform: scale(0.97);
         }
         .city-item .emoji {
             font-size: 24px;
@@ -663,7 +768,7 @@
             transition: 0.2s;
         }
         .notif-item:active {
-            transform: scale(0.98);
+            transform: scale(0.97);
         }
         .notif-item .icon {
             font-size: 24px;
@@ -828,7 +933,7 @@
             transition: 0.2s;
         }
         .profile-menu .item:active {
-            transform: scale(0.98);
+            transform: scale(0.97);
         }
         .profile-menu .item .icon {
             font-size: 20px;
@@ -875,6 +980,7 @@
             border-color: var(--green);
             background: rgba(45, 80, 22, 0.2);
         }
+
         .form-group {
             margin-bottom: 16px;
         }
@@ -1111,30 +1217,15 @@
             </div>
 
             <div class="quick-actions">
-                <div class="qa-item" data-target="map">
-                    <span class="icon">📍</span>
-                    <span class="label">Carte</span>
-                </div>
-                <div class="qa-item" data-target="chat">
-                    <span class="icon">💬</span>
-                    <span class="label">Messages</span>
-                </div>
-                <div class="qa-item" data-target="stats">
-                    <span class="icon">📊</span>
-                    <span class="label">Stats</span>
-                </div>
-                <div class="qa-item" data-target="feed">
-                    <span class="icon">🛒</span>
-                    <span class="label">Marché</span>
-                </div>
+                <div class="qa-item" data-target="map"><span class="icon">📍</span><span class="label">Carte</span></div>
+                <div class="qa-item" data-target="chat"><span class="icon">💬</span><span class="label">Messages</span></div>
+                <div class="qa-item" data-target="stats"><span class="icon">📊</span><span class="label">Stats</span></div>
+                <div class="qa-item" data-target="feed"><span class="icon">🛒</span><span class="label">Marché</span></div>
             </div>
 
             <div class="balance-card">
-                <div>
-                    <div class="label">💰 Solde Mobile Money</div>
-                    <div class="amount">5 000 FCFA</div>
-                </div>
-                <button class="btn-primary" style="padding:10px 20px;font-size:13px;max-width:120px;" id="goto-withdrawal">Retirer</button>
+                <div><div class="label">💰 Solde Mobile Money</div><div class="amount">5 000 FCFA</div></div>
+                <button class="btn-primary small" id="goto-withdrawal">Retirer</button>
             </div>
 
             <div class="stats-row">
@@ -1153,16 +1244,16 @@
         <div id="feed" class="screen">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
                 <h2 style="font-size:20px;">🛒 Marché</h2>
-                <button class="btn-primary" style="padding:8px 16px;font-size:13px;max-width:100px;" id="goto-publish">+ Publier</button>
+                <button class="btn-primary small" id="goto-publish">+ Publier</button>
             </div>
             <div class="feed-categories" id="feed-categories">
                 <span class="category-chip active" data-cat="Tous">Tous</span>
                 <span class="category-chip" data-cat="Plastique">Plastique</span>
-                <span class="category-chip" data-cat="Carton">Carton</span>
                 <span class="category-chip" data-cat="Métal">Métal</span>
+                <span class="category-chip" data-cat="Carton">Carton</span>
                 <span class="category-chip" data-cat="Verre">Verre</span>
                 <span class="category-chip" data-cat="Huile">Huile</span>
-                <span class="category-chip" data-cat="Emballage">Emballage</span>
+                <span class="category-chip" data-cat="Électronique">Électronique</span>
             </div>
             <div id="feed-list"></div>
         </div>
@@ -1171,17 +1262,17 @@
         <div id="detail" class="screen">
             <button style="background:none;border:none;color:white;font-size:16px;padding:4px 0;margin-bottom:12px;cursor:pointer;text-align:left;" id="detail-back">← Retour</button>
             <div class="detail-image" id="detail-emoji">🥤</div>
-            <h2 id="detail-title" style="font-size:20px;">Bouteilles PET vides</h2>
+            <h2 id="detail-title" style="font-size:20px;">Bouteilles PET transparentes</h2>
             <div style="color:var(--text-muted);font-size:14px;" id="detail-location">Douala, Bonapriso</div>
-            <div class="detail-price" id="detail-price">300 FCFA/kg</div>
+            <div class="detail-price" id="detail-price">200 FCFA/kg</div>
             <div style="display:flex;gap:8px;margin:8px 0 16px;">
                 <span style="padding:2px 12px;border-radius:100px;background:rgba(34,197,94,0.15);color:#22C55E;font-size:12px;font-weight:600;">Disponible</span>
-                <span style="padding:2px 12px;border-radius:100px;background:rgba(59,130,246,0.15);color:#3B82F6;font-size:12px;font-weight:600;">12kg en stock</span>
+                <span style="padding:2px 12px;border-radius:100px;background:rgba(59,130,246,0.15);color:#3B82F6;font-size:12px;font-weight:600;">15kg en stock</span>
             </div>
             <div style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-border);border-radius:14px;margin-bottom:16px;">
                 <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--gold));display:flex;align-items:center;justify-content:center;font-size:20px;">👤</div>
                 <div style="flex:1;"><div style="font-weight:600;">Marie K.</div><div style="font-size:12px;color:var(--text-muted);">⭐ 4.9 · 23 ventes</div></div>
-                <button class="btn-primary" style="padding:8px 16px;font-size:13px;max-width:100px;" id="goto-chat-from-detail">Contacter</button>
+                <button class="btn-primary small" id="goto-chat-from-detail">Contacter</button>
             </div>
             <div class="section-title">⭐ Noter ce vendeur</div>
             <div class="rating-stars" id="rating-stars">
@@ -1204,10 +1295,10 @@
                 <div class="slot" id="photo-1">📷</div>
                 <div class="slot" id="photo-2">📷</div>
             </div>
-            <div class="form-group"><label>Catégorie</label><select id="publish-cat"><option>Plastique</option><option>Carton</option><option>Métal</option><option>Verre</option><option>Huile</option><option>Emballage</option></select></div>
-            <div class="form-group"><label>Titre</label><input type="text" placeholder="Ex: Bouteilles PET vides" id="publish-title"></div>
+            <div class="form-group"><label>Catégorie</label><select id="publish-cat"><option>Plastique</option><option>Métal</option><option>Carton</option><option>Verre</option><option>Huile</option><option>Électronique</option></select></div>
+            <div class="form-group"><label>Titre</label><input type="text" placeholder="Ex: Bouteilles PET transparentes" id="publish-title"></div>
             <div class="form-group"><label>Quantité</label><input type="text" placeholder="Ex: 15 kg" id="publish-qty"></div>
-            <div class="form-group"><label>Prix (FCFA/kg)</label><input type="number" placeholder="Ex: 300" id="publish-price"></div>
+            <div class="form-group"><label>Prix (FCFA/kg)</label><input type="number" placeholder="Ex: 200" id="publish-price"></div>
             <div class="form-group"><label>Ville</label><input type="text" placeholder="Ex: Douala" id="publish-city"></div>
             <button class="btn-primary" id="publish-submit">Publier l'annonce</button>
         </div>
@@ -1244,6 +1335,29 @@
                 <div class="city-item" data-city="Yaoundé"><div class="emoji">📍</div><div class="info"><div class="name">Yaoundé - Mvog-Mbi</div><div class="address">En face de l'hôpital</div></div></div>
                 <div class="city-item" data-city="Bafoussam"><div class="emoji">📍</div><div class="info"><div class="name">Bafoussam</div><div class="address">Marché A, côté station Total</div></div></div>
                 <div class="city-item" data-city="Garoua"><div class="emoji">📍</div><div class="info"><div class="name">Garoua</div><div class="address">Rue du commerce, chez Marie</div></div></div>
+            </div>
+        </div>
+
+        <!-- ===== PRICE GUIDE ===== -->
+        <div id="priceguide" class="screen">
+            <h2 style="font-size:20px;margin-bottom:12px;">📊 Guide des prix</h2>
+            <p style="color:var(--text-muted);font-size:13px;margin-bottom:16px;">Prix indicatifs du recyclage au Cameroun (FCFA/kg)</p>
+            <div class="price-guide-grid">
+                <div class="price-guide-item"><div class="emoji">🥤</div><div class="name">PET transparent</div><div class="price">150-200</div><div class="sub">Bouteilles d'eau</div></div>
+                <div class="price-guide-item"><div class="emoji">🥤</div><div class="name">PET coloré</div><div class="price">75-100</div><div class="sub">Bouteilles colorées</div></div>
+                <div class="price-guide-item"><div class="emoji">🥫</div><div class="name">Aluminium</div><div class="price">500-800</div><div class="sub">Canettes, casseroles</div></div>
+                <div class="price-guide-item"><div class="emoji">🔩</div><div class="name">Cuivre dénudé</div><div class="price">2 000-2 500</div><div class="sub">Haute valeur</div></div>
+                <div class="price-guide-item"><div class="emoji">🔩</div><div class="name">Fer/Acier</div><div class="price">100-150</div><div class="sub">Lourd, bonne qualité</div></div>
+                <div class="price-guide-item"><div class="emoji">📦</div><div class="name">Carton ondulé</div><div class="price">50-75</div><div class="sub">Propre, sec</div></div>
+                <div class="price-guide-item"><div class="emoji">📄</div><div class="name">Papier blanc</div><div class="price">75-100</div><div class="sub">Bureau, impression</div></div>
+                <div class="price-guide-item"><div class="emoji">🍾</div><div class="name">Verre transparent</div><div class="price">25-50</div><div class="sub">Bouteilles, bocaux</div></div>
+                <div class="price-guide-item"><div class="emoji">🍾</div><div class="name">Verre coloré</div><div class="price">20-40</div><div class="sub">Brun, vert</div></div>
+                <div class="price-guide-item"><div class="emoji">🛢️</div><div class="name">Huile de friture</div><div class="price">200-300</div><div class="sub">Par litre</div></div>
+                <div class="price-guide-item"><div class="emoji">🛢️</div><div class="name">Huile moteur</div><div class="price">100-200</div><div class="sub">Par litre</div></div>
+                <div class="price-guide-item"><div class="emoji">💻</div><div class="name">Ordinateurs</div><div class="price">200-500</div><div class="sub">Complets</div></div>
+            </div>
+            <div style="margin-top:16px;padding:12px 16px;background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.1);border-radius:14px;">
+                <p style="font-size:12px;color:var(--text-muted);">💡 <strong>Conseil :</strong> Les prix varient selon la qualité et la quantité. Ces prix sont indicatifs et peuvent être négociés.</p>
             </div>
         </div>
 
@@ -1343,6 +1457,7 @@
                 <div class="stat"><div class="value">⭐ 4.8</div><div class="label">Note</div></div>
             </div>
             <div class="profile-menu">
+                <div class="item" id="goto-priceguide"><span class="icon">📊</span><span class="label">Guide des prix</span><span class="arrow">›</span></div>
                 <div class="item"><span class="icon">📍</span><span class="label">Douala, Cameroun</span><span class="arrow">›</span></div>
                 <div class="item"><span class="icon">📞</span><span class="label">+237 677 123 456</span><span class="arrow">›</span></div>
                 <div class="item"><span class="icon">🔒</span><span class="label">Changer le mot de passe</span><span class="arrow">›</span></div>
@@ -1386,6 +1501,34 @@
             ]
         };
 
+        // ===== PRIX RÉELS DU RECYCLAGE AU CAMEROUN =====
+        const feedProducts = [
+            { emoji: '🥤', title: 'Bouteilles PET transparentes', loc: 'Douala, Bonapriso', price: '200 FCFA/kg', qty: '15kg',
+                cat: 'Plastique', status: 'Disponible' },
+            { emoji: '🥤', title: 'Bouteilles PET colorées', loc: 'Yaoundé, Bastos', price: '100 FCFA/kg', qty: '10kg',
+                cat: 'Plastique', status: 'Disponible' },
+            { emoji: '🥫', title: 'Canettes aluminium', loc: 'Bafoussam', price: '700 FCFA/kg', qty: '8kg', cat: 'Métal',
+                status: 'Disponible' },
+            { emoji: '🔩', title: 'Cuivre dénudé', loc: 'Douala, Akwa', price: '2 200 FCFA/kg', qty: '5kg', cat: 'Métal',
+                status: 'Premium' },
+            { emoji: '🔩', title: 'Fer lourd', loc: 'Yaoundé, Mvog-Mbi', price: '150 FCFA/kg', qty: '50kg', cat: 'Métal',
+                status: 'Disponible' },
+            { emoji: '📦', title: 'Carton ondulé propre', loc: 'Bamenda', price: '75 FCFA/kg', qty: '20kg', cat: 'Carton',
+                status: 'Disponible' },
+            { emoji: '📄', title: 'Papier blanc de bureau', loc: 'Douala, Bonapriso', price: '100 FCFA/kg', qty: '12kg',
+                cat: 'Carton', status: 'Disponible' },
+            { emoji: '🍾', title: 'Verre transparent', loc: 'Garoua', price: '50 FCFA/kg', qty: '25kg', cat: 'Verre',
+                status: 'Disponible' },
+            { emoji: '🍾', title: 'Verre coloré (brun/vert)', loc: 'Bafoussam', price: '30 FCFA/kg', qty: '18kg',
+                cat: 'Verre', status: 'Disponible' },
+            { emoji: '🛢️', title: 'Huile de friture usagée', loc: 'Douala, Akwa', price: '300 FCFA/L', qty: '10L',
+                cat: 'Huile', status: 'Disponible' },
+            { emoji: '🛢️', title: 'Huile moteur usagée', loc: 'Yaoundé, Bastos', price: '150 FCFA/L', qty: '20L',
+                cat: 'Huile', status: 'Disponible' },
+            { emoji: '💻', title: 'Ordinateurs complets', loc: 'Douala, Bonapriso', price: '400 FCFA/kg', qty: '30kg',
+                cat: 'Électronique', status: 'Négociable' },
+        ];
+
         // ===== TOAST =====
         function showToast(msg, type = '') {
             const t = document.getElementById('toast');
@@ -1397,12 +1540,11 @@
 
         // ===== NAVIGATION =====
         function navigateTo(screenId) {
-            if (screenId === currentScreen) return;
+            if (screenId === currentScreen && screenId !== 'splash') return;
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             const target = document.getElementById(screenId);
             if (target) {
                 target.classList.add('active');
-                // Re-trigger animation
                 target.style.animation = 'none';
                 requestAnimationFrame(() => {
                     target.style.animation = 'fadeUp 0.4s ease';
@@ -1411,7 +1553,6 @@
             currentScreen = screenId;
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             document.querySelector(`.nav-item[data-screen="${screenId}"]`)?.classList.add('active');
-            // Update badge
             updateBadge();
         }
 
@@ -1434,9 +1575,7 @@
                 clearInterval(loaderInterval); }
             document.getElementById('loader-fill').style.width = progress + '%';
             if (progress >= 100) {
-                setTimeout(() => {
-                    navigateTo('onboarding');
-                }, 400);
+                setTimeout(() => { navigateTo('onboarding'); }, 400);
             }
         }, 30);
 
@@ -1509,7 +1648,6 @@
                 showToast('Entrez les 6 chiffres du code', 'error');
                 return;
             }
-            // Code test : 123456
             if (code === '123456') {
                 isLoggedIn = true;
                 document.getElementById('bottom-nav').classList.add('active');
@@ -1525,7 +1663,6 @@
             item.addEventListener('click', () => {
                 const screen = item.dataset.screen;
                 if (screen === 'notifications') {
-                    // Mark all as read when opening notif center
                     setTimeout(() => {
                         document.querySelectorAll('.notif-item .dot').forEach(d => d.classList.add('read'));
                         updateBadge();
@@ -1543,21 +1680,6 @@
         });
 
         // ===== FEED =====
-        const feedProducts = [
-            { emoji: '🥤', title: 'Bouteilles PET vides', loc: 'Douala, Bonapriso', price: '300 FCFA/kg', qty: '12kg',
-                cat: 'Plastique', status: 'Disponible' },
-            { emoji: '📦', title: 'Cartons de déménagement', loc: 'Yaoundé, Bastos', price: '150 FCFA/kg', qty: '20kg',
-                cat: 'Carton', status: 'Disponible' },
-            { emoji: '🥫', title: 'Boîtes de conserve', loc: 'Bafoussam', price: '500 FCFA/kg', qty: '8kg', cat: 'Métal',
-                status: 'Négociable' },
-            { emoji: '🍾', title: 'Bouteilles en verre', loc: 'Bamenda', price: '200 FCFA/kg', qty: '15kg', cat: 'Verre',
-                status: 'Disponible' },
-            { emoji: '🛢️', title: 'Huile de friture usagée', loc: 'Douala, Akwa', price: '400 FCFA/L', qty: '10L',
-                cat: 'Huile', status: 'Disponible' },
-            { emoji: '📦', title: 'Emballages plastiques', loc: 'Yaoundé, Mvog-Mbi', price: '100 FCFA/kg', qty: '25kg',
-                cat: 'Emballage', status: 'Disponible' },
-        ];
-
         function renderFeed(filter = 'Tous') {
             const container = document.getElementById('feed-list');
             const filtered = filter === 'Tous' ? feedProducts : feedProducts.filter(p => p.cat === filter);
@@ -1566,21 +1688,22 @@
                     '<div style="text-align:center;padding:40px 0;color:var(--text-muted);">Aucune annonce dans cette catégorie</div>';
                 return;
             }
-            container.innerHTML = filtered.map((p, i) => `
+            container.innerHTML = filtered.map((p, i) => {
+                const statusClass = p.status === 'Premium' ? 'premium' : p.status === 'Négociable' ? 'negotiable' : '';
+                return `
                 <div class="product-card" data-index="${i}">
                     <div class="emoji">${p.emoji}</div>
                     <div class="info">
                         <div class="title">${p.title}</div>
                         <div class="location">${p.loc}</div>
-                        <span class="status">${p.status}</span>
+                        <span class="status ${statusClass}">${p.status}</span>
                     </div>
                     <div>
                         <div class="price">${p.price}</div>
                         <div style="font-size:11px;color:var(--text-muted);text-align:right;">${p.qty}</div>
                     </div>
                 </div>
-            `).join('');
-            // Click to detail
+            `}).join('');
             container.querySelectorAll('.product-card').forEach(el => {
                 el.addEventListener('click', () => {
                     const idx = parseInt(el.dataset.index);
@@ -1606,7 +1729,6 @@
             document.getElementById('detail-location').textContent = product.loc;
             document.getElementById('detail-price').textContent = product.price;
             navigateTo('detail');
-            // Reset rating
             selectedRating = 0;
             document.querySelectorAll('#rating-stars .star').forEach(s => s.textContent = '☆');
         }
@@ -1675,15 +1797,12 @@
             const input = document.getElementById('chat-input-text');
             const text = input.value.trim();
             if (!text || !chatActive) return;
-            // Add sent message
             const now = new Date();
             const time = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
             if (!chatMessages[chatActive]) chatMessages[chatActive] = [];
             chatMessages[chatActive].push({ text, sent: true, time });
             input.value = '';
             renderChatMessages();
-
-            // Auto-reply after 1.5s
             setTimeout(() => {
                 const replies = [
                     "Merci pour votre message ! Je vous réponds dans la journée.",
@@ -1786,14 +1905,16 @@
             });
         });
 
+        // ===== PRICE GUIDE =====
+        document.getElementById('goto-priceguide').addEventListener('click', () => navigateTo('priceguide'));
+
         // ===== INIT =====
         renderFeed();
         updateBadge();
 
-        // ===== KEYBOARD SHORTCUT (for testing) =====
+        // ===== KEYBOARD SHORTCUT =====
         document.addEventListener('keydown', (e) => {
             if (e.key === '1' && e.ctrlKey) {
-                // Quick login test
                 isLoggedIn = true;
                 document.getElementById('bottom-nav').classList.add('active');
                 navigateTo('dashboard');
@@ -1801,10 +1922,10 @@
             }
         });
 
-        // Auto-login if coming from skip
         console.log('♻️ ReLife Cameroun - Application chargée !');
-        console.log('🔑 Test : Utilisez le code OTP 123456');
-        console.log('📱 Pour installer : Chrome → Menu ⋮ → Ajouter à l\'écran d\'accueil');
+        console.log('🔑 Code OTP : 123456');
+        console.log('📊 Prix réels du recyclage au Cameroun intégrés');
+        console.log('📱 Guide des prix disponible dans le profil');
     </script>
 </body>
 </html>
