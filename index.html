@@ -2,1798 +2,648 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#0F0F0F">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ReLife Cameroun</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        :root {
-            --bg: #0F0F0F;
-            --surface: rgba(255, 255, 255, 0.06);
-            --border: rgba(255, 255, 255, 0.08);
-            --text: #FFFFFF;
-            --text2: #A0A0A0;
-            --green: #2D5016;
-            --gold: #FFD700;
-            --radius: 20px;
-            --nav-height: 64px;
-            --safe-bottom: env(safe-area-inset-bottom, 0px);
-            --space-xl: 20px;
-            --space-lg: 16px;
-        }
-        html,
-        body {
-            height: 100%;
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            overflow: hidden;
-        }
-        #app {
-            height: 100%;
-            max-width: 430px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            background: var(--bg);
-            position: relative;
-        }
-        .screen {
-            display: none;
-            flex: 1;
-            flex-direction: column;
-            overflow-y: auto;
-            padding: var(--space-xl) var(--space-lg) calc(var(--nav-height) + var(--safe-bottom) + var(--space-xl));
-            animation: fadeUp 0.4s ease;
-        }
-        .screen.active {
-            display: flex;
-        }
-        @keyframes fadeUp {
-            0% {
-                opacity: 0;
-                transform: translateY(16px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        @keyframes pulse {
-            0%,
-            100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.08);
-            }
-        }
-        .btn {
-            background: var(--green);
-            color: #fff;
-            border: none;
-            padding: 14px 24px;
-            border-radius: 16px;
-            font-size: 16px;
-            font-weight: 600;
-            width: 100%;
-            max-width: 300px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .btn:active {
-            transform: scale(0.97);
-        }
-        .btn-sm {
-            padding: 8px 16px;
-            font-size: 14px;
-            max-width: 120px;
-        }
-        .card {
-            background: var(--surface);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 16px;
-            margin-bottom: 12px;
-        }
-        .glass {
-            background: var(--surface);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-        }
-        #splash {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            background: linear-gradient(135deg, #0A0A0A, #1A2A1A);
-            padding: 0;
-        }
-        #splash .emoji {
-            font-size: 72px;
-            animation: pulse 1.2s ease-in-out infinite;
-        }
-        #splash h1 {
-            font-size: 36px;
-            margin-top: 12px;
-            background: linear-gradient(135deg, var(--gold), #B8860B);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        #splash .sub {
-            font-size: 14px;
-            color: var(--text2);
-            letter-spacing: 6px;
-        }
-        .loader-bar {
-            width: 160px;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-            margin-top: 40px;
-            overflow: hidden;
-        }
-        .loader-bar .fill {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, var(--green), var(--gold));
-            transition: width 0.1s;
-        }
-        .onboarding-slide {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            flex: 1;
-            text-align: center;
-            padding: 20px;
-        }
-        .onboarding-slide.active {
-            display: flex;
-        }
-        .onboarding-slide .emoji {
-            font-size: 72px;
-            margin-bottom: 24px;
-        }
-        .onboarding-slide h2 {
-            font-size: 26px;
-            font-weight: 700;
-            margin-bottom: 12px;
-        }
-        .onboarding-slide p {
-            color: var(--text2);
-            font-size: 16px;
-            max-width: 320px;
-        }
-        .dot-indicators {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            margin: 20px 0 32px;
-        }
-        .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--text2);
-            transition: 0.3s;
-            border: none;
-            cursor: pointer;
-        }
-        .dot.active {
-            background: var(--gold);
-            width: 24px;
-            border-radius: 4px;
-        }
-        .input {
-            width: 100%;
-            padding: 14px 16px;
-            border-radius: 14px;
-            border: 1px solid var(--border);
-            background: var(--surface);
-            color: #fff;
-            font-size: 14px;
-            outline: none;
-        }
-        .input:focus {
-            border-color: var(--green);
-        }
-        .input-group {
-            display: flex;
-            align-items: center;
-            background: var(--surface);
-            border-radius: 14px;
-            border: 1px solid var(--border);
-            padding: 0 4px;
-        }
-        .input-group span {
-            padding: 14px 8px;
-            color: var(--text2);
-            font-weight: 600;
-        }
-        .input-group .input {
-            border: none;
-            background: transparent;
-            padding: 14px 8px;
-        }
-        .form-group {
-            margin-bottom: 16px;
-        }
-        .form-group label {
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text2);
-            display: block;
-            margin-bottom: 6px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .otp-input {
-            width: 44px;
-            height: 52px;
-            text-align: center;
-            font-size: 22px;
-            font-weight: 700;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            background: var(--surface);
-            color: #fff;
-            outline: none;
-            transition: 0.3s;
-        }
-        .otp-input:focus {
-            border-color: var(--gold);
-        }
-        .otp-container {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            margin-bottom: 24px;
-        }
-        #bottom-nav {
-            display: none;
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 430px;
-            background: rgba(15, 15, 15, 0.92);
-            backdrop-filter: blur(20px);
-            border-top: 1px solid var(--border);
-            padding: 8px 0 var(--safe-bottom);
-            justify-content: space-around;
-            z-index: 100;
-        }
-        #bottom-nav.active {
-            display: flex;
-        }
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2px;
-            padding: 4px 8px;
-            border: none;
-            background: none;
-            color: var(--text2);
-            font-size: 10px;
-            cursor: pointer;
-            min-height: 44px;
-            min-width: 44px;
-            position: relative;
-        }
-        .nav-item .icon {
-            font-size: 22px;
-        }
-        .nav-item .label {
-            font-size: 9px;
-            font-weight: 500;
-        }
-        .nav-item.active {
-            color: var(--gold);
-        }
-        .nav-item .badge {
-            position: absolute;
-            top: 2px;
-            right: 4px;
-            background: #EF4444;
-            color: #fff;
-            font-size: 9px;
-            font-weight: 700;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .nav-item .badge.hidden {
-            display: none;
-        }
-        .quick-actions {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-            margin: 16px 0 20px;
-        }
-        .qa-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            padding: 12px 4px;
-            background: var(--surface);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            cursor: pointer;
-            font-size: 12px;
-            color: var(--text2);
-            border: none;
-            font-family: inherit;
-        }
-        .qa-item:active {
-            transform: scale(0.93);
-        }
-        .qa-item .icon {
-            font-size: 28px;
-        }
-        .qa-item .label {
-            font-size: 10px;
-            font-weight: 500;
-        }
-        .balance-card {
-            background: linear-gradient(135deg, rgba(45, 80, 22, 0.3), rgba(255, 215, 0, 0.08));
-            border: 1px solid rgba(255, 215, 0, 0.15);
-            border-radius: var(--radius);
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .balance-card .amount {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--gold);
-        }
-        .balance-card .label {
-            font-size: 12px;
-            color: var(--text2);
-        }
-        .stats-row {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-        .stat-item {
-            text-align: center;
-            padding: 12px 4px;
-            background: var(--surface);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-        }
-        .stat-item .value {
-            font-size: 20px;
-            font-weight: 700;
-        }
-        .stat-item .label {
-            font-size: 10px;
-            color: var(--text2);
-        }
-        .section-title {
-            font-size: 16px;
-            font-weight: 600;
-            margin: 16px 0 12px;
-        }
-        .activity-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-        }
-        .activity-item .emoji {
-            font-size: 28px;
-            width: 44px;
-            height: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--surface);
-            border-radius: 12px;
-        }
-        .activity-item .info {
-            flex: 1;
-        }
-        .activity-item .info .title {
-            font-size: 14px;
-            font-weight: 500;
-        }
-        .activity-item .info .sub {
-            font-size: 12px;
-            color: var(--text2);
-        }
-        .activity-item .time {
-            font-size: 11px;
-            color: var(--text2);
-        }
-        .feed-categories {
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            padding: 4px 0 16px;
-            scrollbar-width: none;
-        }
-        .feed-categories::-webkit-scrollbar {
-            display: none;
-        }
-        .category-chip {
-            padding: 8px 18px;
-            border-radius: 100px;
-            border: 1px solid var(--border);
-            background: var(--surface);
-            color: var(--text2);
-            font-size: 13px;
-            font-weight: 500;
-            white-space: nowrap;
-            cursor: pointer;
-            border: none;
-            font-family: inherit;
-        }
-        .category-chip.active {
-            background: var(--green);
-            color: #fff;
-        }
-        .product-card {
-            display: flex;
-            gap: 12px;
-            padding: 14px;
-            background: var(--surface);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            margin-bottom: 10px;
-            cursor: pointer;
-            width: 100%;
-            border: none;
-            font-family: inherit;
-            color: inherit;
-            text-align: left;
-        }
-        .product-card:active {
-            transform: scale(0.97);
-        }
-        .product-card .emoji {
-            font-size: 36px;
-            width: 56px;
-            height: 56px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255, 255, 255, 0.04);
-            border-radius: 14px;
-        }
-        .product-card .info {
-            flex: 1;
-        }
-        .product-card .info .title {
-            font-weight: 600;
-            font-size: 15px;
-        }
-        .product-card .info .location {
-            font-size: 12px;
-            color: var(--text2);
-        }
-        .product-card .price {
-            font-weight: 700;
-            color: var(--gold);
-            font-size: 16px;
-            text-align: right;
-        }
-        .status {
-            font-size: 10px;
-            font-weight: 600;
-            padding: 2px 10px;
-            border-radius: 100px;
-            background: rgba(34, 197, 94, 0.15);
-            color: #22C55E;
-            display: inline-block;
-        }
-        .detail-image {
-            width: 100%;
-            height: 200px;
-            background: linear-gradient(135deg, #1A2A1A, #2A3A2A);
-            border-radius: var(--radius);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 64px;
-            margin-bottom: 16px;
-        }
-        .detail-price {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--gold);
-        }
-        .rating-stars {
-            display: flex;
-            gap: 4px;
-            font-size: 24px;
-        }
-        .rating-stars .star {
-            color: var(--text2);
-            cursor: pointer;
-            background: none;
-            border: none;
-            font-size: 24px;
-        }
-        .rating-stars .star.active {
-            color: var(--gold);
-        }
-        .map-container {
-            height: 300px;
-            background: linear-gradient(135deg, #1A2A1A, #2A3A2A);
-            border-radius: var(--radius);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 16px;
-            position: relative;
-            overflow: hidden;
-        }
-        .map-container .grid {
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            background-image: radial-gradient(circle, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-            background-size: 40px 40px;
-            animation: scrollGrid 20s linear infinite;
-        }
-        @keyframes scrollGrid {
-            0% {
-                transform: translate(0, 0);
-            }
-            100% {
-                transform: translate(-40px, -40px);
-            }
-        }
-        .map-pin {
-            position: relative;
-            z-index: 2;
-            text-align: center;
-        }
-        .map-pin .emoji {
-            font-size: 48px;
-        }
-        .map-pin .city {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--gold);
-        }
-        .city-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        .city-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 16px;
-            background: var(--surface);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            cursor: pointer;
-            width: 100%;
-            border: none;
-            font-family: inherit;
-            color: inherit;
-            text-align: left;
-        }
-        .city-item:active {
-            transform: scale(0.97);
-        }
-        .city-item .emoji {
-            font-size: 24px;
-        }
-        .city-item .info {
-            flex: 1;
-        }
-        .city-item .info .name {
-            font-weight: 500;
-        }
-        .city-item .info .address {
-            font-size: 12px;
-            color: var(--text2);
-        }
-        .price-guide-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-        }
-        .price-guide-item {
-            padding: 14px;
-            background: var(--surface);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            text-align: center;
-        }
-        .price-guide-item .emoji {
-            font-size: 32px;
-        }
-        .price-guide-item .name {
-            font-size: 12px;
-            font-weight: 500;
-        }
-        .price-guide-item .price {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--gold);
-        }
-        .price-guide-item .sub {
-            font-size: 10px;
-            color: var(--text2);
-        }
-        .chat-message {
-            display: flex;
-            margin-bottom: 12px;
-        }
-        .chat-message.sent {
-            justify-content: flex-end;
-        }
-        .chat-message .bubble {
-            max-width: 80%;
-            padding: 12px 16px;
-            border-radius: 16px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-        }
-        .chat-message.sent .bubble {
-            background: var(--green);
-        }
-        .chat-message .bubble .text {
-            font-size: 14px;
-        }
-        .chat-message .bubble .time {
-            font-size: 10px;
-            color: var(--text2);
-            margin-top: 4px;
-            text-align: right;
-        }
-        .chat-input {
-            display: flex;
-            gap: 8px;
-            padding: 12px 0;
-            border-top: 1px solid var(--border);
-        }
-        .chat-input input {
-            flex: 1;
-            padding: 12px 16px;
-            border-radius: 16px;
-            border: 1px solid var(--border);
-            background: var(--surface);
-            color: #fff;
-            font-size: 14px;
-            outline: none;
-        }
-        .chat-input input::placeholder {
-            color: var(--text2);
-        }
-        .chat-input button {
-            background: var(--green);
-            border: none;
-            color: #fff;
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            font-size: 20px;
-            cursor: pointer;
-        }
-        .profile-header {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 24px 0;
-        }
-        .profile-avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--green), var(--gold));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 36px;
-            margin-bottom: 12px;
-        }
-        .profile-name {
-            font-size: 20px;
-            font-weight: 700;
-        }
-        .profile-username {
-            color: var(--text2);
-            font-size: 14px;
-        }
-        .profile-badge {
-            padding: 4px 16px;
-            border-radius: 100px;
-            background: linear-gradient(135deg, var(--gold), #B8860B);
-            color: #000;
-            font-size: 12px;
-            font-weight: 700;
-            margin-top: 8px;
-        }
-        .profile-menu {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            width: 100%;
-        }
-        .profile-menu .item {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 14px 16px;
-            border-radius: 14px;
-            background: var(--surface);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--border);
-            cursor: pointer;
-            width: 100%;
-            border: none;
-            font-family: inherit;
-            color: inherit;
-            text-align: left;
-        }
-        .profile-menu .item:active {
-            transform: scale(0.97);
-        }
-        .profile-menu .item .icon {
-            font-size: 20px;
-        }
-        .profile-menu .item .label {
-            flex: 1;
-            font-size: 14px;
-            font-weight: 500;
-        }
-        .profile-menu .item .arrow {
-            color: var(--text2);
-        }
-        .profile-menu .item.danger .label {
-            color: #EF4444;
-        }
-        .publish-photos {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-bottom: 16px;
-        }
-        .publish-photos .slot {
-            aspect-ratio: 1;
-            background: var(--surface);
-            backdrop-filter: blur(12px);
-            border: 2px dashed var(--border);
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            color: var(--text2);
-            cursor: pointer;
-            border: none;
-            font-family: inherit;
-        }
-        .publish-photos .slot:active {
-            transform: scale(0.95);
-        }
-        .publish-photos .slot.filled {
-            border-style: solid;
-            border-color: var(--green);
-        }
-        .provider-select {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 16px;
-        }
-        .provider-item {
-            padding: 20px;
-            text-align: center;
-            border-radius: 14px;
-            border: 2px solid var(--border);
-            background: var(--surface);
-            cursor: pointer;
-            border: none;
-            font-family: inherit;
-            color: inherit;
-        }
-        .provider-item:active {
-            transform: scale(0.95);
-        }
-        .provider-item.selected {
-            border-color: var(--gold);
-            background: rgba(255, 215, 0, 0.06);
-        }
-        .provider-item .emoji {
-            font-size: 32px;
-        }
-        .provider-item .name {
-            font-size: 14px;
-            font-weight: 600;
-        }
-        .toast {
-            position: fixed;
-            bottom: calc(var(--nav-height) + var(--safe-bottom) + var(--space-xl));
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.9);
-            backdrop-filter: blur(20px);
-            padding: 12px 24px;
-            border-radius: 14px;
-            border: 1px solid var(--border);
-            color: #fff;
-            font-size: 14px;
-            font-weight: 500;
-            opacity: 0;
-            transition: 0.4s;
-            z-index: 200;
-            max-width: 90%;
-            text-align: center;
-            pointer-events: none;
-        }
-        .toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
-        .toast.success {
-            border-color: var(--green);
-        }
-        .toast.error {
-            border-color: #EF4444;
-        }
-        .hidden {
-            display: none !important;
-        }
-        .text-center {
-            text-align: center;
-        }
-        #lang-toggle {
-            background: var(--gold) !important;
-            color: #000 !important;
-            border: none;
-            padding: 6px 16px;
-            border-radius: 30px;
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-        .stat {
-            text-align: center;
-            padding: 12px;
-            background: var(--surface);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-        }
-        .stat .value {
-            font-size: 18px;
-            font-weight: 700;
-        }
-        .stat .label {
-            font-size: 10px;
-            color: var(--text2);
-        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:#0F0F0F;color:#fff;font-family:sans-serif;display:flex;justify-content:center;align-items:center;min-height:100vh}
+        .container{max-width:430px;width:100%;padding:20px;background:#1A1A1A;border-radius:20px;text-align:center}
+        .emoji{font-size:72px;display:block;margin-bottom:16px}
+        h1{font-size:36px;color:#FFD700;margin-bottom:8px}
+        .sub{color:#888;letter-spacing:4px;font-size:14px;margin-bottom:24px}
+        .btn{background:#2D5016;color:#fff;border:none;padding:14px 24px;border-radius:12px;font-size:16px;font-weight:600;width:100%;cursor:pointer;margin-top:12px}
+        .btn:active{transform:scale(0.97)}
+        .input{width:100%;padding:14px;border-radius:12px;border:1px solid #333;background:#222;color:#fff;font-size:16px;outline:none;margin-top:8px}
+        .input:focus{border-color:#2D5016}
+        .hidden{display:none}
+        .otp-group{display:flex;gap:8px;justify-content:center;margin:16px 0}
+        .otp-input{width:44px;height:52px;text-align:center;font-size:22px;font-weight:700;border-radius:10px;border:1px solid #333;background:#222;color:#fff;outline:none}
+        .otp-input:focus{border-color:#FFD700}
+        .link{background:none;border:none;color:#888;font-size:13px;cursor:pointer;margin-top:12px}
+        .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#222;padding:12px 24px;border-radius:12px;border:1px solid #333;color:#fff;font-size:14px;opacity:0;transition:.4s;z-index:999;pointer-events:none}
+        .toast.show{opacity:1}
+        .toast.success{border-color:#2D5016}
+        .toast.error{border-color:#EF4444}
     </style>
 </head>
 <body>
-    <div id="app">
-        <div id="toast" class="toast"></div>
 
-        <!-- SPLASH -->
-        <div id="splash" class="screen active">
-            <div class="emoji">♻️</div>
-            <h1>ReLife</h1>
-            <div class="sub">CAMEROUN</div>
-            <div class="loader-bar"><div class="fill" id="loader-fill"></div></div>
-        </div>
+<div id="toast" class="toast"></div>
 
-        <!-- ONBOARDING -->
-        <div id="onboarding" class="screen">
-            <div id="slide-0" class="onboarding-slide active">
-                <div class="emoji">♻️</div>
-                <h2>Valorisez vos déchets</h2>
-                <p>Transformez vos déchets recyclables en une source de revenus</p>
-            </div>
-            <div id="slide-1" class="onboarding-slide">
-                <div class="emoji">💰</div>
-                <h2>Gagnez de l'argent</h2>
-                <p>Recevez un paiement immédiat pour chaque kilogramme collecté</p>
-            </div>
-            <div id="slide-2" class="onboarding-slide">
-                <div class="emoji">🌍</div>
-                <h2>Protégez l'environnement</h2>
-                <p>Contribuez à un Cameroun plus propre et plus vert</p>
-            </div>
-            <div id="slide-3" class="onboarding-slide">
-                <div class="emoji">⭐</div>
-                <h2>Devenez Premium</h2>
-                <p>Accédez à des tarifs préférentiels et des collectes prioritaires</p>
-            </div>
-            <div class="dot-indicators">
-                <span class="dot active" data-slide="0"></span>
-                <span class="dot" data-slide="1"></span>
-                <span class="dot" data-slide="2"></span>
-                <span class="dot" data-slide="3"></span>
-            </div>
-            <button class="btn" id="onboarding-btn">Suivant</button>
-        </div>
-
-        <!-- LOGIN -->
-        <div id="login" class="screen">
-            <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:20px 0;">
-                <div class="text-center" style="margin-bottom:32px;">
-                    <div style="font-size:56px;">♻️</div>
-                    <h1 style="font-size:28px;font-weight:700;">Bienvenue</h1>
-                    <p style="color:var(--text2);font-size:14px;">Entrez votre numéro de téléphone</p>
-                </div>
-                <div class="form-group">
-                    <label>Numéro de téléphone</label>
-                    <div class="input-group">
-                        <span>+237</span>
-                        <input type="tel" id="phone-input" class="input" placeholder="6XXXXXXXX">
-                    </div>
-                </div>
-                <button class="btn" id="login-btn" style="margin-top:12px;">Se connecter</button>
-                <button style="background:none;border:none;color:var(--text2);font-size:13px;margin-top:16px;cursor:pointer;" id="login-skip">Continuer sans compte (test)</button>
-            </div>
-        </div>
-
-        <!-- OTP -->
-        <div id="otp" class="screen">
-            <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:20px 0;">
-                <div class="text-center" style="margin-bottom:32px;">
-                    <div style="font-size:48px;">🔐</div>
-                    <h2 style="font-size:24px;font-weight:700;">Vérification</h2>
-                    <p style="color:var(--text2);font-size:14px;">Code envoyé au <span id="otp-phone">+237 6XXXXXXXX</span></p>
-                </div>
-                <div class="otp-container">
-                    <input type="text" maxlength="1" class="otp-input">
-                    <input type="text" maxlength="1" class="otp-input">
-                    <input type="text" maxlength="1" class="otp-input">
-                    <input type="text" maxlength="1" class="otp-input">
-                    <input type="text" maxlength="1" class="otp-input">
-                    <input type="text" maxlength="1" class="otp-input">
-                </div>
-                <button class="btn" id="otp-btn">Vérifier</button>
-                <button style="background:none;border:none;color:var(--text2);font-size:13px;margin-top:12px;cursor:pointer;">Renvoyer le code</button>
-            </div>
-        </div>
-
-        <!-- DASHBOARD -->
-        <div id="dashboard" class="screen">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-                <div>
-                    <div class="greeting">Bonjour <span class="highlight">👋</span></div>
-                    <div style="color:var(--text2);font-size:13px;">Prêt à recycler aujourd'hui ?</div>
-                </div>
-                <div style="display:flex;align-items:center;gap:10px;">
-                    <button id="lang-toggle">🇫🇷 FR</button>
-                    <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--gold));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;">R</div>
-                </div>
-            </div>
-            <div class="quick-actions">
-                <button class="qa-item" data-target="map"><span class="icon">📍</span><span class="label">Carte</span></button>
-                <button class="qa-item" data-target="chat"><span class="icon">💬</span><span class="label">Messages</span></button>
-                <button class="qa-item" data-target="stats"><span class="icon">📊</span><span class="label">Stats</span></button>
-                <button class="qa-item" data-target="feed"><span class="icon">🛒</span><span class="label">Marché</span></button>
-            </div>
-            <div class="balance-card">
-                <div><div class="label">💰 Solde Mobile Money</div><div class="amount">5 000 FCFA</div></div>
-                <button class="btn btn-sm" id="goto-withdrawal">Retirer</button>
-            </div>
-            <div class="stats-row">
-                <div class="stat-item"><div class="value">12</div><div class="label">Ventes</div></div>
-                <div class="stat-item"><div class="value">45 kg</div><div class="label">Recyclés</div></div>
-                <div class="stat-item"><div class="value">⭐ 4.8</div><div class="label">Note</div></div>
-            </div>
-            <div class="section-title">⚡ Activité récente</div>
-            <div class="activity-item"><div class="emoji">♻️</div><div class="info"><div class="title">Collecte de bouteilles PET</div><div class="sub">15kg • 2 250 FCFA</div></div><div class="time">Il y a 2h</div></div>
-            <div class="activity-item"><div class="emoji">🥫</div><div class="info"><div class="title">Canettes aluminium</div><div class="sub">5kg • 1 000 FCFA</div></div><div class="time">Hier</div></div>
-            <div class="activity-item"><div class="emoji">📦</div><div class="info"><div class="title">Cartons recyclables</div><div class="sub">10kg • 500 FCFA</div></div><div class="time">Hier</div></div>
-        </div>
-
-        <!-- FEED -->
-        <div id="feed" class="screen">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-                <h2 style="font-size:20px;">🛒 Marché</h2>
-                <button class="btn btn-sm" id="goto-publish">+ Publier</button>
-            </div>
-            <div class="feed-categories" id="feed-categories">
-                <button class="category-chip active" data-cat="Tous">Tous</button>
-                <button class="category-chip" data-cat="Plastique">Plastique</button>
-                <button class="category-chip" data-cat="Métal">Métal</button>
-                <button class="category-chip" data-cat="Carton">Carton</button>
-                <button class="category-chip" data-cat="Verre">Verre</button>
-                <button class="category-chip" data-cat="Huile">Huile</button>
-                <button class="category-chip" data-cat="Électronique">Électronique</button>
-            </div>
-            <div id="feed-list"></div>
-        </div>
-
-        <!-- DETAIL -->
-        <div id="detail" class="screen">
-            <button style="background:none;border:none;color:#fff;font-size:16px;padding:4px 0;margin-bottom:12px;cursor:pointer;text-align:left;" id="detail-back">← Retour</button>
-            <div class="detail-image" id="detail-emoji">🥤</div>
-            <h2 id="detail-title" style="font-size:20px;">Bouteilles PET transparentes</h2>
-            <div style="color:var(--text2);font-size:14px;" id="detail-location">Douala, Bonapriso</div>
-            <div class="detail-price" id="detail-price">200 FCFA/kg</div>
-            <div style="display:flex;gap:8px;margin:8px 0 16px;">
-                <span class="status" id="detail-status">Disponible</span>
-                <span style="padding:2px 12px;border-radius:100px;background:rgba(59,130,246,0.15);color:#3B82F6;font-size:12px;font-weight:600;">15kg en stock</span>
-            </div>
-            <div style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--surface);backdrop-filter:blur(12px);border:1px solid var(--border);border-radius:14px;margin-bottom:16px;">
-                <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--gold));display:flex;align-items:center;justify-content:center;font-size:20px;">👤</div>
-                <div style="flex:1;"><div style="font-weight:600;">Marie K.</div><div style="font-size:12px;color:var(--text2);">⭐ 4.9 · 23 ventes</div></div>
-                <button class="btn btn-sm" id="goto-chat-from-detail">Contacter</button>
-            </div>
-            <div class="section-title">⭐ Noter ce vendeur</div>
-            <div class="rating-stars" id="rating-stars">
-                <button class="star" data-val="1">☆</button>
-                <button class="star" data-val="2">☆</button>
-                <button class="star" data-val="3">☆</button>
-                <button class="star" data-val="4">☆</button>
-                <button class="star" data-val="5">☆</button>
-            </div>
-            <div class="section-title" style="margin-top:16px;">📝 Avis (12)</div>
-            <div class="card"><div style="display:flex;justify-content:space-between;"><span style="font-weight:600;">Paul N.</span><span style="color:var(--text2);font-size:12px;">Il y a 2j</span></div><div style="font-size:13px;color:var(--text2);">⭐ 5/5 · Transaction rapide et fiable !</div></div>
-            <div class="card"><div style="display:flex;justify-content:space-between;"><span style="font-weight:600;">Aicha M.</span><span style="color:var(--text2);font-size:12px;">Il y a 5j</span></div><div style="font-size:13px;color:var(--text2);">⭐ 4/5 · Bon produit, livraison un peu lente</div></div>
-        </div>
-
-        <!-- PUBLISH -->
-        <div id="publish" class="screen">
-            <h2 style="font-size:20px;margin-bottom:16px;">➕ Nouvelle annonce</h2>
-            <div class="publish-photos">
-                <button class="slot" id="photo-0">📷</button>
-                <button class="slot" id="photo-1">📷</button>
-                <button class="slot" id="photo-2">📷</button>
-            </div>
-            <div class="form-group"><label>Catégorie</label><select id="publish-cat" class="input"><option>Plastique</option><option>Métal</option><option>Carton</option><option>Verre</option><option>Huile</option><option>Électronique</option></select></div>
-            <div class="form-group"><label>Titre</label><input type="text" id="publish-title" class="input" placeholder="Ex: Bouteilles PET transparentes"></div>
-            <div class="form-group"><label>Quantité</label><input type="text" id="publish-qty" class="input" placeholder="Ex: 15 kg"></div>
-            <div class="form-group"><label>Prix (FCFA/kg)</label><input type="number" id="publish-price" class="input" placeholder="Ex: 200"></div>
-            <div class="form-group"><label>Ville</label><input type="text" id="publish-city" class="input" placeholder="Ex: Douala"></div>
-            <button class="btn" id="publish-submit">Publier l'annonce</button>
-        </div>
-
-        <!-- WITHDRAWAL -->
-        <div id="withdrawal" class="screen">
-            <h2 style="font-size:20px;margin-bottom:4px;">💰 Retrait MoMo</h2>
-            <div style="color:var(--text2);font-size:14px;margin-bottom:16px;">Solde : 5 000 FCFA</div>
-            <div class="provider-select">
-                <button class="provider-item selected" data-provider="MTN"><div class="emoji">📡</div><div class="name">MTN</div></button>
-                <button class="provider-item" data-provider="Orange"><div class="emoji">📡</div><div class="name">Orange</div></button>
-            </div>
-            <div class="form-group"><label>Montant (FCFA)</label><input type="number" id="withdrawal-amount" class="input" placeholder="Ex: 1000"></div>
-            <div class="form-group"><label>Numéro de téléphone</label><input type="tel" id="withdrawal-phone" class="input" placeholder="6XXXXXXXX"></div>
-            <button class="btn" id="withdrawal-submit">Confirmer le retrait</button>
-            <div class="text-center" style="font-size:12px;color:var(--text2);margin-top:12px;">Frais : 1.5% · Délai : instantané</div>
-        </div>
-
-        <!-- MAP -->
-        <div id="map" class="screen">
-            <h2 style="font-size:20px;margin-bottom:12px;">📍 Points de collecte</h2>
-            <div class="map-container">
-                <div class="grid"></div>
-                <div class="map-pin">
-                    <div class="emoji">📍</div>
-                    <div class="city" id="map-current-city">Douala</div>
-                    <div style="font-size:12px;color:var(--text2);" id="map-current-address">Bonaberi, en face du marché</div>
-                </div>
-            </div>
-            <div class="city-list" id="city-list">
-                <button class="city-item" data-city="Douala"><div class="emoji">📍</div><div class="info"><div class="name">Douala - Bonaberi</div><div class="address">En face du marché central</div></div></button>
-                <button class="city-item" data-city="Douala"><div class="emoji">📍</div><div class="info"><div class="name">Douala - Akwa</div><div class="address">Rue des palmiers, immeuble ReLife</div></div></button>
-                <button class="city-item" data-city="Yaoundé"><div class="emoji">📍</div><div class="info"><div class="name">Yaoundé - Bastos</div><div class="address">Carrefour de la poste</div></div></button>
-                <button class="city-item" data-city="Yaoundé"><div class="emoji">📍</div><div class="info"><div class="name">Yaoundé - Mvog-Mbi</div><div class="address">En face de l'hôpital</div></div></button>
-                <button class="city-item" data-city="Bafoussam"><div class="emoji">📍</div><div class="info"><div class="name">Bafoussam</div><div class="address">Marché A, côté station Total</div></div></button>
-                <button class="city-item" data-city="Garoua"><div class="emoji">📍</div><div class="info"><div class="name">Garoua</div><div class="address">Rue du commerce, chez Marie</div></div></button>
-            </div>
-        </div>
-
-        <!-- PRICE GUIDE -->
-        <div id="priceguide" class="screen">
-            <h2 style="font-size:20px;margin-bottom:12px;">📊 Guide des prix</h2>
-            <p style="color:var(--text2);font-size:13px;margin-bottom:16px;">Prix indicatifs du recyclage au Cameroun (FCFA/kg)</p>
-            <div class="price-guide-grid">
-                <div class="price-guide-item"><div class="emoji">🥤</div><div class="name">PET transparent</div><div class="price">150-200</div><div class="sub">Bouteilles d'eau</div></div>
-                <div class="price-guide-item"><div class="emoji">🥤</div><div class="name">PET coloré</div><div class="price">75-100</div><div class="sub">Bouteilles colorées</div></div>
-                <div class="price-guide-item"><div class="emoji">🥫</div><div class="name">Aluminium</div><div class="price">500-800</div><div class="sub">Canettes, casseroles</div></div>
-                <div class="price-guide-item"><div class="emoji">🔩</div><div class="name">Cuivre dénudé</div><div class="price">2000-2500</div><div class="sub">Haute valeur</div></div>
-                <div class="price-guide-item"><div class="emoji">🔩</div><div class="name">Fer/Acier</div><div class="price">100-150</div><div class="sub">Lourd, bonne qualité</div></div>
-                <div class="price-guide-item"><div class="emoji">📦</div><div class="name">Carton ondulé</div><div class="price">50-75</div><div class="sub">Propre, sec</div></div>
-                <div class="price-guide-item"><div class="emoji">📄</div><div class="name">Papier blanc</div><div class="price">75-100</div><div class="sub">Bureau, impression</div></div>
-                <div class="price-guide-item"><div class="emoji">🍾</div><div class="name">Verre transparent</div><div class="price">25-50</div><div class="sub">Bouteilles, bocaux</div></div>
-                <div class="price-guide-item"><div class="emoji">🍾</div><div class="name">Verre coloré</div><div class="price">20-40</div><div class="sub">Brun, vert</div></div>
-                <div class="price-guide-item"><div class="emoji">🛢️</div><div class="name">Huile de friture</div><div class="price">200-300</div><div class="sub">Par litre</div></div>
-                <div class="price-guide-item"><div class="emoji">🛢️</div><div class="name">Huile moteur</div><div class="price">100-200</div><div class="sub">Par litre</div></div>
-                <div class="price-guide-item"><div class="emoji">💻</div><div class="name">Ordinateurs</div><div class="price">200-500</div><div class="sub">Complets</div></div>
-            </div>
-            <div class="card"><p style="font-size:12px;color:var(--text2);">💡 Conseil : Les prix varient selon la qualité et la quantité. Ces prix sont indicatifs et peuvent être négociés.</p></div>
-        </div>
-
-        <!-- CHAT -->
-        <div id="chat" class="screen">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-                <h2 style="font-size:20px;">💬 Messages</h2>
-                <span style="font-size:12px;color:var(--text2);">3 discussions</span>
-            </div>
-            <div id="chat-list">
-                <button class="product-card" data-chat="paul"><div class="emoji">👤</div><div class="info"><div class="title">Paul N.</div><div class="location">Dernier message : "Ok je suis dispo"</div></div><div style="text-align:right;"><div style="font-size:12px;color:var(--text2);">12:30</div><div style="background:var(--green);width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;margin-top:4px;margin-left:auto;">2</div></div></button>
-                <button class="product-card" data-chat="marie"><div class="emoji">👤</div><div class="info"><div class="title">Marie K.</div><div class="location">Dernier message : "Merci pour votre confiance"</div></div><div style="text-align:right;"><div style="font-size:12px;color:var(--text2);">Hier</div></div></button>
-                <button class="product-card" data-chat="jean"><div class="emoji">👤</div><div class="info"><div class="title">Jean D.</div><div class="location">Dernier message : "Quand pouvez-vous passer ?"</div></div><div style="text-align:right;"><div style="font-size:12px;color:var(--text2);">Hier</div></div></button>
-            </div>
-            <div id="chat-conversation" style="display:none;flex:1;flex-direction:column;gap:8px;padding-bottom:8px;">
-                <button style="background:none;border:none;color:#fff;font-size:16px;padding:4px 0;margin-bottom:8px;cursor:pointer;text-align:left;" id="chat-back">← Retour</button>
-                <div id="chat-messages" style="flex:1;display:flex;flex-direction:column;gap:8px;overflow-y:auto;padding-bottom:12px;"></div>
-                <div class="chat-input"><input type="text" id="chat-input-text" placeholder="Écrire un message..."><button id="chat-send-btn">📤</button></div>
-            </div>
-        </div>
-
-        <!-- NOTIFICATIONS -->
-        <div id="notifications" class="screen">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-                <h2 style="font-size:20px;">🔔 Notifications</h2>
-                <button id="notif-mark-all" style="background:none;border:none;color:var(--text2);font-size:12px;cursor:pointer;">Tout marquer comme lu</button>
-            </div>
-            <div id="notif-list">
-                <div class="card" data-notif="1" style="cursor:pointer;"><div style="display:flex;gap:12px;"><div style="font-size:24px;">💬</div><div style="flex:1;"><div style="font-weight:500;">Nouveau message de Paul</div><div style="font-size:13px;color:var(--text2);">"Ok je suis dispo pour la collecte"</div><div style="font-size:11px;color:var(--text2);margin-top:4px;">Il y a 10 min</div></div><div style="width:8px;height:8px;background:var(--green);border-radius:50%;margin-top:6px;"></div></div></div>
-                <div class="card" data-notif="2" style="cursor:pointer;"><div style="display:flex;gap:12px;"><div style="font-size:24px;">♻️</div><div style="flex:1;"><div style="font-weight:500;">Collecte confirmée</div><div style="font-size:13px;color:var(--text2);">Votre collecte de 15kg est planifiée demain</div><div style="font-size:11px;color:var(--text2);margin-top:4px;">Il y a 2h</div></div><div style="width:8px;height:8px;background:var(--green);border-radius:50%;margin-top:6px;"></div></div></div>
-                <div class="card" data-notif="3" style="cursor:pointer;"><div style="display:flex;gap:12px;"><div style="font-size:24px;">⭐</div><div style="flex:1;"><div style="font-weight:500;">Offre Premium disponible</div><div style="font-size:13px;color:var(--text2);">Devenez Premium pour 5000 FCFA/mois</div><div style="font-size:11px;color:var(--text2);margin-top:4px;">Il y a 1j</div></div><div style="width:8px;height:8px;background:var(--green);border-radius:50%;margin-top:6px;"></div></div></div>
-                <div class="card" data-notif="4" style="cursor:pointer;"><div style="display:flex;gap:12px;"><div style="font-size:24px;">📝</div><div style="flex:1;"><div style="font-weight:500;">Nouvel avis reçu</div><div style="font-size:13px;color:var(--text2);">"Excellent service, je recommande !"</div><div style="font-size:11px;color:var(--text2);margin-top:4px;">Il y a 2j</div></div><div style="width:8px;height:8px;background:var(--green);border-radius:50%;margin-top:6px;"></div></div></div>
-            </div>
-        </div>
-
-        <!-- STATS -->
-        <div id="stats" class="screen">
-            <h2 style="font-size:20px;margin-bottom:12px;">📊 Statistiques</h2>
-            <div class="stats-row">
-                <div class="stat-item"><div class="value">12</div><div class="label">Ventes</div></div>
-                <div class="stat-item"><div class="value">45 kg</div><div class="label">Recyclés</div></div>
-                <div class="stat-item"><div class="value">⭐ 4.8</div><div class="label">Note</div></div>
-            </div>
-            <div class="section-title">📈 Collectes par semaine</div>
-            <div class="chart-bars" id="chart-bars" style="display:flex;align-items:flex-end;gap:8px;height:120px;padding:8px 0;">
-                <div style="flex:1;display:flex;flex-direction:column;align-items:center;"><div style="width:100%;height:40%;border-radius:4px 4px 0 0;min-height:8px;background:linear-gradient(180deg,var(--gold),var(--green));"></div><div style="text-align:center;font-size:10px;color:var(--text2);margin-top:6px;">Lun</div></div>
-                <div style="flex:1;display:flex;flex-direction:column;align-items:center;"><div style="width:100%;height:60%;border-radius:4px 4px 0 0;min-height:8px;background:linear-gradient(180deg,var(--gold),var(--green));"></div><div style="text-align:center;font-size:10px;color:var(--text2);margin-top:6px;">Mar</div></div>
-                <div style="flex:1;display:flex;flex-direction:column;align-items:center;"><div style="width:100%;height:30%;border-radius:4px 4px 0 0;min-height:8px;background:linear-gradient(180deg,var(--gold),var(--green));"></div><div style="text-align:center;font-size:10px;color:var(--text2);margin-top:6px;">Mer</div></div>
-                <div style="flex:1;display:flex;flex-direction:column;align-items:center;"><div style="width:100%;height:90%;border-radius:4px 4px 0 0;min-height:8px;background:linear-gradient(180deg,var(--gold),var(--green));"></div><div style="text-align:center;font-size:10px;color:var(--text2);margin-top:6px;">Jeu</div></div>
-                <div style="flex:1;display:flex;flex-direction:column;align-items:center;"><div style="width:100%;height:70%;border-radius:4px 4px 0 0;min-height:8px;background:linear-gradient(180deg,var(--gold),var(--green));"></div><div style="text-align:center;font-size:10px;color:var(--text2);margin-top:6px;">Ven</div></div>
-                <div style="flex:1;display:flex;flex-direction:column;align-items:center;"><div style="width:100%;height:50%;border-radius:4px 4px 0 0;min-height:8px;background:linear-gradient(180deg,var(--gold),var(--green));"></div><div style="text-align:center;font-size:10px;color:var(--text2);margin-top:6px;">Sam</div></div>
-                <div style="flex:1;display:flex;flex-direction:column;align-items:center;"><div style="width:100%;height:20%;border-radius:4px 4px 0 0;min-height:8px;background:linear-gradient(180deg,var(--gold),var(--green));"></div><div style="text-align:center;font-size:10px;color:var(--text2);margin-top:6px;">Dim</div></div>
-            </div>
-            <div class="section-title" style="margin-top:16px;">🧩 Répartition des déchets</div>
-            <div style="display:flex;justify-content:center;padding:16px 0;"><div style="width:120px;height:120px;border-radius:50%;background:conic-gradient(var(--green) 0% 40%,var(--gold) 40% 60%,#3B82F6 60% 80%,#EF4444 80% 100%);"></div></div>
-            <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:12px;"><span><span style="display:inline-block;width:12px;height:12px;border-radius:4px;background:var(--green);vertical-align:middle;margin-right:4px;"></span>Plastique 40%</span><span><span style="display:inline-block;width:12px;height:12px;border-radius:4px;background:var(--gold);vertical-align:middle;margin-right:4px;"></span>Métal 20%</span><span><span style="display:inline-block;width:12px;height:12px;border-radius:4px;background:#3B82F6;vertical-align:middle;margin-right:4px;"></span>Verre 20%</span><span><span style="display:inline-block;width:12px;height:12px;border-radius:4px;background:#EF4444;vertical-align:middle;margin-right:4px;"></span>Carton 20%</span></div>
-            <div class="section-title" style="margin-top:16px;">💰 Revenus mensuels</div>
-            <div style="display:flex;flex-direction:column;gap:6px;">
-                <div><div style="display:flex;justify-content:space-between;font-size:13px;"><span>Jan</span><span>12 500 FCFA</span></div><div style="width:100%;height:6px;background:var(--surface);border-radius:4px;overflow:hidden;"><div style="width:25%;height:100%;background:linear-gradient(90deg,var(--green),var(--gold));border-radius:4px;"></div></div></div>
-                <div><div style="display:flex;justify-content:space-between;font-size:13px;"><span>Fév</span><span>18 200 FCFA</span></div><div style="width:100%;height:6px;background:var(--surface);border-radius:4px;overflow:hidden;"><div style="width:36%;height:100%;background:linear-gradient(90deg,var(--green),var(--gold));border-radius:4px;"></div></div></div>
-                <div><div style="display:flex;justify-content:space-between;font-size:13px;"><span>Mar</span><span>22 800 FCFA</span></div><div style="width:100%;height:6px;background:var(--surface);border-radius:4px;overflow:hidden;"><div style="width:46%;height:100%;background:linear-gradient(90deg,var(--green),var(--gold));border-radius:4px;"></div></div></div>
-                <div><div style="display:flex;justify-content:space-between;font-size:13px;"><span>Avr</span><span>30 500 FCFA</span></div><div style="width:100%;height:6px;background:var(--surface);border-radius:4px;overflow:hidden;"><div style="width:61%;height:100%;background:linear-gradient(90deg,var(--green),var(--gold));border-radius:4px;"></div></div></div>
-            </div>
-        </div>
-
-        <!-- PROFILE -->
-        <div id="profile" class="screen">
-            <div class="profile-header">
-                <div class="profile-avatar">👤</div>
-                <div class="profile-name">Jean Dupont</div>
-                <div class="profile-username">@jean_dupont_237</div>
-                <div class="profile-badge">⭐ PREMIUM</div>
-            </div>
-            <div class="stats-row">
-                <div class="stat"><div class="value">12</div><div class="label">Ventes</div></div>
-                <div class="stat"><div class="value">45kg</div><div class="label">Recyclés</div></div>
-                <div class="stat"><div class="value">⭐ 4.8</div><div class="label">Note</div></div>
-            </div>
-            <div class="profile-menu">
-                <button class="item" id="goto-priceguide"><span class="icon">📊</span><span class="label">Guide des prix</span><span class="arrow">›</span></button>
-                <button class="item"><span class="icon">📍</span><span class="label">Douala, Cameroun</span><span class="arrow">›</span></button>
-                <button class="item"><span class="icon">📞</span><span class="label">+237 677 123 456</span><span class="arrow">›</span></button>
-                <button class="item"><span class="icon">🔒</span><span class="label">Changer le mot de passe</span><span class="arrow">›</span></button>
-                <button class="item"><span class="icon">🔔</span><span class="label">Notifications</span><span style="color:#22C55E;font-size:12px;font-weight:600;">Actives</span></button>
-                <button class="item"><span class="icon">🌐</span><span class="label">Langue</span><span class="arrow">Français ›</span></button>
-                <button class="item"><span class="icon">🌙</span><span class="label">Mode sombre</span><span style="color:#22C55E;font-size:12px;font-weight:600;">Activé</span></button>
-                <button class="item"><span class="icon">📋</span><span class="label">Mes annonces</span><span class="arrow">3 ›</span></button>
-                <button class="item"><span class="icon">⭐</span><span class="label">Mon abonnement Premium</span><span style="color:var(--gold);font-size:12px;font-weight:600;">Actif</span></button>
-                <button class="item danger"><span class="icon">🚪</span><span class="label" style="color:#EF4444;">Déconnexion</span><span class="arrow">›</span></button>
-            </div>
-        </div>
-
-        <!-- BOTTOM NAV -->
-        <div id="bottom-nav" class="active">
-            <button class="nav-item active" data-screen="dashboard"><span class="icon">🏠</span><span class="label">Accueil</span></button>
-            <button class="nav-item" data-screen="feed"><span class="icon">🛒</span><span class="label">Marché</span></button>
-            <button class="nav-item" data-screen="publish"><span class="icon">➕</span><span class="label">Publier</span></button>
-            <button class="nav-item" data-screen="notifications"><span class="icon">🔔</span><span class="label">Notif.</span><span class="badge" id="notif-badge">4</span></button>
-            <button class="nav-item" data-screen="profile"><span class="icon">👤</span><span class="label">Profil</span></button>
+<div class="container" id="app">
+    <!-- SPLASH -->
+    <div id="splash">
+        <span class="emoji">♻️</span>
+        <h1>ReLife</h1>
+        <div class="sub">CAMEROUN</div>
+        <div style="width:160px;height:4px;background:#333;border-radius:4px;margin:24px auto;overflow:hidden">
+            <div id="loader" style="height:100%;width:0%;background:linear-gradient(90deg,#2D5016,#FFD700);transition:width .1s"></div>
         </div>
     </div>
 
-    <script>
-        // ===== STATE =====
-        let currentScreen = 'splash';
-        let onboardingSlide = 0;
-        let isLoggedIn = false;
-        let selectedRating = 0;
-        let chatActive = null;
-        let lang = 'fr';
+    <!-- ONBOARDING -->
+    <div id="onboarding" class="hidden">
+        <div id="slide0">
+            <span class="emoji">♻️</span>
+            <h2 style="font-size:24px;margin-bottom:8px">Valorisez vos déchets</h2>
+            <p style="color:#888;font-size:16px">Transformez vos déchets recyclables en revenus</p>
+        </div>
+        <div id="slide1" class="hidden">
+            <span class="emoji">💰</span>
+            <h2 style="font-size:24px;margin-bottom:8px">Gagnez de l'argent</h2>
+            <p style="color:#888;font-size:16px">Paiement immédiat au kilogramme</p>
+        </div>
+        <div id="slide2" class="hidden">
+            <span class="emoji">🌍</span>
+            <h2 style="font-size:24px;margin-bottom:8px">Protégez l'environnement</h2>
+            <p style="color:#888;font-size:16px">Un Cameroun plus propre et plus vert</p>
+        </div>
+        <div id="slide3" class="hidden">
+            <span class="emoji">⭐</span>
+            <h2 style="font-size:24px;margin-bottom:8px">Devenez Premium</h2>
+            <p style="color:#888;font-size:16px">Tarifs préférentiels et collectes prioritaires</p>
+        </div>
+        <div style="display:flex;gap:8px;justify-content:center;margin:16px 0">
+            <span class="dot" data-slide="0" style="width:8px;height:8px;border-radius:50%;background:#FFD700;display:inline-block;cursor:pointer"></span>
+            <span class="dot" data-slide="1" style="width:8px;height:8px;border-radius:50%;background:#666;display:inline-block;cursor:pointer"></span>
+            <span class="dot" data-slide="2" style="width:8px;height:8px;border-radius:50%;background:#666;display:inline-block;cursor:pointer"></span>
+            <span class="dot" data-slide="3" style="width:8px;height:8px;border-radius:50%;background:#666;display:inline-block;cursor:pointer"></span>
+        </div>
+        <button class="btn" id="onboarding-btn">Suivant</button>
+    </div>
 
-        const feedProducts = [
-            { emoji: '🥤', title: 'Bouteilles PET transparentes', loc: 'Douala, Bonapriso', price: '200 FCFA/kg', qty: '15kg',
-                cat: 'Plastique', status: 'Disponible' },
-            { emoji: '🥤', title: 'Bouteilles PET colorées', loc: 'Yaoundé, Bastos', price: '100 FCFA/kg', qty: '10kg',
-                cat: 'Plastique', status: 'Disponible' },
-            { emoji: '🥫', title: 'Canettes aluminium', loc: 'Bafoussam', price: '700 FCFA/kg', qty: '8kg', cat: 'Métal',
-                status: 'Disponible' },
-            { emoji: '🔩', title: 'Cuivre dénudé', loc: 'Douala, Akwa', price: '2 200 FCFA/kg', qty: '5kg', cat: 'Métal',
-                status: 'Premium' },
-            { emoji: '🔩', title: 'Fer lourd', loc: 'Yaoundé, Mvog-Mbi', price: '150 FCFA/kg', qty: '50kg', cat: 'Métal',
-                status: 'Disponible' },
-            { emoji: '📦', title: 'Carton ondulé propre', loc: 'Bamenda', price: '75 FCFA/kg', qty: '20kg', cat: 'Carton',
-                status: 'Disponible' },
-            { emoji: '📄', title: 'Papier blanc de bureau', loc: 'Douala, Bonapriso', price: '100 FCFA/kg', qty: '12kg',
-                cat: 'Carton', status: 'Disponible' },
-            { emoji: '🍾', title: 'Verre transparent', loc: 'Garoua', price: '50 FCFA/kg', qty: '25kg', cat: 'Verre',
-                status: 'Disponible' },
-            { emoji: '🍾', title: 'Verre coloré (brun/vert)', loc: 'Bafoussam', price: '30 FCFA/kg', qty: '18kg',
-                cat: 'Verre', status: 'Disponible' },
-            { emoji: '🛢️', title: 'Huile de friture usagée', loc: 'Douala, Akwa', price: '300 FCFA/L', qty: '10L',
-                cat: 'Huile', status: 'Disponible' },
-            { emoji: '🛢️', title: 'Huile moteur usagée', loc: 'Yaoundé, Bastos', price: '150 FCFA/L', qty: '20L',
-                cat: 'Huile', status: 'Disponible' },
-            { emoji: '💻', title: 'Ordinateurs complets', loc: 'Douala, Bonapriso', price: '400 FCFA/kg', qty: '30kg',
-                cat: 'Électronique', status: 'Négociable' }
-        ];
+    <!-- LOGIN -->
+    <div id="login" class="hidden">
+        <span class="emoji">♻️</span>
+        <h2 style="font-size:24px;margin-bottom:4px">Bienvenue</h2>
+        <p style="color:#888;font-size:14px;margin-bottom:16px">Entrez votre numéro de téléphone</p>
+        <div style="display:flex;align-items:center;background:#222;border-radius:12px;border:1px solid #333;padding:0 8px">
+            <span style="color:#888;font-weight:600">+237</span>
+            <input type="tel" id="phone-input" class="input" style="border:none;background:transparent;padding:14px 8px" placeholder="6XXXXXXXX">
+        </div>
+        <button class="btn" id="login-btn">Se connecter</button>
+        <button class="link" id="login-skip">Continuer sans compte (test)</button>
+    </div>
 
-        const chatMessages = {
-            paul: [
-                { text: "Bonjour, je suis intéressé par vos bouteilles PET", sent: false, time: "12:20" },
-                { text: "Bonjour ! Oui je les ai encore", sent: true, time: "12:22" },
-                { text: "Ok je suis dispo", sent: false, time: "12:30" }
-            ],
-            marie: [
-                { text: "Merci pour votre confiance", sent: false, time: "Hier" }
-            ],
-            jean: [
-                { text: "Quand pouvez-vous passer ?", sent: false, time: "Hier" }
-            ]
-        };
+    <!-- OTP -->
+    <div id="otp" class="hidden">
+        <span style="font-size:48px;display:block;margin-bottom:8px">🔐</span>
+        <h2 style="font-size:24px;margin-bottom:4px">Vérification</h2>
+        <p style="color:#888;font-size:14px;margin-bottom:16px">Code envoyé au <span id="otp-phone">+237 6XXXXXXXX</span></p>
+        <div class="otp-group">
+            <input type="text" maxlength="1" class="otp-input">
+            <input type="text" maxlength="1" class="otp-input">
+            <input type="text" maxlength="1" class="otp-input">
+            <input type="text" maxlength="1" class="otp-input">
+            <input type="text" maxlength="1" class="otp-input">
+            <input type="text" maxlength="1" class="otp-input">
+        </div>
+        <button class="btn" id="otp-btn">Vérifier</button>
+        <button class="link">Renvoyer le code</button>
+    </div>
 
-        const translations = {
-            fr: {
-                home: 'Accueil',
-                marketplace: 'Marché',
-                publish: 'Publier',
-                notif: 'Notif.',
-                profile: 'Profil',
-                map: 'Carte',
-                messages: 'Messages',
-                stats: 'Stats',
-                balance: '💰 Solde Mobile Money',
-                withdraw: 'Retirer',
-                sales: 'Ventes',
-                recycled: 'Recyclés',
-                rating: 'Note',
-                recent: '⚡ Activité récente',
-                pet: 'Collecte de bouteilles PET',
-                aluminum: 'Canettes aluminium',
-                cardboard: 'Cartons recyclables'
-            },
-            en: {
-                home: 'Home',
-                marketplace: 'Marketplace',
-                publish: 'Publish',
-                notif: 'Notif.',
-                profile: 'Profile',
-                map: 'Map',
-                messages: 'Messages',
-                stats: 'Stats',
-                balance: '💰 Mobile Money Balance',
-                withdraw: 'Withdraw',
-                sales: 'Sales',
-                recycled: 'Recycled',
-                rating: 'Rating',
-                recent: '⚡ Recent Activity',
-                pet: 'PET bottles collection',
-                aluminum: 'Aluminum cans',
-                cardboard: 'Recyclable cardboard'
-            }
-        };
+    <!-- DASHBOARD -->
+    <div id="dashboard" class="hidden">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+            <div><h2 style="font-size:20px">Bonjour 👋</h2><p style="color:#888;font-size:13px">Prêt à recycler aujourd'hui ?</p></div>
+            <button id="lang-toggle" style="background:#FFD700;color:#000;border:none;padding:6px 16px;border-radius:20px;font-weight:700;cursor:pointer">🇫🇷 FR</button>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px">
+            <button class="qa" data-target="map" style="background:#222;border:1px solid #333;border-radius:12px;padding:12px;cursor:pointer;color:#fff">📍 Carte</button>
+            <button class="qa" data-target="chat" style="background:#222;border:1px solid #333;border-radius:12px;padding:12px;cursor:pointer;color:#fff">💬 Messages</button>
+            <button class="qa" data-target="stats" style="background:#222;border:1px solid #333;border-radius:12px;padding:12px;cursor:pointer;color:#fff">📊 Stats</button>
+            <button class="qa" data-target="feed" style="background:#222;border:1px solid #333;border-radius:12px;padding:12px;cursor:pointer;color:#fff">🛒 Marché</button>
+        </div>
+        <div style="background:linear-gradient(135deg,rgba(45,80,22,0.3),rgba(255,215,0,0.08));border:1px solid rgba(255,215,0,0.15);border-radius:16px;padding:16px;display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+            <div><div style="font-size:12px;color:#888">💰 Solde Mobile Money</div><div style="font-size:28px;font-weight:700;color:#FFD700">5 000 FCFA</div></div>
+            <button class="btn" style="max-width:100px;padding:8px 16px;font-size:13px" id="goto-withdrawal">Retirer</button>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px">
+            <div style="text-align:center;padding:12px;background:#222;border-radius:12px;border:1px solid #333"><div style="font-size:20px;font-weight:700">12</div><div style="font-size:10px;color:#888">Ventes</div></div>
+            <div style="text-align:center;padding:12px;background:#222;border-radius:12px;border:1px solid #333"><div style="font-size:20px;font-weight:700">45 kg</div><div style="font-size:10px;color:#888">Recyclés</div></div>
+            <div style="text-align:center;padding:12px;background:#222;border-radius:12px;border:1px solid #333"><div style="font-size:20px;font-weight:700">⭐ 4.8</div><div style="font-size:10px;color:#888">Note</div></div>
+        </div>
+        <div style="font-weight:600;margin-bottom:8px">⚡ Activité récente</div>
+        <div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04)"><span style="font-size:24px">♻️</span><div style="flex:1"><div style="font-size:14px">Collecte de bouteilles PET</div><div style="font-size:12px;color:#888">15kg • 2 250 FCFA</div></div><div style="font-size:11px;color:#888">2h</div></div>
+        <div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04)"><span style="font-size:24px">🥫</span><div style="flex:1"><div style="font-size:14px">Canettes aluminium</div><div style="font-size:12px;color:#888">5kg • 1 000 FCFA</div></div><div style="font-size:11px;color:#888">Hier</div></div>
+    </div>
 
-        function t(key) {
-            return translations[lang]?.[key] || translations.fr[key] || key;
-        }
+    <!-- FEED -->
+    <div id="feed" class="hidden">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><h2 style="font-size:20px">🛒 Marché</h2><button class="btn" style="max-width:100px;padding:8px 16px;font-size:13px" id="goto-publish">+ Publier</button></div>
+        <div style="display:flex;gap:8px;overflow-x:auto;padding:4px 0 12px" id="feed-categories">
+            <button class="cat-chip active" data-cat="Tous" style="padding:6px 16px;border-radius:20px;border:1px solid #333;background:#2D5016;color:#fff;font-size:13px;cursor:pointer;white-space:nowrap;border:none">Tous</button>
+            <button class="cat-chip" data-cat="Plastique" style="padding:6px 16px;border-radius:20px;border:1px solid #333;background:transparent;color:#888;font-size:13px;cursor:pointer;white-space:nowrap">Plastique</button>
+            <button class="cat-chip" data-cat="Métal" style="padding:6px 16px;border-radius:20px;border:1px solid #333;background:transparent;color:#888;font-size:13px;cursor:pointer;white-space:nowrap">Métal</button>
+            <button class="cat-chip" data-cat="Carton" style="padding:6px 16px;border-radius:20px;border:1px solid #333;background:transparent;color:#888;font-size:13px;cursor:pointer;white-space:nowrap">Carton</button>
+            <button class="cat-chip" data-cat="Verre" style="padding:6px 16px;border-radius:20px;border:1px solid #333;background:transparent;color:#888;font-size:13px;cursor:pointer;white-space:nowrap">Verre</button>
+        </div>
+        <div id="feed-list"></div>
+    </div>
 
-        function updateLanguage() {
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                el.textContent = t(el.dataset.i18n);
-            });
-            document.getElementById('lang-toggle').textContent = lang === 'fr' ? '🇫🇷 FR' : '🇬🇧 EN';
-        }
+    <!-- PUBLISH -->
+    <div id="publish" class="hidden">
+        <h2 style="font-size:20px;margin-bottom:16px">➕ Nouvelle annonce</h2>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px">
+            <button class="photo-slot" style="aspect-ratio:1;background:#222;border:2px dashed #333;border-radius:12px;font-size:28px;color:#888;cursor:pointer;border:none">📷</button>
+            <button class="photo-slot" style="aspect-ratio:1;background:#222;border:2px dashed #333;border-radius:12px;font-size:28px;color:#888;cursor:pointer;border:none">📷</button>
+            <button class="photo-slot" style="aspect-ratio:1;background:#222;border:2px dashed #333;border-radius:12px;font-size:28px;color:#888;cursor:pointer;border:none">📷</button>
+        </div>
+        <div style="margin-bottom:12px"><label style="font-size:12px;color:#888;display:block;margin-bottom:4px">Catégorie</label><select id="publish-cat" style="width:100%;padding:12px;border-radius:12px;border:1px solid #333;background:#222;color:#fff;font-size:14px"><option>Plastique</option><option>Métal</option><option>Carton</option><option>Verre</option><option>Huile</option></select></div>
+        <div style="margin-bottom:12px"><label style="font-size:12px;color:#888;display:block;margin-bottom:4px">Titre</label><input type="text" id="publish-title" style="width:100%;padding:12px;border-radius:12px;border:1px solid #333;background:#222;color:#fff;font-size:14px;outline:none" placeholder="Ex: Bouteilles PET"></div>
+        <div style="margin-bottom:12px"><label style="font-size:12px;color:#888;display:block;margin-bottom:4px">Quantité</label><input type="text" id="publish-qty" style="width:100%;padding:12px;border-radius:12px;border:1px solid #333;background:#222;color:#fff;font-size:14px;outline:none" placeholder="Ex: 15 kg"></div>
+        <div style="margin-bottom:12px"><label style="font-size:12px;color:#888;display:block;margin-bottom:4px">Prix (FCFA/kg)</label><input type="number" id="publish-price" style="width:100%;padding:12px;border-radius:12px;border:1px solid #333;background:#222;color:#fff;font-size:14px;outline:none" placeholder="Ex: 200"></div>
+        <div style="margin-bottom:16px"><label style="font-size:12px;color:#888;display:block;margin-bottom:4px">Ville</label><input type="text" id="publish-city" style="width:100%;padding:12px;border-radius:12px;border:1px solid #333;background:#222;color:#fff;font-size:14px;outline:none" placeholder="Ex: Douala"></div>
+        <button class="btn" id="publish-submit">Publier l'annonce</button>
+    </div>
 
-        document.getElementById('lang-toggle').addEventListener('click', function() {
-            lang = lang === 'fr' ? 'en' : 'fr';
-            updateLanguage();
-            showToast(lang === 'fr' ? '🇫🇷 Langue changée' : '🇬🇧 Language changed', 'success');
-        });
+    <!-- WITHDRAWAL -->
+    <div id="withdrawal" class="hidden">
+        <h2 style="font-size:20px;margin-bottom:4px">💰 Retrait MoMo</h2>
+        <p style="color:#888;font-size:14px;margin-bottom:16px">Solde : 5 000 FCFA</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+            <button class="provider selected" data-provider="MTN" style="padding:16px;border-radius:12px;border:2px solid #FFD700;background:rgba(255,215,0,0.06);cursor:pointer;color:#fff"><div style="font-size:28px">📡</div><div style="font-weight:600">MTN</div></button>
+            <button class="provider" data-provider="Orange" style="padding:16px;border-radius:12px;border:2px solid #333;background:transparent;cursor:pointer;color:#fff"><div style="font-size:28px">📡</div><div style="font-weight:600">Orange</div></button>
+        </div>
+        <div style="margin-bottom:12px"><label style="font-size:12px;color:#888;display:block;margin-bottom:4px">Montant (FCFA)</label><input type="number" id="withdrawal-amount" style="width:100%;padding:12px;border-radius:12px;border:1px solid #333;background:#222;color:#fff;font-size:14px;outline:none" placeholder="Ex: 1000"></div>
+        <div style="margin-bottom:16px"><label style="font-size:12px;color:#888;display:block;margin-bottom:4px">Numéro de téléphone</label><input type="tel" id="withdrawal-phone" style="width:100%;padding:12px;border-radius:12px;border:1px solid #333;background:#222;color:#fff;font-size:14px;outline:none" placeholder="6XXXXXXXX"></div>
+        <button class="btn" id="withdrawal-submit">Confirmer le retrait</button>
+        <p style="font-size:12px;color:#888;text-align:center;margin-top:12px">Frais : 1.5% · Délai : instantané</p>
+    </div>
 
-        function showToast(msg, type = '') {
-            const t = document.getElementById('toast');
-            t.textContent = msg;
-            t.className = 'toast ' + type + ' show';
-            clearTimeout(t._timeout);
-            t._timeout = setTimeout(() => t.className = 'toast', 2500);
-        }
+    <!-- MAP -->
+    <div id="map" class="hidden">
+        <h2 style="font-size:20px;margin-bottom:12px">📍 Points de collecte</h2>
+        <div style="height:200px;background:linear-gradient(135deg,#1A2A1A,#2A3A2A);border-radius:16px;display:flex;align-items:center;justify-content:center;flex-direction:column;margin-bottom:16px;position:relative;overflow:hidden">
+            <div style="position:absolute;width:200%;height:200%;background-image:radial-gradient(circle,rgba(255,255,255,0.04)1px,transparent 1px);background-size:40px 40px;animation:scrollGrid 20s linear infinite"></div>
+            <div style="position:relative;z-index:2;text-align:center"><span style="font-size:48px">📍</span><div style="font-size:14px;font-weight:600;color:#FFD700" id="map-current-city">Douala</div><div style="font-size:12px;color:#888" id="map-current-address">Bonaberi, en face du marché</div></div>
+        </div>
+        <div id="city-list" style="display:flex;flex-direction:column;gap:8px"></div>
+    </div>
 
-        function navigateTo(screen) {
-            if (screen === currentScreen && screen !== 'splash') return;
-            document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
-            const target = document.getElementById(screen);
-            if (target) {
-                target.classList.add('active');
-                target.style.animation = 'none';
-                requestAnimationFrame(() => {
-                    target.style.animation = 'fadeUp 0.4s ease';
-                });
-            }
-            currentScreen = screen;
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            document.querySelector(`.nav-item[data-screen="${screen}"]`)?.classList.add('active');
-            updateBadge();
-        }
+    <!-- CHAT -->
+    <div id="chat" class="hidden">
+        <h2 style="font-size:20px;margin-bottom:12px">💬 Messages</h2>
+        <div id="chat-list"></div>
+        <div id="chat-conversation" style="display:none;flex-direction:column;gap:8px">
+            <button id="chat-back" style="background:none;border:none;color:#fff;font-size:16px;cursor:pointer;text-align:left;padding:4px 0">← Retour</button>
+            <div id="chat-messages" style="display:flex;flex-direction:column;gap:8px;max-height:300px;overflow-y:auto;padding-bottom:12px"></div>
+            <div style="display:flex;gap:8px;padding-top:8px;border-top:1px solid #333">
+                <input type="text" id="chat-input-text" style="flex:1;padding:12px;border-radius:12px;border:1px solid #333;background:#222;color:#fff;font-size:14px;outline:none" placeholder="Écrire un message...">
+                <button id="chat-send-btn" style="background:#2D5016;border:none;color:#fff;width:48px;height:48px;border-radius:50%;font-size:20px;cursor:pointer">📤</button>
+            </div>
+        </div>
+    </div>
 
-        function updateBadge() {
-            const unread = document.querySelectorAll('.notif-item .dot:not(.read)').length;
-            const badge = document.getElementById('notif-badge');
-            if (unread > 0) {
-                badge.textContent = unread;
-                badge.classList.remove('hidden');
-            } else {
-                badge.classList.add('hidden');
-            }
-        }
+    <!-- NOTIFICATIONS -->
+    <div id="notifications" class="hidden">
+        <h2 style="font-size:20px;margin-bottom:12px">🔔 Notifications</h2>
+        <div id="notif-list"></div>
+    </div>
 
-        // ===== SPLASH =====
-        let progress = 0;
-        const loaderInterval = setInterval(() => {
-            progress += 2;
-            if (progress > 100) { progress = 100;
-                clearInterval(loaderInterval); }
-            document.getElementById('loader-fill').style.width = progress + '%';
-            if (progress >= 100) {
-                setTimeout(() => { navigateTo('onboarding'); }, 400);
-            }
-        }, 30);
+    <!-- STATS -->
+    <div id="stats" class="hidden">
+        <h2 style="font-size:20px;margin-bottom:12px">📊 Statistiques</h2>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px">
+            <div style="text-align:center;padding:12px;background:#222;border-radius:12px;border:1px solid #333"><div style="font-size:20px;font-weight:700">12</div><div style="font-size:10px;color:#888">Ventes</div></div>
+            <div style="text-align:center;padding:12px;background:#222;border-radius:12px;border:1px solid #333"><div style="font-size:20px;font-weight:700">45 kg</div><div style="font-size:10px;color:#888">Recyclés</div></div>
+            <div style="text-align:center;padding:12px;background:#222;border-radius:12px;border:1px solid #333"><div style="font-size:20px;font-weight:700">⭐ 4.8</div><div style="font-size:10px;color:#888">Note</div></div>
+        </div>
+        <div style="font-weight:600;margin-bottom:8px">📈 Collectes par semaine</div>
+        <div style="display:flex;align-items:flex-end;gap:8px;height:100px;padding:8px 0;margin-bottom:16px">
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center"><div style="width:100%;height:40%;background:linear-gradient(180deg,#FFD700,#2D5016);border-radius:4px 4px 0 0;min-height:8px"></div><div style="font-size:10px;color:#888;margin-top:4px">Lun</div></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center"><div style="width:100%;height:60%;background:linear-gradient(180deg,#FFD700,#2D5016);border-radius:4px 4px 0 0;min-height:8px"></div><div style="font-size:10px;color:#888;margin-top:4px">Mar</div></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center"><div style="width:100%;height:30%;background:linear-gradient(180deg,#FFD700,#2D5016);border-radius:4px 4px 0 0;min-height:8px"></div><div style="font-size:10px;color:#888;margin-top:4px">Mer</div></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center"><div style="width:100%;height:90%;background:linear-gradient(180deg,#FFD700,#2D5016);border-radius:4px 4px 0 0;min-height:8px"></div><div style="font-size:10px;color:#888;margin-top:4px">Jeu</div></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center"><div style="width:100%;height:70%;background:linear-gradient(180deg,#FFD700,#2D5016);border-radius:4px 4px 0 0;min-height:8px"></div><div style="font-size:10px;color:#888;margin-top:4px">Ven</div></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center"><div style="width:100%;height:50%;background:linear-gradient(180deg,#FFD700,#2D5016);border-radius:4px 4px 0 0;min-height:8px"></div><div style="font-size:10px;color:#888;margin-top:4px">Sam</div></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center"><div style="width:100%;height:20%;background:linear-gradient(180deg,#FFD700,#2D5016);border-radius:4px 4px 0 0;min-height:8px"></div><div style="font-size:10px;color:#888;margin-top:4px">Dim</div></div>
+        </div>
+        <div style="font-weight:600;margin-bottom:8px">🧩 Répartition des déchets</div>
+        <div style="display:flex;justify-content:center;padding:12px 0"><div style="width:100px;height:100px;border-radius:50%;background:conic-gradient(#2D5016 0% 40%,#FFD700 40% 60%,#3B82F6 60% 80%,#EF4444 80% 100%)"></div></div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:8px"><span><span style="display:inline-block;width:12px;height:12px;border-radius:4px;background:#2D5016;vertical-align:middle;margin-right:4px"></span>Plastique 40%</span><span><span style="display:inline-block;width:12px;height:12px;border-radius:4px;background:#FFD700;vertical-align:middle;margin-right:4px"></span>Métal 20%</span><span><span style="display:inline-block;width:12px;height:12px;border-radius:4px;background:#3B82F6;vertical-align:middle;margin-right:4px"></span>Verre 20%</span><span><span style="display:inline-block;width:12px;height:12px;border-radius:4px;background:#EF4444;vertical-align:middle;margin-right:4px"></span>Carton 20%</span></div>
+    </div>
 
-        // ===== ONBOARDING =====
-        document.getElementById('onboarding-btn').addEventListener('click', () => {
-            if (onboardingSlide < 3) {
-                onboardingSlide++;
-                updateOnboarding();
-            } else {
-                navigateTo('login');
-            }
-        });
+    <!-- PROFILE -->
+    <div id="profile" class="hidden">
+        <div style="display:flex;flex-direction:column;align-items:center;padding:16px 0">
+            <div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#2D5016,#FFD700);display:flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:8px">👤</div>
+            <div style="font-size:18px;font-weight:700">Jean Dupont</div>
+            <div style="color:#888;font-size:13px">@jean_dupont_237</div>
+            <div style="padding:4px 16px;border-radius:20px;background:linear-gradient(135deg,#FFD700,#B8860B);color:#000;font-size:12px;font-weight:700;margin-top:8px">⭐ PREMIUM</div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px">
+            <div style="text-align:center;padding:12px;background:#222;border-radius:12px;border:1px solid #333"><div style="font-size:18px;font-weight:700">12</div><div style="font-size:10px;color:#888">Ventes</div></div>
+            <div style="text-align:center;padding:12px;background:#222;border-radius:12px;border:1px solid #333"><div style="font-size:18px;font-weight:700">45kg</div><div style="font-size:10px;color:#888">Recyclés</div></div>
+            <div style="text-align:center;padding:12px;background:#222;border-radius:12px;border:1px solid #333"><div style="font-size:18px;font-weight:700">⭐ 4.8</div><div style="font-size:10px;color:#888">Note</div></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px">
+            <button id="goto-priceguide" style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:12px;background:#222;border:1px solid #333;cursor:pointer;color:#fff;width:100%;text-align:left;border:none"><span>📊</span><span style="flex:1;font-size:14px">Guide des prix</span><span style="color:#888">›</span></button>
+            <button style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:12px;background:#222;border:1px solid #333;cursor:pointer;color:#fff;width:100%;text-align:left;border:none"><span>📍</span><span style="flex:1;font-size:14px">Douala, Cameroun</span><span style="color:#888">›</span></button>
+            <button style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:12px;background:#222;border:1px solid #333;cursor:pointer;color:#fff;width:100%;text-align:left;border:none"><span>📞</span><span style="flex:1;font-size:14px">+237 677 123 456</span><span style="color:#888">›</span></button>
+            <button style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:12px;background:#222;border:1px solid #333;cursor:pointer;color:#fff;width:100%;text-align:left;border:none"><span>🔒</span><span style="flex:1;font-size:14px">Changer le mot de passe</span><span style="color:#888">›</span></button>
+            <button style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:12px;background:#222;border:1px solid #333;cursor:pointer;color:#fff;width:100%;text-align:left;border:none"><span>🚪</span><span style="flex:1;font-size:14px;color:#EF4444">Déconnexion</span><span style="color:#888">›</span></button>
+        </div>
+    </div>
 
-        function updateOnboarding() {
-            document.querySelectorAll('.onboarding-slide').forEach((el, i) => {
-                el.classList.toggle('active', i === onboardingSlide);
-            });
-            document.querySelectorAll('.dot').forEach((el, i) => {
-                el.classList.toggle('active', i === onboardingSlide);
-            });
-            document.getElementById('onboarding-btn').textContent = onboardingSlide === 3 ? '🚀 Démarrer' : 'Suivant';
-        }
+    <!-- BOTTOM NAV -->
+    <div style="display:flex;justify-content:space-around;padding:8px 0;border-top:1px solid #333;margin-top:16px;background:#0F0F0F">
+        <button class="nav-btn active" data-screen="dashboard" style="display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;color:#FFD700;font-size:10px;cursor:pointer;padding:4px 8px"><span style="font-size:20px">🏠</span><span>Accueil</span></button>
+        <button class="nav-btn" data-screen="feed" style="display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;color:#888;font-size:10px;cursor:pointer;padding:4px 8px"><span style="font-size:20px">🛒</span><span>Marché</span></button>
+        <button class="nav-btn" data-screen="publish" style="display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;color:#888;font-size:10px;cursor:pointer;padding:4px 8px"><span style="font-size:20px">➕</span><span>Publier</span></button>
+        <button class="nav-btn" data-screen="notifications" style="display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;color:#888;font-size:10px;cursor:pointer;padding:4px 8px;position:relative"><span style="font-size:20px">🔔</span><span>Notif.</span><span id="notif-badge" style="position:absolute;top:0;right:-4px;background:#EF4444;color:#fff;font-size:9px;font-weight:700;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center">4</span></button>
+        <button class="nav-btn" data-screen="profile" style="display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;color:#888;font-size:10px;cursor:pointer;padding:4px 8px"><span style="font-size:20px">👤</span><span>Profil</span></button>
+    </div>
+</div>
 
-        document.querySelectorAll('.dot').forEach(d => {
-            d.addEventListener('click', () => {
-                onboardingSlide = parseInt(d.dataset.slide);
-                updateOnboarding();
-            });
-        });
+<style>
+    @keyframes scrollGrid{0%{transform:translate(0,0)}100%{transform:translate(-40px,-40px)}}
+    .hidden{display:none!important}
+    .cat-chip.active{background:#2D5016;color:#fff!important}
+    .provider.selected{border-color:#FFD700!important;background:rgba(255,215,0,0.06)!important}
+    .nav-btn.active{color:#FFD700!important}
+    .photo-slot.filled{border-color:#2D5016!important;background:rgba(45,80,22,0.2)!important}
+</style>
 
-        // ===== LOGIN =====
-        document.getElementById('login-btn').addEventListener('click', () => {
-            const phone = document.getElementById('phone-input').value.trim();
-            if (phone.length < 8) {
-                showToast('Veuillez entrer un numéro valide', 'error');
-                return;
-            }
-            document.getElementById('otp-phone').textContent = '+237 ' + phone;
-            navigateTo('otp');
-        });
+<script>
+    // ===== GLOBAL STATE =====
+    let currentScreen = 'splash';
+    let onboardingSlide = 0;
+    let isLoggedIn = false;
+    let chatActive = null;
+    let lang = 'fr';
 
-        document.getElementById('login-skip').addEventListener('click', () => {
-            isLoggedIn = true;
-            document.getElementById('bottom-nav').classList.add('active');
-            navigateTo('dashboard');
-            showToast('Mode test activé', 'success');
-        });
+    const feedProducts = [
+        { emoji: '🥤', title: 'Bouteilles PET transparentes', loc: 'Douala, Bonapriso', price: '200 FCFA/kg', qty: '15kg', cat: 'Plastique' },
+        { emoji: '🥤', title: 'Bouteilles PET colorées', loc: 'Yaoundé, Bastos', price: '100 FCFA/kg', qty: '10kg', cat: 'Plastique' },
+        { emoji: '🥫', title: 'Canettes aluminium', loc: 'Bafoussam', price: '700 FCFA/kg', qty: '8kg', cat: 'Métal' },
+        { emoji: '🔩', title: 'Cuivre dénudé', loc: 'Douala, Akwa', price: '2 200 FCFA/kg', qty: '5kg', cat: 'Métal' },
+        { emoji: '📦', title: 'Carton ondulé propre', loc: 'Bamenda', price: '75 FCFA/kg', qty: '20kg', cat: 'Carton' },
+        { emoji: '🍾', title: 'Verre transparent', loc: 'Garoua', price: '50 FCFA/kg', qty: '25kg', cat: 'Verre' },
+        { emoji: '🛢️', title: 'Huile de friture usagée', loc: 'Douala, Akwa', price: '300 FCFA/L', qty: '10L', cat: 'Huile' },
+        { emoji: '💻', title: 'Ordinateurs complets', loc: 'Douala, Bonapriso', price: '400 FCFA/kg', qty: '30kg', cat: 'Électronique' }
+    ];
 
-        // ===== OTP =====
-        const otpInputs = document.querySelectorAll('.otp-input');
-        otpInputs.forEach((input, idx) => {
-            input.addEventListener('input', () => {
-                if (input.value.length === 1 && idx < otpInputs.length - 1) {
-                    otpInputs[idx + 1].focus();
-                }
-            });
-            input.addEventListener('keydown', (e) => {
-                if (e.key === 'Backspace' && input.value.length === 0 && idx > 0) {
-                    otpInputs[idx - 1].focus();
-                }
-            });
-        });
+    const chatMessages = {
+        paul: [
+            { text: "Bonjour, je suis intéressé par vos bouteilles PET", sent: false, time: "12:20" },
+            { text: "Bonjour ! Oui je les ai encore", sent: true, time: "12:22" },
+            { text: "Ok je suis dispo", sent: false, time: "12:30" }
+        ],
+        marie: [{ text: "Merci pour votre confiance", sent: false, time: "Hier" }],
+        jean: [{ text: "Quand pouvez-vous passer ?", sent: false, time: "Hier" }]
+    };
 
-        document.getElementById('otp-btn').addEventListener('click', () => {
-            let code = '';
-            otpInputs.forEach(inp => code += inp.value);
-            if (code.length < 6) {
-                showToast('Entrez les 6 chiffres du code', 'error');
-                return;
-            }
-            if (code === '123456') {
-                isLoggedIn = true;
-                document.getElementById('bottom-nav').classList.add('active');
-                navigateTo('dashboard');
-                showToast('✅ Connexion réussie !', 'success');
-            } else {
-                showToast('❌ Code incorrect. Essayez 123456', 'error');
-            }
-        });
+    const cityData = [
+        { name: 'Douala - Bonaberi', address: 'En face du marché central', city: 'Douala' },
+        { name: 'Douala - Akwa', address: 'Rue des palmiers, immeuble ReLife', city: 'Douala' },
+        { name: 'Yaoundé - Bastos', address: 'Carrefour de la poste', city: 'Yaoundé' },
+        { name: 'Yaoundé - Mvog-Mbi', address: 'En face de l\'hôpital', city: 'Yaoundé' },
+        { name: 'Bafoussam', address: 'Marché A, côté station Total', city: 'Bafoussam' },
+        { name: 'Garoua', address: 'Rue du commerce, chez Marie', city: 'Garoua' }
+    ];
 
-        // ===== NAV =====
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.addEventListener('click', () => {
-                const screen = item.dataset.screen;
-                if (screen === 'notifications') {
-                    setTimeout(() => {
-                        document.querySelectorAll('.notif-item .dot').forEach(d => d.classList.add('read'));
-                        updateBadge();
-                    }, 300);
-                }
-                navigateTo(screen);
-            });
-        });
+    const notifs = [
+        { icon: '💬', title: 'Nouveau message de Paul', body: '"Ok je suis dispo pour la collecte"', time: 'Il y a 10 min' },
+        { icon: '♻️', title: 'Collecte confirmée', body: 'Votre collecte de 15kg est planifiée demain', time: 'Il y a 2h' },
+        { icon: '⭐', title: 'Offre Premium disponible', body: 'Devenez Premium pour 5000 FCFA/mois', time: 'Il y a 1j' },
+        { icon: '📝', title: 'Nouvel avis reçu', body: '"Excellent service, je recommande !"', time: 'Il y a 2j' }
+    ];
 
-        document.querySelectorAll('.qa-item').forEach(item => {
-            item.addEventListener('click', () => {
-                navigateTo(item.dataset.target);
-            });
-        });
+    // ===== TOAST =====
+    function showToast(msg, type = '') {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.className = 'toast ' + type + ' show';
+        clearTimeout(t._timeout);
+        t._timeout = setTimeout(() => t.className = 'toast', 2500);
+    }
 
-        // ===== FEED =====
-        function renderFeed(filter = 'Tous') {
-            const container = document.getElementById('feed-list');
-            const filtered = filter === 'Tous' ? feedProducts : feedProducts.filter(p => p.cat === filter);
-            if (filtered.length === 0) {
-                container.innerHTML =
-                    '<div style="text-align:center;padding:40px 0;color:var(--text2);">Aucune annonce dans cette catégorie</div>';
-                return;
-            }
-            container.innerHTML = filtered.map((p, i) => {
-                const statusClass = p.status === 'Premium' ? 'premium' : p.status === 'Négociable' ? 'negotiable' : '';
-                return `<div class="product-card" data-index="${i}"><div class="emoji">${p.emoji}</div><div class="info"><div class="title">${p.title}</div><div class="location">${p.loc}</div><span class="status ${statusClass}">${p.status}</span></div><div><div class="price">${p.price}</div><div style="font-size:11px;color:var(--text2);text-align:right;">${p.qty}</div></div></div>`;
-            }).join('');
-            container.querySelectorAll('.product-card').forEach(el => {
-                el.addEventListener('click', () => {
-                    const idx = parseInt(el.dataset.index);
-                    const p = filtered[idx];
-                    openDetail(p);
-                });
-            });
-        }
-
-        document.querySelectorAll('.category-chip').forEach(chip => {
-            chip.addEventListener('click', () => {
-                document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
-                chip.classList.add('active');
-                renderFeed(chip.dataset.cat);
-            });
-        });
-
-        function openDetail(p) {
-            document.getElementById('detail-emoji').textContent = p.emoji;
-            document.getElementById('detail-title').textContent = p.title;
-            document.getElementById('detail-location').textContent = p.loc;
-            document.getElementById('detail-price').textContent = p.price;
-            navigateTo('detail');
-            selectedRating = 0;
-            document.querySelectorAll('#rating-stars .star').forEach(s => s.textContent = '☆');
-        }
-
-        document.getElementById('detail-back').addEventListener('click', () => navigateTo('feed'));
-
-        document.querySelectorAll('#rating-stars .star').forEach(star => {
-            star.addEventListener('click', () => {
-                const val = parseInt(star.dataset.val);
-                selectedRating = val;
-                document.querySelectorAll('#rating-stars .star').forEach(s => {
-                    const sv = parseInt(s.dataset.val);
-                    s.textContent = sv <= val ? '★' : '☆';
-                    s.classList.toggle('active', sv <= val);
-                });
-                showToast('⭐ Noté ' + val + '/5 ! Merci !', 'success');
-            });
-        });
-
-        // ===== CHAT =====
-        document.querySelectorAll('#chat-list .product-card').forEach(el => {
-            el.addEventListener('click', () => {
-                const chatId = el.dataset.chat;
-                openChat(chatId);
-            });
-        });
-
-        document.getElementById('goto-chat-from-detail').addEventListener('click', () => { navigateTo('chat'); });
-        document.getElementById('chat-back').addEventListener('click', () => {
-            document.getElementById('chat-conversation').style.display = 'none';
-            document.getElementById('chat-list').style.display = 'block';
-        });
-
-        function openChat(chatId) {
-            chatActive = chatId;
-            document.getElementById('chat-list').style.display = 'none';
-            document.getElementById('chat-conversation').style.display = 'flex';
-            renderChatMessages();
-        }
-
-        function renderChatMessages() {
-            const container = document.getElementById('chat-messages');
-            const msgs = chatMessages[chatActive] || [];
-            container.innerHTML = msgs.map(m =>
-                `<div class="chat-message ${m.sent ? 'sent' : ''}"><div class="bubble"><div class="text">${m.text}</div><div class="time">${m.time}</div></div></div>`
-                ).join('');
-            container.scrollTop = container.scrollHeight;
-        }
-
-        document.getElementById('chat-send-btn').addEventListener('click', sendMessage);
-        document.getElementById('chat-input-text').addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') sendMessage();
-        });
-
-        function sendMessage() {
-            const input = document.getElementById('chat-input-text');
-            const text = input.value.trim();
-            if (!text || !chatActive) return;
-            const now = new Date();
-            const time = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
-            if (!chatMessages[chatActive]) chatMessages[chatActive] = [];
-            chatMessages[chatActive].push({ text, sent: true, time });
-            input.value = '';
-            renderChatMessages();
-            setTimeout(() => {
-                const replies = [
-                    "Merci pour votre message ! Je vous réponds dans la journée.",
-                    "Parfait, je confirme la collecte pour demain.",
-                    "Très bien, je suis disponible.",
-                    "D'accord, à bientôt !",
-                    "Je prends note de votre demande."
-                ];
-                const reply = replies[Math.floor(Math.random() * replies.length)];
-                chatMessages[chatActive].push({ text: reply, sent: false, time: 'Maintenant' });
-                renderChatMessages();
-                showToast('📩 Nouveau message reçu', 'success');
-            }, 1500);
-        }
-
-        // ===== WITHDRAWAL =====
-        document.getElementById('goto-withdrawal').addEventListener('click', () => navigateTo('withdrawal'));
-
-        document.querySelectorAll('.provider-item').forEach(el => {
-            el.addEventListener('click', () => {
-                document.querySelectorAll('.provider-item').forEach(p => p.classList.remove('selected'));
-                el.classList.add('selected');
-            });
-        });
-
-        document.getElementById('withdrawal-submit').addEventListener('click', () => {
-            const amount = document.getElementById('withdrawal-amount').value;
-            const phone = document.getElementById('withdrawal-phone').value;
-            if (!amount || parseFloat(amount) <= 0) {
-                showToast('Veuillez entrer un montant valide', 'error');
-                return;
-            }
-            if (!phone || phone.length < 8) {
-                showToast('Veuillez entrer un numéro valide', 'error');
-                return;
-            }
-            showToast('✅ Demande de retrait de ' + amount + ' FCFA envoyée !', 'success');
-            document.getElementById('withdrawal-amount').value = '';
-            document.getElementById('withdrawal-phone').value = '';
-        });
-
-        // ===== PUBLISH =====
-        document.getElementById('goto-publish').addEventListener('click', () => navigateTo('publish'));
-
-        document.querySelectorAll('.publish-photos .slot').forEach(slot => {
-            slot.addEventListener('click', () => {
-                slot.classList.toggle('filled');
-                slot.textContent = slot.classList.contains('filled') ? '✅' : '📷';
-                if (slot.classList.contains('filled')) {
-                    showToast('📸 Photo ajoutée', 'success');
-                }
-            });
-        });
-
-        document.getElementById('publish-submit').addEventListener('click', () => {
-            const title = document.getElementById('publish-title').value.trim();
-            const qty = document.getElementById('publish-qty').value.trim();
-            const price = document.getElementById('publish-price').value.trim();
-            const city = document.getElementById('publish-city').value.trim();
-            if (!title || !qty || !price || !city) {
-                showToast('Veuillez remplir tous les champs', 'error');
-                return;
-            }
-            showToast('✅ Annonce publiée avec succès !', 'success');
-            document.getElementById('publish-title').value = '';
-            document.getElementById('publish-qty').value = '';
-            document.getElementById('publish-price').value = '';
-            document.getElementById('publish-city').value = '';
-            document.querySelectorAll('.publish-photos .slot').forEach(s => {
-                s.classList.remove('filled');
-                s.textContent = '📷';
-            });
-            navigateTo('feed');
-        });
-
-        // ===== NOTIFICATIONS =====
-        document.querySelectorAll('.notif-item').forEach(item => {
-            item.addEventListener('click', () => {
-                const dot = item.querySelector('.dot');
-                if (dot) dot.classList.add('read');
-                showToast('✅ Notification marquée comme lue', 'success');
-                updateBadge();
-            });
-        });
-
-        document.getElementById('notif-mark-all').addEventListener('click', () => {
-            document.querySelectorAll('.notif-item .dot').forEach(d => d.classList.add('read'));
-            showToast('✅ Toutes les notifications sont lues', 'success');
-            updateBadge();
-        });
-
-        // ===== MAP =====
-        document.querySelectorAll('.city-item').forEach(item => {
-            item.addEventListener('click', () => {
-                const city = item.querySelector('.name').textContent;
-                const address = item.querySelector('.address').textContent;
-                document.getElementById('map-current-city').textContent = city;
-                document.getElementById('map-current-address').textContent = address;
-                showToast('📍 ' + city + ' sélectionné', 'success');
-            });
-        });
-
-        document.getElementById('goto-priceguide').addEventListener('click', () => navigateTo('priceguide'));
-
-        // ===== DEEP LINKING =====
-        function handleDeepLink() {
-            const params = new URLSearchParams(window.location.search);
-            const productId = params.get('product');
-            if (productId) {
-                setTimeout(() => {
-                    navigateTo('detail');
-                    showToast('📦 Produit chargé !', 'success');
-                }, 1000);
-            }
-        }
-        document.addEventListener('DOMContentLoaded', handleDeepLink);
-        setTimeout(handleDeepLink, 500);
-
-        // ===== GEOLOCATION =====
-        function getUserLocation() {
-            if ('geolocation' in navigator) {
-                navigator.geolocation.getCurrentPosition(
-                    (pos) => {
-                        const lat = pos.coords.latitude;
-                        const lng = pos.coords.longitude;
-                        showToast('📍 Position trouvée !', 'success');
-                        displayUserLocation(lat, lng);
-                        updateMapWithNearbyPoints(lat, lng);
-                    },
-                    () => { showToast('⚠️ Impossible de localiser', 'error'); }
-                );
-            }
-        }
-
-        function displayUserLocation(lat, lng) {
-            const container = document.querySelector('.map-container');
-            if (container) {
-                const div = document.createElement('div');
-                div.style.cssText =
-                    'position:absolute;bottom:10px;left:10px;background:rgba(0,0,0,0.7);padding:8px 12px;border-radius:8px;font-size:11px;color:#22C55E;z-index:10;';
-                div.textContent = '📍 Vous êtes ici (' + lat.toFixed(4) + ', ' + lng.toFixed(4) + ')';
-                container.appendChild(div);
-            }
-        }
-
-        function updateMapWithNearbyPoints(lat, lng) {
-            const points = [
-                { name: 'Douala - Bonaberi', lat: 4.04, lng: 9.69 },
-                { name: 'Douala - Akwa', lat: 4.05, lng: 9.70 },
-                { name: 'Yaoundé - Bastos', lat: 3.87, lng: 11.52 },
-                { name: 'Yaoundé - Mvog-Mbi', lat: 3.86, lng: 11.51 },
-                { name: 'Bafoussam', lat: 5.48, lng: 10.42 },
-                { name: 'Garoua', lat: 9.30, lng: 13.40 }
-            ];
-            const withDist = points.map(p => {
-                const d = calculateDistance(lat, lng, p.lat, p.lng);
-                return { ...p, distance: d.toFixed(1) };
-            });
-            withDist.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
-            const list = document.getElementById('city-list');
-            if (list) {
-                list.innerHTML = withDist.map(p =>
-                    `<button class="city-item" data-city="${p.name}"><div class="emoji">📍</div><div class="info"><div class="name">${p.name}</div><div class="address">À ${p.distance} km de vous</div></div></button>`
-                ).join('');
-                list.querySelectorAll('.city-item').forEach(item => {
-                    item.addEventListener('click', () => {
-                        const city = item.querySelector('.name').textContent;
-                        const address = item.querySelector('.address').textContent;
-                        document.getElementById('map-current-city').textContent = city;
-                        document.getElementById('map-current-address').textContent = address;
-                        showToast('📍 ' + city + ' sélectionné', 'success');
-                    });
-                });
-            }
-        }
-
-        function calculateDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371;
-            const dLat = (lat2 - lat1) * Math.PI / 180;
-            const dLon = (lon2 - lon1) * Math.PI / 180;
-            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-                Math.sin(dLon / 2) * Math.sin(dLon / 2);
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            return R * c;
-        }
-
-        setTimeout(getUserLocation, 3000);
-
-        // ===== INIT =====
-        renderFeed();
+    // ===== NAVIGATION =====
+    function navigateTo(screen) {
+        if (screen === currentScreen && screen !== 'splash') return;
+        document.querySelectorAll('.container > div:not(#toast)').forEach(el => el.classList.add('hidden'));
+        const target = document.getElementById(screen);
+        if (target) target.classList.remove('hidden');
+        currentScreen = screen;
+        document.querySelectorAll('.nav-btn').forEach(n => n.classList.remove('active'));
+        document.querySelector(`.nav-btn[data-screen="${screen}"]`)?.classList.add('active');
         updateBadge();
+    }
 
-        document.addEventListener('keydown', (e) => {
-            if (e.key === '1' && e.ctrlKey) {
-                isLoggedIn = true;
-                document.getElementById('bottom-nav').classList.add('active');
-                navigateTo('dashboard');
-                showToast('🔓 Mode test activé', 'success');
-            }
+    function updateBadge() {
+        const badge = document.getElementById('notif-badge');
+        if (badge) badge.textContent = '4';
+    }
+
+    // ===== SPLASH =====
+    let progress = 0;
+    const loaderInterval = setInterval(() => {
+        progress += 2;
+        if (progress > 100) { progress = 100;
+            clearInterval(loaderInterval); }
+        document.getElementById('loader').style.width = progress + '%';
+        if (progress >= 100) {
+            setTimeout(() => { navigateTo('onboarding'); }, 400);
+        }
+    }, 30);
+
+    // ===== ONBOARDING =====
+    function updateOnboarding() {
+        document.querySelectorAll('.onboarding-slide').forEach((el, i) => el.classList.toggle('hidden', i !== onboardingSlide));
+        document.querySelectorAll('.dot').forEach((el, i) => {
+            el.style.background = i === onboardingSlide ? '#FFD700' : '#666';
         });
+        document.getElementById('onboarding-btn').textContent = onboardingSlide === 3 ? '🚀 Démarrer' : 'Suivant';
+    }
 
-        console.log('♻️ ReLife Cameroun - Application chargée !');
-        console.log('🔑 Code OTP : 123456');
-        console.log('📊 Prix réels du recyclage au Cameroun intégrés');
-    </script>
+    document.getElementById('onboarding-btn').addEventListener('click', () => {
+        if (onboardingSlide < 3) { onboardingSlide++;
+            updateOnboarding(); } else { navigateTo('login'); }
+    });
+
+    document.querySelectorAll('.dot').forEach(d => {
+        d.addEventListener('click', () => {
+            onboardingSlide = parseInt(d.dataset.slide);
+            updateOnboarding();
+        });
+    });
+
+    // ===== LOGIN =====
+    document.getElementById('login-btn').addEventListener('click', () => {
+        const phone = document.getElementById('phone-input').value.trim();
+        if (phone.length < 8) { showToast('Veuillez entrer un numéro valide', 'error'); return; }
+        document.getElementById('otp-phone').textContent = '+237 ' + phone;
+        navigateTo('otp');
+    });
+
+    document.getElementById('login-skip').addEventListener('click', () => {
+        isLoggedIn = true;
+        navigateTo('dashboard');
+        showToast('Mode test activé', 'success');
+    });
+
+    // ===== OTP =====
+    const otpInputs = document.querySelectorAll('.otp-input');
+    otpInputs.forEach((input, idx) => {
+        input.addEventListener('input', () => {
+            if (input.value.length === 1 && idx < otpInputs.length - 1) otpInputs[idx + 1].focus();
+        });
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && input.value.length === 0 && idx > 0) otpInputs[idx - 1].focus();
+        });
+    });
+
+    document.getElementById('otp-btn').addEventListener('click', () => {
+        let code = '';
+        otpInputs.forEach(inp => code += inp.value);
+        if (code.length < 6) { showToast('Entrez les 6 chiffres du code', 'error'); return; }
+        if (code === '123456') {
+            isLoggedIn = true;
+            navigateTo('dashboard');
+            showToast('✅ Connexion réussie !', 'success');
+        } else {
+            showToast('❌ Code incorrect. Essayez 123456', 'error');
+        }
+    });
+
+    // ===== BILINGUISME =====
+    const translations = {
+        fr: { home: 'Accueil', marketplace: 'Marché', publish: 'Publier', notif: 'Notif.', profile: 'Profil', map: 'Carte',
+            messages: 'Messages', stats: 'Stats', balance: '💰 Solde Mobile Money', withdraw: 'Retirer', sales: 'Ventes',
+            recycled: 'Recyclés', rating: 'Note' },
+        en: { home: 'Home', marketplace: 'Marketplace', publish: 'Publish', notif: 'Notif.', profile: 'Profile', map: 'Map',
+            messages: 'Messages', stats: 'Stats', balance: '💰 Mobile Money Balance', withdraw: 'Withdraw', sales: 'Sales',
+            recycled: 'Recycled', rating: 'Rating' }
+    };
+
+    document.getElementById('lang-toggle').addEventListener('click', function() {
+        lang = lang === 'fr' ? 'en' : 'fr';
+        this.textContent = lang === 'fr' ? '🇫🇷 FR' : '🇬🇧 EN';
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            el.textContent = translations[lang][el.dataset.i18n] || el.dataset.i18n;
+        });
+        showToast(lang === 'fr' ? '🇫🇷 Langue changée' : '🇬🇧 Language changed', 'success');
+    });
+
+    // ===== NAV =====
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const screen = btn.dataset.screen;
+            if (screen === 'notifications') {
+                document.querySelectorAll('.notif-item .dot').forEach(d => d.classList.add('read'));
+                updateBadge();
+            }
+            navigateTo(screen);
+        });
+    });
+
+    document.querySelectorAll('.qa').forEach(el => {
+        el.addEventListener('click', () => navigateTo(el.dataset.target));
+    });
+
+    // ===== FEED =====
+    function renderFeed(filter = 'Tous') {
+        const container = document.getElementById('feed-list');
+        const filtered = filter === 'Tous' ? feedProducts : feedProducts.filter(p => p.cat === filter);
+        if (filtered.length === 0) {
+            container.innerHTML = '<div style="text-align:center;padding:20px 0;color:#888">Aucune annonce</div>';
+            return;
+        }
+        container.innerHTML = filtered.map((p, i) =>
+            `<div class="product-card" data-index="${i}" style="display:flex;gap:12px;padding:12px;background:#222;border-radius:16px;border:1px solid #333;margin-bottom:8px;cursor:pointer;align-items:center">
+                <span style="font-size:32px;width:48px;text-align:center">${p.emoji}</span>
+                <div style="flex:1"><div style="font-weight:600">${p.title}</div><div style="font-size:12px;color:#888">${p.loc}</div></div>
+                <div style="text-align:right"><div style="color:#FFD700;font-weight:700">${p.price}</div><div style="font-size:11px;color:#888">${p.qty}</div></div>
+            </div>`
+        ).join('');
+        container.querySelectorAll('.product-card').forEach(el => {
+            el.addEventListener('click', () => {
+                showToast('📦 Détail du produit', 'success');
+            });
+        });
+    }
+
+    document.querySelectorAll('.cat-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+            document.querySelectorAll('.cat-chip').forEach(c => { c.classList.remove('active');
+                c.style.background = 'transparent';
+                c.style.color = '#888'; });
+            chip.classList.add('active');
+            chip.style.background = '#2D5016';
+            chip.style.color = '#fff';
+            renderFeed(chip.dataset.cat);
+        });
+    });
+
+    document.getElementById('goto-publish').addEventListener('click', () => navigateTo('publish'));
+    document.getElementById('goto-withdrawal').addEventListener('click', () => navigateTo('withdrawal'));
+    document.getElementById('goto-priceguide').addEventListener('click', () => navigateTo('priceguide'));
+
+    // ===== PUBLISH =====
+    document.querySelectorAll('.photo-slot').forEach(slot => {
+        slot.addEventListener('click', () => {
+            slot.classList.toggle('filled');
+            slot.textContent = slot.classList.contains('filled') ? '✅' : '📷';
+            if (slot.classList.contains('filled')) showToast('📸 Photo ajoutée', 'success');
+        });
+    });
+
+    document.getElementById('publish-submit').addEventListener('click', () => {
+        const title = document.getElementById('publish-title').value.trim();
+        const qty = document.getElementById('publish-qty').value.trim();
+        const price = document.getElementById('publish-price').value.trim();
+        const city = document.getElementById('publish-city').value.trim();
+        if (!title || !qty || !price || !city) {
+            showToast('Veuillez remplir tous les champs', 'error');
+            return;
+        }
+        showToast('✅ Annonce publiée !', 'success');
+        document.getElementById('publish-title').value = '';
+        document.getElementById('publish-qty').value = '';
+        document.getElementById('publish-price').value = '';
+        document.getElementById('publish-city').value = '';
+        document.querySelectorAll('.photo-slot').forEach(s => { s.classList.remove('filled');
+            s.textContent = '📷'; });
+        navigateTo('feed');
+    });
+
+    // ===== WITHDRAWAL =====
+    document.querySelectorAll('.provider').forEach(el => {
+        el.addEventListener('click', () => {
+            document.querySelectorAll('.provider').forEach(p => { p.classList.remove('selected');
+                p.style.borderColor = '#333';
+                p.style.background = 'transparent'; });
+            el.classList.add('selected');
+            el.style.borderColor = '#FFD700';
+            el.style.background = 'rgba(255,215,0,0.06)';
+        });
+    });
+
+    document.getElementById('withdrawal-submit').addEventListener('click', () => {
+        const amount = document.getElementById('withdrawal-amount').value;
+        const phone = document.getElementById('withdrawal-phone').value;
+        if (!amount || parseFloat(amount) <= 0) { showToast('Montant invalide', 'error'); return; }
+        if (!phone || phone.length < 8) { showToast('Numéro invalide', 'error'); return; }
+        showToast('✅ Retrait de ' + amount + ' FCFA demandé !', 'success');
+    });
+
+    // ===== CHAT =====
+    document.querySelectorAll('#chat-list .product-card').forEach(el => {
+        el.addEventListener('click', () => {
+            const chatId = el.dataset.chat;
+            openChat(chatId);
+        });
+    });
+
+    document.getElementById('chat-back').addEventListener('click', () => {
+        document.getElementById('chat-conversation').style.display = 'none';
+        document.getElementById('chat-list').style.display = 'block';
+    });
+
+    function openChat(chatId) {
+        chatActive = chatId;
+        document.getElementById('chat-list').style.display = 'none';
+        document.getElementById('chat-conversation').style.display = 'flex';
+        renderChatMessages();
+    }
+
+    function renderChatMessages() {
+        const container = document.getElementById('chat-messages');
+        const msgs = chatMessages[chatActive] || [];
+        container.innerHTML = msgs.map(m =>
+            `<div style="display:flex;${m.sent ? 'justify-content:flex-end' : ''};margin-bottom:8px">
+                <div style="max-width:80%;padding:10px 14px;border-radius:12px;background:${m.sent ? '#2D5016' : '#222'};border:1px solid #333">
+                    <div>${m.text}</div>
+                    <div style="font-size:10px;color:#888;margin-top:4px;text-align:right">${m.time}</div>
+                </div>
+            </div>`
+        ).join('');
+        container.scrollTop = container.scrollHeight;
+    }
+
+    document.getElementById('chat-send-btn').addEventListener('click', sendMessage);
+    document.getElementById('chat-input-text').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') sendMessage();
+    });
+
+    function sendMessage() {
+        const input = document.getElementById('chat-input-text');
+        const text = input.value.trim();
+        if (!text || !chatActive) return;
+        const now = new Date();
+        const time = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+        if (!chatMessages[chatActive]) chatMessages[chatActive] = [];
+        chatMessages[chatActive].push({ text, sent: true, time });
+        input.value = '';
+        renderChatMessages();
+        setTimeout(() => {
+            const replies = ["Merci pour votre message ! Je vous réponds dans la journée.",
+                "Parfait, je confirme la collecte pour demain.", "Très bien, je suis disponible.",
+                "D'accord, à bientôt !"
+            ];
+            const reply = replies[Math.floor(Math.random() * replies.length)];
+            chatMessages[chatActive].push({ text: reply, sent: false, time: 'Maintenant' });
+            renderChatMessages();
+            showToast('📩 Nouveau message reçu', 'success');
+        }, 1500);
+    }
+
+    // ===== NOTIFICATIONS =====
+    document.getElementById('notif-list').innerHTML = notifs.map((n, i) =>
+        `<div class="notif-item" style="display:flex;gap:12px;padding:12px;background:#222;border-radius:16px;border:1px solid #333;margin-bottom:8px;cursor:pointer">
+            <span style="font-size:24px">${n.icon}</span>
+            <div style="flex:1"><div style="font-weight:500">${n.title}</div><div style="font-size:13px;color:#888">${n.body}</div><div style="font-size:11px;color:#888;margin-top:4px">${n.time}</div></div>
+            <div class="dot" style="width:8px;height:8px;background:#2D5016;border-radius:50%;margin-top:6px"></div>
+        </div>`
+    ).join('');
+
+    document.querySelectorAll('.notif-item').forEach((el, i) => {
+        el.addEventListener('click', () => {
+            const dot = el.querySelector('.dot');
+            if (dot) { dot.style.background = 'transparent'; }
+            showToast('✅ Notification marquée comme lue', 'success');
+            updateBadge();
+        });
+    });
+
+    // ===== MAP =====
+    function renderCities() {
+        const list = document.getElementById('city-list');
+        list.innerHTML = cityData.map(c =>
+            `<div class="city-item" data-city="${c.city}" style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:#222;border-radius:12px;border:1px solid #333;cursor:pointer">
+                <span style="font-size:20px">📍</span>
+                <div style="flex:1"><div style="font-weight:500">${c.name}</div><div style="font-size:12px;color:#888">${c.address}</div></div>
+            </div>`
+        ).join('');
+        list.querySelectorAll('.city-item').forEach(el => {
+            el.addEventListener('click', () => {
+                const name = el.querySelector('div div').textContent;
+                const address = el.querySelector('div div:last-child').textContent;
+                document.getElementById('map-current-city').textContent = name;
+                document.getElementById('map-current-address').textContent = address;
+                showToast('📍 ' + name + ' sélectionné', 'success');
+            });
+        });
+    }
+    renderCities();
+
+    // ===== INIT =====
+    renderFeed();
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        el.textContent = translations.fr[el.dataset.i18n] || el.dataset.i18n;
+    });
+
+    // ===== GEOLOCATION =====
+    if ('geolocation' in navigator) {
+        navigator.geolocation.getCurrentPosition(
+            (pos) => { showToast('📍 Position trouvée !', 'success'); },
+            () => { showToast('⚠️ Impossible de localiser', 'error'); }
+        );
+    }
+
+    console.log('♻️ ReLife Cameroun - Application chargée !');
+    console.log('🔑 Code OTP : 123456');
+</script>
 </body>
 </html>
