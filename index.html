@@ -7,10 +7,14 @@
     <meta name="theme-color" content="#0F0F0F" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js">
+    </script>
     <style>
         * {
             margin: 0;
@@ -974,39 +978,17 @@
         .toast.error {
             border-color: #EF4444;
         }
-        .mt-8 {
-            margin-top: 8px;
-        }
-        .mt-12 {
-            margin-top: 12px;
-        }
-        .mt-16 {
-            margin-top: 16px;
-        }
-        .mb-8 {
-            margin-bottom: 8px;
-        }
-        .mb-12 {
-            margin-bottom: 12px;
-        }
-        .mb-16 {
-            margin-bottom: 16px;
-        }
-        .flex-1 {
-            flex: 1;
-        }
-        .text-center {
-            text-align: center;
-        }
-        .w-full {
-            width: 100%;
-        }
-        .gap-8 {
-            gap: 8px;
-        }
-        .hidden {
-            display: none !important;
-        }
+        .mt-8 { margin-top: 8px; }
+        .mt-12 { margin-top: 12px; }
+        .mt-16 { margin-top: 16px; }
+        .mb-8 { margin-bottom: 8px; }
+        .mb-12 { margin-bottom: 12px; }
+        .mb-16 { margin-bottom: 16px; }
+        .flex-1 { flex: 1; }
+        .text-center { text-align: center; }
+        .w-full { width: 100%; }
+        .gap-8 { gap: 8px; }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
@@ -1087,63 +1069,66 @@
         <div id="dashboard" class="screen">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
                 <div>
-                    <div class="greeting">Bonjour <span class="highlight">👋</span></div>
-                    <div style="color:var(--text-muted);font-size:13px;">Prêt à recycler aujourd'hui ?</div>
+                    <div class="greeting" id="greeting-text">Bonjour <span class="highlight">👋</span></div>
+                    <div style="color:var(--text-muted);font-size:13px;" id="greeting-sub">Prêt à recycler aujourd'hui ?</div>
                 </div>
                 <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--gold));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;">R</div>
             </div>
+            <div style="display:flex;justify-content:flex-end;margin-bottom:8px;">
+                <button id="lang-toggle" style="background:rgba(255,215,0,0.15);border:1px solid var(--gold);color:var(--gold);padding:4px 12px;border-radius:20px;font-size:12px;cursor:pointer;">🇫🇷 FR</button>
+            </div>
             <div class="quick-actions">
-                <div class="qa-item" data-target="map"><span class="icon">📍</span><span class="label">Carte</span></div>
-                <div class="qa-item" data-target="chat"><span class="icon">💬</span><span class="label">Messages</span></div>
-                <div class="qa-item" data-target="stats"><span class="icon">📊</span><span class="label">Stats</span></div>
-                <div class="qa-item" data-target="feed"><span class="icon">🛒</span><span class="label">Marché</span></div>
+                <div class="qa-item" data-target="map"><span class="icon">📍</span><span class="label" data-key="map">Carte</span></div>
+                <div class="qa-item" data-target="chat"><span class="icon">💬</span><span class="label" data-key="messages">Messages</span></div>
+                <div class="qa-item" data-target="stats"><span class="icon">📊</span><span class="label" data-key="stats">Stats</span></div>
+                <div class="qa-item" data-target="feed"><span class="icon">🛒</span><span class="label" data-key="marketplace">Marché</span></div>
             </div>
             <div class="balance-card">
-                <div><div class="label">💰 Solde Mobile Money</div><div class="amount">5 000 FCFA</div></div>
-                <button class="btn-primary small" id="goto-withdrawal">Retirer</button>
+                <div><div class="label" data-key="balance">💰 Solde Mobile Money</div><div class="amount">5 000 FCFA</div></div>
+                <button class="btn-primary small" id="goto-withdrawal" data-key="withdraw">Retirer</button>
             </div>
             <div class="stats-row">
-                <div class="stat-item"><div class="value">12</div><div class="label">Ventes</div></div>
-                <div class="stat-item"><div class="value">45 kg</div><div class="label">Recyclés</div></div>
-                <div class="stat-item"><div class="value">⭐ 4.8</div><div class="label">Note</div></div>
+                <div class="stat-item"><div class="value">12</div><div class="label" data-key="sales">Ventes</div></div>
+                <div class="stat-item"><div class="value">45 kg</div><div class="label" data-key="recycled">Recyclés</div></div>
+                <div class="stat-item"><div class="value">⭐ 4.8</div><div class="label" data-key="rating">Note</div></div>
             </div>
-            <div class="section-title">⚡ Activité récente</div>
-            <div class="activity-item"><div class="emoji">♻️</div><div class="info"><div class="title">Collecte de bouteilles PET</div><div class="sub">15kg • 2 250 FCFA</div></div><div class="time">Il y a 2h</div></div>
-            <div class="activity-item"><div class="emoji">🥫</div><div class="info"><div class="title">Canettes aluminium</div><div class="sub">5kg • 1 000 FCFA</div></div><div class="time">Hier</div></div>
-            <div class="activity-item"><div class="emoji">📦</div><div class="info"><div class="title">Cartons recyclables</div><div class="sub">10kg • 500 FCFA</div></div><div class="time">Hier</div></div>
+            <div class="section-title" data-key="recent">⚡ Activité récente</div>
+            <div class="activity-item"><div class="emoji">♻️</div><div class="info"><div class="title" data-key="pet">Collecte de bouteilles PET</div><div class="sub">15kg • 2 250 FCFA</div></div><div class="time">Il y a 2h</div></div>
+            <div class="activity-item"><div class="emoji">🥫</div><div class="info"><div class="title" data-key="aluminum">Canettes aluminium</div><div class="sub">5kg • 1 000 FCFA</div></div><div class="time">Hier</div></div>
+            <div class="activity-item"><div class="emoji">📦</div><div class="info"><div class="title" data-key="cardboard">Cartons recyclables</div><div class="sub">10kg • 500 FCFA</div></div><div class="time">Hier</div></div>
         </div>
         <div id="feed" class="screen">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-                <h2 style="font-size:20px;">🛒 Marché</h2>
-                <button class="btn-primary small" id="goto-publish">+ Publier</button>
+                <h2 style="font-size:20px;" data-key="marketplace_title">🛒 Marché</h2>
+                <button class="btn-primary small" id="goto-publish" data-key="publish">+ Publier</button>
             </div>
             <div class="feed-categories" id="feed-categories">
-                <span class="category-chip active" data-cat="Tous">Tous</span>
-                <span class="category-chip" data-cat="Plastique">Plastique</span>
-                <span class="category-chip" data-cat="Métal">Métal</span>
-                <span class="category-chip" data-cat="Carton">Carton</span>
-                <span class="category-chip" data-cat="Verre">Verre</span>
-                <span class="category-chip" data-cat="Huile">Huile</span>
-                <span class="category-chip" data-cat="Électronique">Électronique</span>
+                <span class="category-chip active" data-cat="Tous" data-key="all">Tous</span>
+                <span class="category-chip" data-cat="Plastique" data-key="plastic">Plastique</span>
+                <span class="category-chip" data-cat="Métal" data-key="metal">Métal</span>
+                <span class="category-chip" data-cat="Carton" data-key="cardboard_cat">Carton</span>
+                <span class="category-chip" data-cat="Verre" data-key="glass_cat">Verre</span>
+                <span class="category-chip" data-cat="Huile" data-key="oil">Huile</span>
+                <span class="category-chip" data-cat="Électronique" data-key="electronic">Électronique</span>
             </div>
             <div id="feed-list"></div>
         </div>
         <div id="detail" class="screen">
-            <button style="background:none;border:none;color:white;font-size:16px;padding:4px 0;margin-bottom:12px;cursor:pointer;text-align:left;" id="detail-back">← Retour</button>
+            <button style="background:none;border:none;color:white;font-size:16px;padding:4px 0;margin-bottom:12px;cursor:pointer;text-align:left;" id="detail-back" data-key="back">← Retour</button>
             <div class="detail-image" id="detail-emoji">🥤</div>
             <h2 id="detail-title" style="font-size:20px;">Bouteilles PET transparentes</h2>
             <div style="color:var(--text-muted);font-size:14px;" id="detail-location">Douala, Bonapriso</div>
             <div class="detail-price" id="detail-price">200 FCFA/kg</div>
             <div style="display:flex;gap:8px;margin:8px 0 16px;">
-                <span style="padding:2px 12px;border-radius:100px;background:rgba(34,197,94,0.15);color:#22C55E;font-size:12px;font-weight:600;">Disponible</span>
+                <span style="padding:2px 12px;border-radius:100px;background:rgba(34,197,94,0.15);color:#22C55E;font-size:12px;font-weight:600;" data-key="available">Disponible</span>
                 <span style="padding:2px 12px;border-radius:100px;background:rgba(59,130,246,0.15);color:#3B82F6;font-size:12px;font-weight:600;">15kg en stock</span>
             </div>
             <div style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-border);border-radius:14px;margin-bottom:16px;">
                 <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--gold));display:flex;align-items:center;justify-content:center;font-size:20px;">👤</div>
                 <div style="flex:1;"><div style="font-weight:600;">Marie K.</div><div style="font-size:12px;color:var(--text-muted);">⭐ 4.9 · 23 ventes</div></div>
-                <button class="btn-primary small" id="goto-chat-from-detail">Contacter</button>
+                <button class="btn-primary small" id="goto-chat-from-detail" data-key="contact">Contacter</button>
             </div>
-            <div class="section-title">⭐ Noter ce vendeur</div>
+            <div class="section-title" data-key="rate_seller">⭐ Noter ce vendeur</div>
             <div class="rating-stars" id="rating-stars">
                 <span class="star" data-val="1">☆</span>
                 <span class="star" data-val="2">☆</span>
@@ -1151,38 +1136,38 @@
                 <span class="star" data-val="4">☆</span>
                 <span class="star" data-val="5">☆</span>
             </div>
-            <div class="section-title" style="margin-top:16px;">📝 Avis (12)</div>
-            <div style="padding:12px 16px;background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-border);border-radius:14px;margin-bottom:8px;"><div style="display:flex;justify-content:space-between;"><span style="font-weight:600;">Paul N.</span><span style="color:var(--text-muted);font-size:12px;">Il y a 2j</span></div><div style="font-size:13px;color:var(--text-muted);">⭐ 5/5 · Transaction rapide et fiable !</div></div>
-            <div style="padding:12px 16px;background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-border);border-radius:14px;margin-bottom:8px;"><div style="display:flex;justify-content:space-between;"><span style="font-weight:600;">Aicha M.</span><span style="color:var(--text-muted);font-size:12px;">Il y a 5j</span></div><div style="font-size:13px;color:var(--text-muted);">⭐ 4/5 · Bon produit, livraison un peu lente</div></div>
+            <div class="section-title" style="margin-top:16px;" data-key="reviews">📝 Avis (12)</div>
+            <div style="padding:12px 16px;background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-border);border-radius:14px;margin-bottom:8px;"><div style="display:flex;justify-content:space-between;"><span style="font-weight:600;">Paul N.</span><span style="color:var(--text-muted);font-size:12px;" data-key="days_ago_2">Il y a 2j</span></div><div style="font-size:13px;color:var(--text-muted);">⭐ 5/5 · Transaction rapide et fiable !</div></div>
+            <div style="padding:12px 16px;background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-border);border-radius:14px;margin-bottom:8px;"><div style="display:flex;justify-content:space-between;"><span style="font-weight:600;">Aicha M.</span><span style="color:var(--text-muted);font-size:12px;" data-key="days_ago_5">Il y a 5j</span></div><div style="font-size:13px;color:var(--text-muted);">⭐ 4/5 · Bon produit, livraison un peu lente</div></div>
         </div>
         <div id="publish" class="screen">
-            <h2 style="font-size:20px;margin-bottom:16px;">➕ Nouvelle annonce</h2>
+            <h2 style="font-size:20px;margin-bottom:16px;" data-key="new_ad">➕ Nouvelle annonce</h2>
             <div class="publish-photos">
                 <div class="slot" id="photo-0">📷</div>
                 <div class="slot" id="photo-1">📷</div>
                 <div class="slot" id="photo-2">📷</div>
             </div>
-            <div class="form-group"><label>Catégorie</label><select id="publish-cat"><option>Plastique</option><option>Métal</option><option>Carton</option><option>Verre</option><option>Huile</option><option>Électronique</option></select></div>
-            <div class="form-group"><label>Titre</label><input type="text" placeholder="Ex: Bouteilles PET transparentes" id="publish-title"></div>
-            <div class="form-group"><label>Quantité</label><input type="text" placeholder="Ex: 15 kg" id="publish-qty"></div>
-            <div class="form-group"><label>Prix (FCFA/kg)</label><input type="number" placeholder="Ex: 200" id="publish-price"></div>
-            <div class="form-group"><label>Ville</label><input type="text" placeholder="Ex: Douala" id="publish-city"></div>
-            <button class="btn-primary" id="publish-submit">Publier l'annonce</button>
+            <div class="form-group"><label data-key="category">Catégorie</label><select id="publish-cat"><option data-key="plastic">Plastique</option><option data-key="metal">Métal</option><option data-key="cardboard_cat">Carton</option><option data-key="glass_cat">Verre</option><option data-key="oil">Huile</option><option data-key="electronic">Électronique</option></select></div>
+            <div class="form-group"><label data-key="title_label">Titre</label><input type="text" placeholder="Ex: Bouteilles PET transparentes" id="publish-title"></div>
+            <div class="form-group"><label data-key="quantity_label">Quantité</label><input type="text" placeholder="Ex: 15 kg" id="publish-qty"></div>
+            <div class="form-group"><label data-key="price_label">Prix (FCFA/kg)</label><input type="number" placeholder="Ex: 200" id="publish-price"></div>
+            <div class="form-group"><label data-key="city_label">Ville</label><input type="text" placeholder="Ex: Douala" id="publish-city"></div>
+            <button class="btn-primary" id="publish-submit" data-key="publish_ad">Publier l'annonce</button>
         </div>
         <div id="withdrawal" class="screen">
-            <h2 style="font-size:20px;margin-bottom:4px;">💰 Retrait MoMo</h2>
-            <div style="color:var(--text-muted);font-size:14px;margin-bottom:16px;">Solde : 5 000 FCFA</div>
+            <h2 style="font-size:20px;margin-bottom:4px;" data-key="withdraw_momo">💰 Retrait MoMo</h2>
+            <div style="color:var(--text-muted);font-size:14px;margin-bottom:16px;" data-key="balance_label">Solde : 5 000 FCFA</div>
             <div class="provider-select">
                 <div class="provider-item selected" data-provider="MTN"><div class="emoji">📡</div><div class="name">MTN</div></div>
                 <div class="provider-item" data-provider="Orange"><div class="emoji">📡</div><div class="name">Orange</div></div>
             </div>
-            <div class="form-group"><label>Montant (FCFA)</label><input type="number" placeholder="Ex: 1000" id="withdrawal-amount"></div>
-            <div class="form-group"><label>Numéro de téléphone</label><input type="tel" placeholder="6XXXXXXXX" id="withdrawal-phone"></div>
-            <button class="btn-primary" id="withdrawal-submit">Confirmer le retrait</button>
-            <div style="text-align:center;font-size:12px;color:var(--text-muted);margin-top:12px;">Frais : 1.5% · Délai : instantané</div>
+            <div class="form-group"><label data-key="amount_label">Montant (FCFA)</label><input type="number" placeholder="Ex: 1000" id="withdrawal-amount"></div>
+            <div class="form-group"><label data-key="phone_label">Numéro de téléphone</label><input type="tel" placeholder="6XXXXXXXX" id="withdrawal-phone"></div>
+            <button class="btn-primary" id="withdrawal-submit" data-key="confirm_withdraw">Confirmer le retrait</button>
+            <div style="text-align:center;font-size:12px;color:var(--text-muted);margin-top:12px;" data-key="fees">Frais : 1.5% · Délai : instantané</div>
         </div>
         <div id="map" class="screen">
-            <h2 style="font-size:20px;margin-bottom:12px;">📍 Points de collecte</h2>
+            <h2 style="font-size:20px;margin-bottom:12px;" data-key="collection_points">📍 Points de collecte</h2>
             <div class="map-container">
                 <div class="grid"></div>
                 <div class="map-pin">
@@ -1201,8 +1186,8 @@
             </div>
         </div>
         <div id="priceguide" class="screen">
-            <h2 style="font-size:20px;margin-bottom:12px;">📊 Guide des prix</h2>
-            <p style="color:var(--text-muted);font-size:13px;margin-bottom:16px;">Prix indicatifs du recyclage au Cameroun (FCFA/kg)</p>
+            <h2 style="font-size:20px;margin-bottom:12px;" data-key="price_guide_title">📊 Guide des prix</h2>
+            <p style="color:var(--text-muted);font-size:13px;margin-bottom:16px;" data-key="price_guide_sub">Prix indicatifs du recyclage au Cameroun (FCFA/kg)</p>
             <div class="price-guide-grid">
                 <div class="price-guide-item"><div class="emoji">🥤</div><div class="name">PET transparent</div><div class="price">150-200</div><div class="sub">Bouteilles d'eau</div></div>
                 <div class="price-guide-item"><div class="emoji">🥤</div><div class="name">PET coloré</div><div class="price">75-100</div><div class="sub">Bouteilles colorées</div></div>
@@ -1218,12 +1203,12 @@
                 <div class="price-guide-item"><div class="emoji">💻</div><div class="name">Ordinateurs</div><div class="price">200-500</div><div class="sub">Complets</div></div>
             </div>
             <div style="margin-top:16px;padding:12px 16px;background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.1);border-radius:14px;">
-                <p style="font-size:12px;color:var(--text-muted);">💡 <strong>Conseil :</strong> Les prix varient selon la qualité et la quantité. Ces prix sont indicatifs et peuvent être négociés.</p>
+                <p style="font-size:12px;color:var(--text-muted);" data-key="price_advice">💡 <strong>Conseil :</strong> Les prix varient selon la qualité et la quantité. Ces prix sont indicatifs et peuvent être négociés.</p>
             </div>
         </div>
         <div id="chat" class="screen">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-                <h2 style="font-size:20px;">💬 Messages</h2>
+                <h2 style="font-size:20px;" data-key="messages_title">💬 Messages</h2>
                 <span style="font-size:12px;color:var(--text-muted);">3 discussions</span>
             </div>
             <div id="chat-list">
@@ -1244,7 +1229,7 @@
                 </div>
             </div>
             <div id="chat-conversation" style="display:none;flex:1;flex-direction:column;gap:8px;padding-bottom:8px;">
-                <button style="background:none;border:none;color:white;font-size:16px;padding:4px 0;margin-bottom:8px;cursor:pointer;text-align:left;" id="chat-back">← Retour</button>
+                <button style="background:none;border:none;color:white;font-size:16px;padding:4px 0;margin-bottom:8px;cursor:pointer;text-align:left;" id="chat-back" data-key="back">← Retour</button>
                 <div id="chat-messages" style="flex:1;display:flex;flex-direction:column;gap:8px;overflow-y:auto;padding-bottom:12px;"></div>
                 <div class="chat-input">
                     <input type="text" id="chat-input-text" placeholder="Écrire un message...">
@@ -1254,24 +1239,24 @@
         </div>
         <div id="notifications" class="screen">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-                <h2 style="font-size:20px;">🔔 Notifications</h2>
-                <button id="notif-mark-all" style="background:none;border:none;color:var(--text-muted);font-size:12px;cursor:pointer;">Tout marquer comme lu</button>
+                <h2 style="font-size:20px;" data-key="notif_title">🔔 Notifications</h2>
+                <button id="notif-mark-all" style="background:none;border:none;color:var(--text-muted);font-size:12px;cursor:pointer;" data-key="mark_all">Tout marquer comme lu</button>
             </div>
             <div id="notif-list">
-                <div class="notif-item" data-notif="1"><div class="icon">💬</div><div class="info"><div class="title">Nouveau message de Paul</div><div class="body">"Ok je suis dispo pour la collecte"</div><div class="time">Il y a 10 min</div></div><div class="dot"></div></div>
-                <div class="notif-item" data-notif="2"><div class="icon">♻️</div><div class="info"><div class="title">Collecte confirmée</div><div class="body">Votre collecte de 15kg est planifiée demain</div><div class="time">Il y a 2h</div></div><div class="dot"></div></div>
-                <div class="notif-item" data-notif="3"><div class="icon">⭐</div><div class="info"><div class="title">Offre Premium disponible</div><div class="body">Devenez Premium pour 5000 FCFA/mois</div><div class="time">Il y a 1j</div></div><div class="dot"></div></div>
-                <div class="notif-item" data-notif="4"><div class="icon">📝</div><div class="info"><div class="title">Nouvel avis reçu</div><div class="body">"Excellent service, je recommande !"</div><div class="time">Il y a 2j</div></div><div class="dot"></div></div>
+                <div class="notif-item" data-notif="1"><div class="icon">💬</div><div class="info"><div class="title" data-key="notif_msg1">Nouveau message de Paul</div><div class="body">"Ok je suis dispo pour la collecte"</div><div class="time">Il y a 10 min</div></div><div class="dot"></div></div>
+                <div class="notif-item" data-notif="2"><div class="icon">♻️</div><div class="info"><div class="title" data-key="notif_msg2">Collecte confirmée</div><div class="body">Votre collecte de 15kg est planifiée demain</div><div class="time">Il y a 2h</div></div><div class="dot"></div></div>
+                <div class="notif-item" data-notif="3"><div class="icon">⭐</div><div class="info"><div class="title" data-key="notif_msg3">Offre Premium disponible</div><div class="body">Devenez Premium pour 5000 FCFA/mois</div><div class="time">Il y a 1j</div></div><div class="dot"></div></div>
+                <div class="notif-item" data-notif="4"><div class="icon">📝</div><div class="info"><div class="title" data-key="notif_msg4">Nouvel avis reçu</div><div class="body">"Excellent service, je recommande !"</div><div class="time">Il y a 2j</div></div><div class="dot"></div></div>
             </div>
         </div>
         <div id="stats" class="screen">
-            <h2 style="font-size:20px;margin-bottom:12px;">📊 Statistiques</h2>
+            <h2 style="font-size:20px;margin-bottom:12px;" data-key="stats_title">📊 Statistiques</h2>
             <div class="stats-row">
-                <div class="stat-item"><div class="value">12</div><div class="label">Ventes</div></div>
-                <div class="stat-item"><div class="value">45 kg</div><div class="label">Recyclés</div></div>
-                <div class="stat-item"><div class="value">⭐ 4.8</div><div class="label">Note</div></div>
+                <div class="stat-item"><div class="value">12</div><div class="label" data-key="sales">Ventes</div></div>
+                <div class="stat-item"><div class="value">45 kg</div><div class="label" data-key="recycled">Recyclés</div></div>
+                <div class="stat-item"><div class="value">⭐ 4.8</div><div class="label" data-key="rating">Note</div></div>
             </div>
-            <div class="section-title">📈 Collectes par semaine</div>
+            <div class="section-title" data-key="weekly">📈 Collectes par semaine</div>
             <div class="chart-bars" id="chart-bars">
                 <div style="flex:1;display:flex;flex-direction:column;align-items:center;"><div class="chart-bar" style="height:40%;"></div><div class="chart-label">Lun</div></div>
                 <div style="flex:1;display:flex;flex-direction:column;align-items:center;"><div class="chart-bar" style="height:60%;"></div><div class="chart-label">Mar</div></div>
@@ -1281,15 +1266,15 @@
                 <div style="flex:1;display:flex;flex-direction:column;align-items:center;"><div class="chart-bar" style="height:50%;"></div><div class="chart-label">Sam</div></div>
                 <div style="flex:1;display:flex;flex-direction:column;align-items:center;"><div class="chart-bar" style="height:20%;"></div><div class="chart-label">Dim</div></div>
             </div>
-            <div class="section-title" style="margin-top:16px;">🧩 Répartition des déchets</div>
+            <div class="section-title" style="margin-top:16px;" data-key="waste_distribution">🧩 Répartition des déchets</div>
             <div class="donut-container"><div class="donut"></div></div>
             <div class="donut-legend">
-                <span><span class="color" style="background:var(--green);"></span>Plastique 40%</span>
-                <span><span class="color" style="background:var(--gold);"></span>Métal 20%</span>
-                <span><span class="color" style="background:#3B82F6;"></span>Verre 20%</span>
-                <span><span class="color" style="background:#EF4444;"></span>Carton 20%</span>
+                <span><span class="color" style="background:var(--green);"></span><span data-key="plastic_pct">Plastique 40%</span></span>
+                <span><span class="color" style="background:var(--gold);"></span><span data-key="metal_pct">Métal 20%</span></span>
+                <span><span class="color" style="background:#3B82F6;"></span><span data-key="glass_pct">Verre 20%</span></span>
+                <span><span class="color" style="background:#EF4444;"></span><span data-key="cardboard_pct">Carton 20%</span></span>
             </div>
-            <div class="section-title" style="margin-top:16px;">💰 Revenus mensuels</div>
+            <div class="section-title" style="margin-top:16px;" data-key="monthly_revenue">💰 Revenus mensuels</div>
             <div style="display:flex;flex-direction:column;gap:6px;">
                 <div><div style="display:flex;justify-content:space-between;font-size:13px;"><span>Jan</span><span>12 500 FCFA</span></div><div style="width:100%;height:6px;background:var(--glass);border-radius:4px;overflow:hidden;"><div style="width:25%;height:100%;background:linear-gradient(90deg,var(--green),var(--gold));border-radius:4px;"></div></div></div>
                 <div><div style="display:flex;justify-content:space-between;font-size:13px;"><span>Fév</span><span>18 200 FCFA</span></div><div style="width:100%;height:6px;background:var(--glass);border-radius:4px;overflow:hidden;"><div style="width:36%;height:100%;background:linear-gradient(90deg,var(--green),var(--gold));border-radius:4px;"></div></div></div>
@@ -1305,38 +1290,219 @@
                 <div class="profile-badge">⭐ PREMIUM</div>
             </div>
             <div class="profile-stats">
-                <div class="stat"><div class="value">12</div><div class="label">Ventes</div></div>
-                <div class="stat"><div class="value">45kg</div><div class="label">Recyclés</div></div>
-                <div class="stat"><div class="value">⭐ 4.8</div><div class="label">Note</div></div>
+                <div class="stat"><div class="value">12</div><div class="label" data-key="sales">Ventes</div></div>
+                <div class="stat"><div class="value">45kg</div><div class="label" data-key="recycled">Recyclés</div></div>
+                <div class="stat"><div class="value">⭐ 4.8</div><div class="label" data-key="rating">Note</div></div>
             </div>
             <div class="profile-menu">
-                <div class="item" id="goto-priceguide"><span class="icon">📊</span><span class="label">Guide des prix</span><span class="arrow">›</span></div>
+                <div class="item" id="goto-priceguide"><span class="icon">📊</span><span class="label" data-key="price_guide">Guide des prix</span><span class="arrow">›</span></div>
                 <div class="item"><span class="icon">📍</span><span class="label">Douala, Cameroun</span><span class="arrow">›</span></div>
                 <div class="item"><span class="icon">📞</span><span class="label">+237 677 123 456</span><span class="arrow">›</span></div>
-                <div class="item"><span class="icon">🔒</span><span class="label">Changer le mot de passe</span><span class="arrow">›</span></div>
-                <div class="item"><span class="icon">🔔</span><span class="label">Notifications</span><span style="color:#22C55E;font-size:12px;font-weight:600;">Actives</span></div>
-                <div class="item"><span class="icon">🌐</span><span class="label">Langue</span><span class="arrow">Français ›</span></div>
-                <div class="item"><span class="icon">🌙</span><span class="label">Mode sombre</span><span style="color:#22C55E;font-size:12px;font-weight:600;">Activé</span></div>
-                <div class="item"><span class="icon">📋</span><span class="label">Mes annonces</span><span class="arrow">3 ›</span></div>
-                <div class="item"><span class="icon">⭐</span><span class="label">Mon abonnement Premium</span><span style="color:var(--gold);font-size:12px;font-weight:600;">Actif</span></div>
-                <div class="item danger"><span class="icon">🚪</span><span class="label" style="color:#EF4444;">Déconnexion</span><span class="arrow">›</span></div>
+                <div class="item"><span class="icon">🔒</span><span class="label" data-key="change_password">Changer le mot de passe</span><span class="arrow">›</span></div>
+                <div class="item"><span class="icon">🔔</span><span class="label" data-key="notifications">Notifications</span><span style="color:#22C55E;font-size:12px;font-weight:600;" data-key="active">Actives</span></div>
+                <div class="item"><span class="icon">🌐</span><span class="label" data-key="language">Langue</span><span class="arrow">Français ›</span></div>
+                <div class="item"><span class="icon">🌙</span><span class="label" data-key="dark_mode">Mode sombre</span><span style="color:#22C55E;font-size:12px;font-weight:600;" data-key="enabled">Activé</span></div>
+                <div class="item"><span class="icon">📋</span><span class="label" data-key="my_ads">Mes annonces</span><span class="arrow">3 ›</span></div>
+                <div class="item"><span class="icon">⭐</span><span class="label" data-key="my_premium">Mon abonnement Premium</span><span style="color:var(--gold);font-size:12px;font-weight:600;" data-key="active_premium">Actif</span></div>
+                <div class="item danger"><span class="icon">🚪</span><span class="label" style="color:#EF4444;" data-key="logout">Déconnexion</span><span class="arrow">›</span></div>
             </div>
         </div>
         <div id="bottom-nav" class="active">
-            <button class="nav-item active" data-screen="dashboard"><span class="icon">🏠</span><span class="label">Accueil</span></button>
-            <button class="nav-item" data-screen="feed"><span class="icon">🛒</span><span class="label">Marché</span></button>
-            <button class="nav-item" data-screen="publish"><span class="icon">➕</span><span class="label">Publier</span></button>
-            <button class="nav-item" data-screen="notifications"><span class="icon">🔔</span><span class="label">Notif.</span><span class="badge" id="notif-badge">4</span></button>
-            <button class="nav-item" data-screen="profile"><span class="icon">👤</span><span class="label">Profil</span></button>
+            <button class="nav-item active" data-screen="dashboard"><span class="icon">🏠</span><span class="label" data-key="home">Accueil</span></button>
+            <button class="nav-item" data-screen="feed"><span class="icon">🛒</span><span class="label" data-key="marketplace">Marché</span></button>
+            <button class="nav-item" data-screen="publish"><span class="icon">➕</span><span class="label" data-key="publish">Publier</span></button>
+            <button class="nav-item" data-screen="notifications"><span class="icon">🔔</span><span class="label" data-key="notif">Notif.</span><span class="badge" id="notif-badge">4</span></button>
+            <button class="nav-item" data-screen="profile"><span class="icon">👤</span><span class="label" data-key="profile">Profil</span></button>
         </div>
     </div>
     <script>
-        // ===== GLOBAL STATE =====
         let currentScreen = 'splash';
         let onboardingSlide = 0;
         let isLoggedIn = false;
         let selectedRating = 0;
         let chatActive = null;
+        let lang = 'fr';
+        const translations = {
+            fr: {
+                home: 'Accueil',
+                marketplace: 'Marché',
+                publish: 'Publier',
+                notif: 'Notif.',
+                profile: 'Profil',
+                map: 'Carte',
+                messages: 'Messages',
+                stats: 'Stats',
+                balance: '💰 Solde Mobile Money',
+                withdraw: 'Retirer',
+                sales: 'Ventes',
+                recycled: 'Recyclés',
+                rating: 'Note',
+                recent: '⚡ Activité récente',
+                pet: 'Collecte de bouteilles PET',
+                aluminum: 'Canettes aluminium',
+                cardboard: 'Cartons recyclables',
+                marketplace_title: '🛒 Marché',
+                all: 'Tous',
+                plastic: 'Plastique',
+                metal: 'Métal',
+                cardboard_cat: 'Carton',
+                glass_cat: 'Verre',
+                oil: 'Huile',
+                electronic: 'Électronique',
+                back: '← Retour',
+                available: 'Disponible',
+                contact: 'Contacter',
+                rate_seller: '⭐ Noter ce vendeur',
+                reviews: '📝 Avis (12)',
+                days_ago_2: 'Il y a 2j',
+                days_ago_5: 'Il y a 5j',
+                new_ad: '➕ Nouvelle annonce',
+                category: 'Catégorie',
+                title_label: 'Titre',
+                quantity_label: 'Quantité',
+                price_label: 'Prix (FCFA/kg)',
+                city_label: 'Ville',
+                publish_ad: 'Publier l\'annonce',
+                withdraw_momo: '💰 Retrait MoMo',
+                balance_label: 'Solde : 5 000 FCFA',
+                amount_label: 'Montant (FCFA)',
+                phone_label: 'Numéro de téléphone',
+                confirm_withdraw: 'Confirmer le retrait',
+                fees: 'Frais : 1.5% · Délai : instantané',
+                collection_points: '📍 Points de collecte',
+                price_guide_title: '📊 Guide des prix',
+                price_guide_sub: 'Prix indicatifs du recyclage au Cameroun (FCFA/kg)',
+                price_guide: 'Guide des prix',
+                price_advice: '💡 Conseil : Les prix varient selon la qualité et la quantité. Ces prix sont indicatifs et peuvent être négociés.',
+                messages_title: '💬 Messages',
+                notif_title: '🔔 Notifications',
+                mark_all: 'Tout marquer comme lu',
+                notif_msg1: 'Nouveau message de Paul',
+                notif_msg2: 'Collecte confirmée',
+                notif_msg3: 'Offre Premium disponible',
+                notif_msg4: 'Nouvel avis reçu',
+                stats_title: '📊 Statistiques',
+                weekly: '📈 Collectes par semaine',
+                waste_distribution: '🧩 Répartition des déchets',
+                plastic_pct: 'Plastique 40%',
+                metal_pct: 'Métal 20%',
+                glass_pct: 'Verre 20%',
+                cardboard_pct: 'Carton 20%',
+                monthly_revenue: '💰 Revenus mensuels',
+                change_password: 'Changer le mot de passe',
+                notifications: 'Notifications',
+                active: 'Actives',
+                language: 'Langue',
+                dark_mode: 'Mode sombre',
+                enabled: 'Activé',
+                my_ads: 'Mes annonces',
+                my_premium: 'Mon abonnement Premium',
+                active_premium: 'Actif',
+                logout: 'Déconnexion'
+            },
+            en: {
+                home: 'Home',
+                marketplace: 'Marketplace',
+                publish: 'Publish',
+                notif: 'Notif.',
+                profile: 'Profile',
+                map: 'Map',
+                messages: 'Messages',
+                stats: 'Stats',
+                balance: '💰 Mobile Money Balance',
+                withdraw: 'Withdraw',
+                sales: 'Sales',
+                recycled: 'Recycled',
+                rating: 'Rating',
+                recent: '⚡ Recent Activity',
+                pet: 'PET bottles collection',
+                aluminum: 'Aluminum cans',
+                cardboard: 'Recyclable cardboard',
+                marketplace_title: '🛒 Marketplace',
+                all: 'All',
+                plastic: 'Plastic',
+                metal: 'Metal',
+                cardboard_cat: 'Cardboard',
+                glass_cat: 'Glass',
+                oil: 'Oil',
+                electronic: 'Electronics',
+                back: '← Back',
+                available: 'Available',
+                contact: 'Contact',
+                rate_seller: '⭐ Rate this seller',
+                reviews: '📝 Reviews (12)',
+                days_ago_2: '2 days ago',
+                days_ago_5: '5 days ago',
+                new_ad: '➕ New ad',
+                category: 'Category',
+                title_label: 'Title',
+                quantity_label: 'Quantity',
+                price_label: 'Price (FCFA/kg)',
+                city_label: 'City',
+                publish_ad: 'Publish ad',
+                withdraw_momo: '💰 MoMo Withdrawal',
+                balance_label: 'Balance: 5,000 FCFA',
+                amount_label: 'Amount (FCFA)',
+                phone_label: 'Phone number',
+                confirm_withdraw: 'Confirm withdrawal',
+                fees: 'Fees: 1.5% · Instant delivery',
+                collection_points: '📍 Collection points',
+                price_guide_title: '📊 Price guide',
+                price_guide_sub: 'Indicative recycling prices in Cameroon (FCFA/kg)',
+                price_guide: 'Price guide',
+                price_advice: '💡 Tip: Prices vary by quality and quantity. These are indicative and negotiable.',
+                messages_title: '💬 Messages',
+                notif_title: '🔔 Notifications',
+                mark_all: 'Mark all as read',
+                notif_msg1: 'New message from Paul',
+                notif_msg2: 'Collection confirmed',
+                notif_msg3: 'Premium offer available',
+                notif_msg4: 'New review received',
+                stats_title: '📊 Statistics',
+                weekly: '📈 Weekly collections',
+                waste_distribution: '🧩 Waste distribution',
+                plastic_pct: 'Plastic 40%',
+                metal_pct: 'Metal 20%',
+                glass_pct: 'Glass 20%',
+                cardboard_pct: 'Cardboard 20%',
+                monthly_revenue: '💰 Monthly revenue',
+                change_password: 'Change password',
+                notifications: 'Notifications',
+                active: 'Active',
+                language: 'Language',
+                dark_mode: 'Dark mode',
+                enabled: 'Enabled',
+                my_ads: 'My ads',
+                my_premium: 'My Premium subscription',
+                active_premium: 'Active',
+                logout: 'Logout'
+            }
+        };
+        let currentLang = 'fr';
+
+        function t(key) {
+            return translations[currentLang] && translations[currentLang][key] ? translations[currentLang][key] : key;
+        }
+
+        function updateLanguage() {
+            document.querySelectorAll('[data-key]').forEach(el => {
+                const key = el.dataset.key;
+                if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+                    const placeholder = translations[currentLang][key + '_placeholder'];
+                    if (placeholder) el.placeholder = placeholder;
+                } else {
+                    el.textContent = t(key);
+                }
+            });
+            document.getElementById('lang-toggle').textContent = currentLang === 'fr' ? '🇫🇷 FR' : '🇬🇧 EN';
+        }
+
+        document.getElementById('lang-toggle').addEventListener('click', function() {
+            currentLang = currentLang === 'fr' ? 'en' : 'fr';
+            updateLanguage();
+            showToast(currentLang === 'fr' ? '🇫🇷 Langue changée' : '🇬🇧 Language changed', 'success');
+        });
+
         let chatMessages = {
             paul: [
                 { text: "Bonjour, je suis intéressé par vos bouteilles PET", sent: false, time: "12:20" },
@@ -1351,8 +1517,8 @@
             ]
         };
         const feedProducts = [
-            { emoji: '🥤', title: 'Bouteilles PET transparentes', loc: 'Douala, Bonapriso', price: '200 FCFA/kg', qty: '15kg',
-                cat: 'Plastique', status: 'Disponible' },
+            { emoji: '🥤', title: 'Bouteilles PET transparentes', loc: 'Douala, Bonapriso', price: '200 FCFA/kg',
+            qty: '15kg', cat: 'Plastique', status: 'Disponible' },
             { emoji: '🥤', title: 'Bouteilles PET colorées', loc: 'Yaoundé, Bastos', price: '100 FCFA/kg', qty: '10kg',
                 cat: 'Plastique', status: 'Disponible' },
             { emoji: '🥫', title: 'Canettes aluminium', loc: 'Bafoussam', price: '700 FCFA/kg', qty: '8kg', cat: 'Métal',
@@ -1524,7 +1690,8 @@
             const filtered = filter === 'Tous' ? feedProducts : feedProducts.filter(p => p.cat === filter);
             if (filtered.length === 0) {
                 container.innerHTML =
-                    '<div style="text-align:center;padding:40px 0;color:var(--text-muted);">Aucune annonce dans cette catégorie</div>';
+                    '<div style="text-align:center;padding:40px 0;color:var(--text-muted);">' + t('no_ads') +
+                    '</div>';
                 return;
             }
             container.innerHTML = filtered.map((p, i) => {
@@ -1581,7 +1748,7 @@
                     s.textContent = sv <= val ? '★' : '☆';
                     s.classList.toggle('active', sv <= val);
                 });
-                showToast(`⭐ Noté ${val}/5 ! Merci !`, 'success');
+                showToast('⭐ Noté ' + val + '/5 ! Merci !', 'success');
             });
         });
 
@@ -1673,7 +1840,7 @@
                 showToast('Veuillez entrer un numéro valide', 'error');
                 return;
             }
-            showToast(`✅ Demande de retrait de ${amount} FCFA envoyée !`, 'success');
+            showToast('✅ Demande de retrait de ' + amount + ' FCFA envoyée !', 'success');
             document.getElementById('withdrawal-amount').value = '';
             document.getElementById('withdrawal-phone').value = '';
         });
@@ -1690,7 +1857,7 @@
             });
         });
 
-        document.getElementById('publish-submit').addEventListener('click', () => {
+        document.getElementById('publish-submit').addEventListener('click', function() {
             const title = document.getElementById('publish-title').value.trim();
             const qty = document.getElementById('publish-qty').value.trim();
             const price = document.getElementById('publish-price').value.trim();
@@ -1699,16 +1866,40 @@
                 showToast('Veuillez remplir tous les champs', 'error');
                 return;
             }
-            showToast('✅ Annonce publiée avec succès !', 'success');
-            document.getElementById('publish-title').value = '';
-            document.getElementById('publish-qty').value = '';
-            document.getElementById('publish-price').value = '';
-            document.getElementById('publish-city').value = '';
-            document.querySelectorAll('.publish-photos .slot').forEach(s => {
-                s.classList.remove('filled');
-                s.textContent = '📷';
+            const db = firebase.firestore();
+            const user = firebase.auth().currentUser;
+            if (!user) {
+                showToast('❌ Connectez-vous d\'abord', 'error');
+                return;
+            }
+            const productData = {
+                title: title,
+                qty: qty,
+                price: price + ' FCFA/kg',
+                city: city,
+                category: document.getElementById('publish-cat').value,
+                emoji: '📦',
+                loc: city,
+                userId: user.uid,
+                userPhone: user.phoneNumber,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                status: 'available'
+            };
+            db.collection('products').add(productData).then(() => {
+                showToast('✅ Annonce publiée !', 'success');
+                document.getElementById('publish-title').value = '';
+                document.getElementById('publish-qty').value = '';
+                document.getElementById('publish-price').value = '';
+                document.getElementById('publish-city').value = '';
+                document.querySelectorAll('.publish-photos .slot').forEach(s => {
+                    s.classList.remove('filled');
+                    s.textContent = '📷';
+                });
+                navigateTo('feed');
+                listenToProducts();
+            }).catch((error) => {
+                showToast('❌ Erreur: ' + error.message, 'error');
             });
-            navigateTo('feed');
         });
 
         document.querySelectorAll('.notif-item').forEach(item => {
@@ -1732,7 +1923,7 @@
                 const address = item.querySelector('.address').textContent;
                 document.getElementById('map-current-city').textContent = city;
                 document.getElementById('map-current-address').textContent = address;
-                showToast(`📍 ${city} sélectionné`, 'success');
+                showToast('📍 ' + city + ' sélectionné', 'success');
             });
         });
 
@@ -1740,7 +1931,6 @@
         renderFeed();
         updateBadge();
 
-        // ===== DEEP LINKING =====
         function handleDeepLink() {
             const urlParams = new URLSearchParams(window.location.search);
             const productId = urlParams.get('product');
@@ -1763,7 +1953,6 @@
         document.addEventListener('DOMContentLoaded', handleDeepLink);
         setTimeout(handleDeepLink, 500);
 
-        // ===== GÉOLOCALISATION =====
         function getUserLocation() {
             if ('geolocation' in navigator) {
                 navigator.geolocation.getCurrentPosition(
@@ -1798,7 +1987,7 @@
                 const locationDisplay = document.createElement('div');
                 locationDisplay.style.cssText =
                     'position:absolute;bottom:10px;left:10px;background:rgba(0,0,0,0.7);padding:8px 12px;border-radius:8px;font-size:11px;color:#22C55E;z-index:10;';
-                locationDisplay.textContent = `📍 Vous êtes ici (${lat.toFixed(4)}, ${lng.toFixed(4)})`;
+                locationDisplay.textContent = '📍 Vous êtes ici (' + lat.toFixed(4) + ', ' + lng.toFixed(4) + ')';
                 mapContainer.appendChild(locationDisplay);
             }
         }
@@ -1873,7 +2062,40 @@
             }
         });
 
-        // ===== FIREBASE CONFIG =====
+        function listenToProducts() {
+            const db = firebase.firestore();
+            const feedContainer = document.getElementById('feed-list');
+            db.collection('products').where('status', '==', 'available').orderBy('createdAt', 'desc').onSnapshot((
+                snapshot) => {
+                let html = '';
+                if (snapshot.empty) {
+                    html =
+                        '<div style="text-align:center;padding:40px 0;color:var(--text-muted);">Aucune annonce disponible</div>';
+                } else {
+                    snapshot.forEach((doc) => {
+                        const data = doc.data();
+                        html += `
+                            <div class="product-card" data-id="${doc.id}">
+                                <div class="emoji">${data.emoji || '📦'}</div>
+                                <div class="info">
+                                    <div class="title">${data.title || 'Annonce'}</div>
+                                    <div class="location">${data.loc || data.city || 'Cameroun'}</div>
+                                    <span class="status">${data.status || 'Disponible'}</span>
+                                </div>
+                                <div>
+                                    <div class="price">${data.price || 'Prix non défini'}</div>
+                                    <div style="font-size:11px;color:var(--text-muted);text-align:right;">${data.qty || 'Quantité'}</div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+                feedContainer.innerHTML = html;
+            }, (error) => {
+                console.error('Erreur Firestore:', error);
+            });
+        }
+
         const firebaseConfig = {
             apiKey: "AIzaSyADPKnfoIsqMaK1J7imfRcSKaaR4GRzpU8",
             authDomain: "examens-maths.firebaseapp.com",
@@ -1889,6 +2111,10 @@
         } else {
             console.log('⚠️ Firebase non chargé ou déjà initialisé');
         }
+
+        setTimeout(function() {
+            listenToProducts();
+        }, 500);
 
         console.log('♻️ ReLife Cameroun - Application chargée !');
         console.log('🔑 Code OTP : 123456');
