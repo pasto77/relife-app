@@ -16,6 +16,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js">
     </script>
     <style>
+        /* ===== RESET ===== */
         * {
             margin: 0;
             padding: 0;
@@ -1053,8 +1054,8 @@
             <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:20px 0;">
                 <div class="text-center" style="margin-bottom:32px;">
                     <div style="font-size:56px;margin-bottom:12px;">♻️</div>
-                    <h1 style="font-size:28px;font-weight:700;" id="lbl-welcome">Bienvenue</h1>
-                    <p style="color:var(--text-muted);font-size:14px;" id="lbl-enter-phone">Entrez votre numéro de téléphone</p>
+                    <h1 id="lbl-welcome" style="font-size:28px;font-weight:700;">Bienvenue</h1>
+                    <p id="lbl-enter-phone" style="color:var(--text-muted);font-size:14px;">Entrez votre numéro de téléphone</p>
                 </div>
                 <div class="form-group">
                     <label id="lbl-phone-label">Numéro de téléphone</label>
@@ -1063,16 +1064,16 @@
                         <input type="tel" id="phone-input" placeholder="6XXXXXXXX" style="border:none;background:transparent;padding:14px 12px;color:white;font-size:16px;flex:1;outline:none;">
                     </div>
                 </div>
-                <button class="btn-primary" id="login-btn" style="margin-top:12px;" id="lbl-login-btn">Se connecter</button>
-                <button id="login-skip" style="background:none;border:none;color:var(--text-muted);font-size:13px;margin-top:16px;cursor:pointer;" id="lbl-skip">Continuer sans compte (test)</button>
+                <button class="btn-primary" id="login-btn" style="margin-top:12px;">Se connecter</button>
+                <button id="login-skip" style="background:none;border:none;color:var(--text-muted);font-size:13px;margin-top:16px;cursor:pointer;">Continuer sans compte (test)</button>
             </div>
         </div>
         <div id="otp" class="screen">
             <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:20px 0;">
                 <div class="text-center" style="margin-bottom:32px;">
                     <div style="font-size:48px;margin-bottom:12px;">🔐</div>
-                    <h2 style="font-size:24px;font-weight:700;" id="lbl-verify">Vérification</h2>
-                    <p style="color:var(--text-muted);font-size:14px;" id="lbl-code-sent">Code envoyé au <span id="otp-phone">+237 6XXXXXXXX</span></p>
+                    <h2 id="lbl-verify" style="font-size:24px;font-weight:700;">Vérification</h2>
+                    <p id="lbl-code-sent" style="color:var(--text-muted);font-size:14px;">Code envoyé au <span id="otp-phone">+237 6XXXXXXXX</span></p>
                 </div>
                 <div style="display:flex;gap:10px;justify-content:center;margin-bottom:24px;">
                     <input type="text" maxlength="1" class="otp-input" style="width:44px;height:52px;text-align:center;font-size:22px;font-weight:700;border-radius:12px;border:1px solid var(--glass-border);background:var(--glass);color:white;outline:none;">
@@ -1082,8 +1083,8 @@
                     <input type="text" maxlength="1" class="otp-input" style="width:44px;height:52px;text-align:center;font-size:22px;font-weight:700;border-radius:12px;border:1px solid var(--glass-border);background:var(--glass);color:white;outline:none;">
                     <input type="text" maxlength="1" class="otp-input" style="width:44px;height:52px;text-align:center;font-size:22px;font-weight:700;border-radius:12px;border:1px solid var(--glass-border);background:var(--glass);color:white;outline:none;">
                 </div>
-                <button class="btn-primary" id="otp-btn" id="lbl-verify-btn">Vérifier</button>
-                <button style="background:none;border:none;color:var(--text-muted);font-size:13px;margin-top:12px;cursor:pointer;" id="lbl-resend">Renvoyer le code</button>
+                <button class="btn-primary" id="otp-btn">Vérifier</button>
+                <button style="background:none;border:none;color:var(--text-muted);font-size:13px;margin-top:12px;cursor:pointer;">Renvoyer le code</button>
             </div>
         </div>
         <div id="dashboard" class="screen">
@@ -1107,7 +1108,7 @@
             </div>
             <div class="balance-card">
                 <div><div class="label" id="lbl-balance">💰 Solde Mobile Money</div><div class="amount">5 000 FCFA</div></div>
-                <button class="btn-primary small" id="goto-withdrawal" id="lbl-withdraw">Retirer</button>
+                <button class="btn-primary small" id="goto-withdrawal">Retirer</button>
             </div>
             <div class="stats-row">
                 <div class="stat-item"><div class="value">12</div><div class="label" id="lbl-sales">Ventes</div></div>
@@ -1122,7 +1123,7 @@
         <div id="feed" class="screen">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
                 <h2 style="font-size:20px;" id="lbl-marketplace_title">🛒 Marché</h2>
-                <button class="btn-primary small" id="goto-publish" id="lbl-publish">+ Publier</button>
+                <button class="btn-primary small" id="goto-publish">+ Publier</button>
             </div>
             <div class="feed-categories" id="feed-categories">
                 <span class="category-chip active" data-cat="Tous" id="lbl-all">Tous</span>
@@ -1136,7 +1137,7 @@
             <div id="feed-list"></div>
         </div>
         <div id="detail" class="screen">
-            <button style="background:none;border:none;color:white;font-size:16px;padding:4px 0;margin-bottom:12px;cursor:pointer;text-align:left;" id="detail-back" id="lbl-back">← Retour</button>
+            <button style="background:none;border:none;color:white;font-size:16px;padding:4px 0;margin-bottom:12px;cursor:pointer;text-align:left;" id="detail-back">← Retour</button>
             <div class="detail-image" id="detail-emoji">🥤</div>
             <h2 id="detail-title" style="font-size:20px;">Bouteilles PET transparentes</h2>
             <div style="color:var(--text-muted);font-size:14px;" id="detail-location">Douala, Bonapriso</div>
@@ -1148,7 +1149,7 @@
             <div style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-border);border-radius:14px;margin-bottom:16px;">
                 <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--gold));display:flex;align-items:center;justify-content:center;font-size:20px;">👤</div>
                 <div style="flex:1;"><div style="font-weight:600;">Marie K.</div><div style="font-size:12px;color:var(--text-muted);">⭐ 4.9 · 23 ventes</div></div>
-                <button class="btn-primary small" id="goto-chat-from-detail" id="lbl-contact">Contacter</button>
+                <button class="btn-primary small" id="goto-chat-from-detail">Contacter</button>
             </div>
             <div class="section-title" id="lbl-rate_seller">⭐ Noter ce vendeur</div>
             <div class="rating-stars" id="rating-stars">
@@ -1174,7 +1175,7 @@
             <div class="form-group"><label id="lbl-quantity_label">Quantité</label><input type="text" placeholder="Ex: 15 kg" id="publish-qty"></div>
             <div class="form-group"><label id="lbl-price_label">Prix (FCFA/kg)</label><input type="number" placeholder="Ex: 200" id="publish-price"></div>
             <div class="form-group"><label id="lbl-city_label">Ville</label><input type="text" placeholder="Ex: Douala" id="publish-city"></div>
-            <button class="btn-primary" id="publish-submit" id="lbl-publish_ad">Publier l'annonce</button>
+            <button class="btn-primary" id="publish-submit">Publier l'annonce</button>
         </div>
         <div id="withdrawal" class="screen">
             <h2 style="font-size:20px;margin-bottom:4px;" id="lbl-withdraw_momo">💰 Retrait MoMo</h2>
@@ -1185,7 +1186,7 @@
             </div>
             <div class="form-group"><label id="lbl-amount_label">Montant (FCFA)</label><input type="number" placeholder="Ex: 1000" id="withdrawal-amount"></div>
             <div class="form-group"><label id="lbl-phone_label">Numéro de téléphone</label><input type="tel" placeholder="6XXXXXXXX" id="withdrawal-phone"></div>
-            <button class="btn-primary" id="withdrawal-submit" id="lbl-confirm_withdraw">Confirmer le retrait</button>
+            <button class="btn-primary" id="withdrawal-submit">Confirmer le retrait</button>
             <div style="text-align:center;font-size:12px;color:var(--text-muted);margin-top:12px;" id="lbl-fees">Frais : 1.5% · Délai : instantané</div>
         </div>
         <div id="map" class="screen">
@@ -1251,7 +1252,7 @@
                 </div>
             </div>
             <div id="chat-conversation" style="display:none;flex:1;flex-direction:column;gap:8px;padding-bottom:8px;">
-                <button style="background:none;border:none;color:white;font-size:16px;padding:4px 0;margin-bottom:8px;cursor:pointer;text-align:left;" id="chat-back" id="lbl-back">← Retour</button>
+                <button style="background:none;border:none;color:white;font-size:16px;padding:4px 0;margin-bottom:8px;cursor:pointer;text-align:left;" id="chat-back">← Retour</button>
                 <div id="chat-messages" style="flex:1;display:flex;flex-direction:column;gap:8px;overflow-y:auto;padding-bottom:12px;"></div>
                 <div class="chat-input">
                     <input type="text" id="chat-input-text" placeholder="Écrire un message...">
@@ -1262,7 +1263,7 @@
         <div id="notifications" class="screen">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
                 <h2 style="font-size:20px;" id="lbl-notif_title">🔔 Notifications</h2>
-                <button id="notif-mark-all" style="background:none;border:none;color:var(--text-muted);font-size:12px;cursor:pointer;" id="lbl-mark_all">Tout marquer comme lu</button>
+                <button id="notif-mark-all" style="background:none;border:none;color:var(--text-muted);font-size:12px;cursor:pointer;">Tout marquer comme lu</button>
             </div>
             <div id="notif-list">
                 <div class="notif-item" data-notif="1"><div class="icon">💬</div><div class="info"><div class="title" id="lbl-notif_msg1">Nouveau message de Paul</div><div class="body">"Ok je suis dispo pour la collecte"</div><div class="time">Il y a 10 min</div></div><div class="dot"></div></div>
@@ -1339,21 +1340,16 @@
     </div>
     <script>
         // ==========================================
-        // BILINGUISME (FR / EN) — FONCTIONNEL !
+        // 1. BILINGUISME (FR/EN)
         // ==========================================
         let currentLang = 'fr';
-
         const translations = {
             fr: {
                 'lbl-welcome': 'Bienvenue',
                 'lbl-enter-phone': 'Entrez votre numéro de téléphone',
                 'lbl-phone-label': 'Numéro de téléphone',
-                'lbl-login-btn': 'Se connecter',
-                'lbl-skip': 'Continuer sans compte (test)',
                 'lbl-verify': 'Vérification',
                 'lbl-code-sent': 'Code envoyé au',
-                'lbl-verify-btn': 'Vérifier',
-                'lbl-resend': 'Renvoyer le code',
                 'greeting-text': 'Bonjour',
                 'greeting-sub': 'Prêt à recycler aujourd\'hui ?',
                 'lbl-map': 'Carte',
@@ -1378,7 +1374,6 @@
                 'lbl-glass_cat': 'Verre',
                 'lbl-oil': 'Huile',
                 'lbl-electronic': 'Électronique',
-                'lbl-back': '← Retour',
                 'lbl-available': 'Disponible',
                 'lbl-contact': 'Contacter',
                 'lbl-rate_seller': '⭐ Noter ce vendeur',
@@ -1430,18 +1425,19 @@
                 'lbl-logout': 'Déconnexion',
                 'lbl-home': 'Accueil',
                 'lbl-notif': 'Notif.',
-                'lbl-profile': 'Profil'
+                'lbl-profile': 'Profil',
+                'lbl-back': '← Retour',
+                'lbl-verify-btn': 'Vérifier',
+                'lbl-resend': 'Renvoyer le code',
+                'lbl-login-btn': 'Se connecter',
+                'lbl-skip': 'Continuer sans compte (test)'
             },
             en: {
                 'lbl-welcome': 'Welcome',
                 'lbl-enter-phone': 'Enter your phone number',
                 'lbl-phone-label': 'Phone number',
-                'lbl-login-btn': 'Sign in',
-                'lbl-skip': 'Continue without account (test)',
                 'lbl-verify': 'Verification',
                 'lbl-code-sent': 'Code sent to',
-                'lbl-verify-btn': 'Verify',
-                'lbl-resend': 'Resend code',
                 'greeting-text': 'Hello',
                 'greeting-sub': 'Ready to recycle today?',
                 'lbl-map': 'Map',
@@ -1466,7 +1462,6 @@
                 'lbl-glass_cat': 'Glass',
                 'lbl-oil': 'Oil',
                 'lbl-electronic': 'Electronics',
-                'lbl-back': '← Back',
                 'lbl-available': 'Available',
                 'lbl-contact': 'Contact',
                 'lbl-rate_seller': '⭐ Rate this seller',
@@ -1518,7 +1513,12 @@
                 'lbl-logout': 'Logout',
                 'lbl-home': 'Home',
                 'lbl-notif': 'Notif.',
-                'lbl-profile': 'Profile'
+                'lbl-profile': 'Profile',
+                'lbl-back': '← Back',
+                'lbl-verify-btn': 'Verify',
+                'lbl-resend': 'Resend code',
+                'lbl-login-btn': 'Sign in',
+                'lbl-skip': 'Continue without account (test)'
             }
         };
 
@@ -1530,7 +1530,6 @@
                     el.textContent = translations[lang][key];
                 }
             });
-            // Changer le texte du bouton
             const btn = document.getElementById('lang-toggle');
             if (currentLang === 'fr') {
                 btn.innerHTML = '<span class="lang-icon">🇫🇷</span> FR';
@@ -1546,81 +1545,43 @@
         });
 
         // ==========================================
-        // FIREBASE + RESTE DE L'APP
+        // 2. APP STATE & NAVIGATION
         // ==========================================
         let currentScreen = 'splash';
-        let onboardingSlide = 0;
         let isLoggedIn = false;
-        let selectedRating = 0;
-        let chatActive = null;
-        let chatMessages = {
-            paul: [
-                { text: "Bonjour, je suis intéressé par vos bouteilles PET", sent: false, time: "12:20" },
-                { text: "Bonjour ! Oui je les ai encore", sent: true, time: "12:22" },
-                { text: "Ok je suis dispo", sent: false, time: "12:30" },
-            ],
-            marie: [
-                { text: "Merci pour votre confiance", sent: false, time: "Hier" },
-            ],
-            jean: [
-                { text: "Quand pouvez-vous passer ?", sent: false, time: "Hier" },
-            ]
-        };
-        const feedProducts = [
-            { emoji: '🥤', title: 'Bouteilles PET transparentes', loc: 'Douala, Bonapriso', price: '200 FCFA/kg',
-            qty: '15kg', cat: 'Plastique', status: 'Disponible' },
-            { emoji: '🥤', title: 'Bouteilles PET colorées', loc: 'Yaoundé, Bastos', price: '100 FCFA/kg', qty: '10kg',
-                cat: 'Plastique', status: 'Disponible' },
-            { emoji: '🥫', title: 'Canettes aluminium', loc: 'Bafoussam', price: '700 FCFA/kg', qty: '8kg', cat: 'Métal',
-                status: 'Disponible' },
-            { emoji: '🔩', title: 'Cuivre dénudé', loc: 'Douala, Akwa', price: '2 200 FCFA/kg', qty: '5kg', cat: 'Métal',
-                status: 'Premium' },
-            { emoji: '🔩', title: 'Fer lourd', loc: 'Yaoundé, Mvog-Mbi', price: '150 FCFA/kg', qty: '50kg', cat: 'Métal',
-                status: 'Disponible' },
-            { emoji: '📦', title: 'Carton ondulé propre', loc: 'Bamenda', price: '75 FCFA/kg', qty: '20kg', cat: 'Carton',
-                status: 'Disponible' },
-            { emoji: '📄', title: 'Papier blanc de bureau', loc: 'Douala, Bonapriso', price: '100 FCFA/kg', qty: '12kg',
-                cat: 'Carton', status: 'Disponible' },
-            { emoji: '🍾', title: 'Verre transparent', loc: 'Garoua', price: '50 FCFA/kg', qty: '25kg', cat: 'Verre',
-                status: 'Disponible' },
-            { emoji: '🍾', title: 'Verre coloré (brun/vert)', loc: 'Bafoussam', price: '30 FCFA/kg', qty: '18kg',
-                cat: 'Verre', status: 'Disponible' },
-            { emoji: '🛢️', title: 'Huile de friture usagée', loc: 'Douala, Akwa', price: '300 FCFA/L', qty: '10L',
-                cat: 'Huile', status: 'Disponible' },
-            { emoji: '🛢️', title: 'Huile moteur usagée', loc: 'Yaoundé, Bastos', price: '150 FCFA/L', qty: '20L',
-                cat: 'Huile', status: 'Disponible' },
-            { emoji: '💻', title: 'Ordinateurs complets', loc: 'Douala, Bonapriso', price: '400 FCFA/kg', qty: '30kg',
-                cat: 'Électronique', status: 'Négociable' },
-        ];
+        let confirmationResult = null;
+        let otpInputs = [];
 
-        function showToast(msg, type = '') {
+        function showToast(msg, type) {
+            type = type || '';
             const t = document.getElementById('toast');
             t.textContent = msg;
             t.className = 'toast ' + type + ' show';
             clearTimeout(t._timeout);
-            t._timeout = setTimeout(() => t.className = 'toast', 2500);
+            t._timeout = setTimeout(function() { t.className = 'toast'; }, 2500);
         }
 
         function navigateTo(screenId) {
             if (screenId === currentScreen && screenId !== 'splash') return;
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            const target = document.getElementById(screenId);
+            document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+            var target = document.getElementById(screenId);
             if (target) {
                 target.classList.add('active');
                 target.style.animation = 'none';
-                requestAnimationFrame(() => {
+                requestAnimationFrame(function() {
                     target.style.animation = 'fadeUp 0.4s ease';
                 });
             }
             currentScreen = screenId;
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            document.querySelector(`.nav-item[data-screen="${screenId}"]`)?.classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(function(n) { n.classList.remove('active'); });
+            var navItem = document.querySelector('.nav-item[data-screen="' + screenId + '"]');
+            if (navItem) navItem.classList.add('active');
             updateBadge();
         }
 
         function updateBadge() {
-            const unread = document.querySelectorAll('.notif-item .dot:not(.read)').length;
-            const badge = document.getElementById('notif-badge');
+            var unread = document.querySelectorAll('.notif-item .dot:not(.read)').length;
+            var badge = document.getElementById('notif-badge');
             if (unread > 0) {
                 badge.textContent = unread;
                 badge.classList.remove('hidden');
@@ -1629,19 +1590,37 @@
             }
         }
 
-        let progress = 0;
-        const loaderInterval = setInterval(() => {
+        // ==========================================
+        // 3. SPLASH & ONBOARDING
+        // ==========================================
+        var progress = 0;
+        var loaderInterval = setInterval(function() {
             progress += 2;
             if (progress > 100) { progress = 100;
                 clearInterval(loaderInterval); }
             document.getElementById('loader-fill').style.width = progress + '%';
             if (progress >= 100) {
-                setTimeout(() => { navigateTo('onboarding'); }, 400);
+                setTimeout(function() { navigateTo('onboarding'); }, 400);
             }
         }, 30);
 
-        const totalSlides = 4;
-        document.getElementById('onboarding-btn').addEventListener('click', () => {
+        var onboardingSlide = 0;
+        var totalSlides = 4;
+
+        function updateOnboarding() {
+            document.querySelectorAll('.onboarding-slide').forEach(function(el, i) {
+                if (i === onboardingSlide) el.classList.add('active');
+                else el.classList.remove('active');
+            });
+            document.querySelectorAll('.dot').forEach(function(el, i) {
+                if (i === onboardingSlide) el.classList.add('active');
+                else el.classList.remove('active');
+            });
+            var btn = document.getElementById('onboarding-btn');
+            btn.textContent = onboardingSlide === totalSlides - 1 ? '🚀 Démarrer' : 'Suivant';
+        }
+
+        document.getElementById('onboarding-btn').addEventListener('click', function() {
             if (onboardingSlide < totalSlides - 1) {
                 onboardingSlide++;
                 updateOnboarding();
@@ -1650,40 +1629,61 @@
             }
         });
 
-        function updateOnboarding() {
-            document.querySelectorAll('.onboarding-slide').forEach((el, i) => {
-                el.classList.toggle('active', i === onboardingSlide);
-            });
-            document.querySelectorAll('.dot').forEach((el, i) => {
-                el.classList.toggle('active', i === onboardingSlide);
-            });
-            const btn = document.getElementById('onboarding-btn');
-            btn.textContent = onboardingSlide === totalSlides - 1 ? '🚀 Démarrer' : 'Suivant';
-        }
-
-        document.querySelectorAll('.dot').forEach(d => {
-            d.addEventListener('click', () => {
-                onboardingSlide = parseInt(d.dataset.slide);
+        document.querySelectorAll('.dot').forEach(function(d) {
+            d.addEventListener('click', function() {
+                onboardingSlide = parseInt(this.dataset.slide);
                 updateOnboarding();
             });
         });
 
         // ==========================================
-        // AUTHENTIFICATION PAR TÉLÉPHONE (FIREBASE)
+        // 4. AUTH — VALIDATION + OTP
         // ==========================================
-        let confirmationResult = null;
+        function validateCameroonPhone(phone) {
+            // 237 + 9 chiffres (6XXXXXXXX)
+            return /^237[6][0-9]{8}$/.test(phone);
+        }
 
+        // OTP auto-focus
+        document.addEventListener('DOMContentLoaded', function() {
+            otpInputs = document.querySelectorAll('.otp-input');
+            otpInputs.forEach(function(input, idx) {
+                input.addEventListener('input', function() {
+                    if (this.value.length === 1 && idx < otpInputs.length - 1) {
+                        otpInputs[idx + 1].focus();
+                    }
+                });
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Backspace' && this.value.length === 0 && idx > 0) {
+                        otpInputs[idx - 1].focus();
+                    }
+                });
+            });
+        });
+
+        // RECAPTCHA VERIFIER — attaché à un élément permanent
+        var recaptchaWidget = null;
+
+        function getRecaptchaVerifier() {
+            if (!recaptchaWidget) {
+                recaptchaWidget = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+                    size: 'invisible'
+                });
+            }
+            return recaptchaWidget;
+        }
+
+        // Login
         document.getElementById('login-btn').addEventListener('click', function() {
-            const phone = document.getElementById('phone-input').value.trim();
-            if (phone.length < 8) {
-                showToast('Veuillez entrer un numéro valide', 'error');
+            var raw = document.getElementById('phone-input').value.trim();
+            var fullPhone = '+237' + raw;
+
+            if (!validateCameroonPhone('237' + raw)) {
+                showToast('Numéro invalide. Format: 6XXXXXXXX', 'error');
                 return;
             }
-            const fullPhone = '+237' + phone;
 
-            const appVerifier = new firebase.auth.RecaptchaVerifier('login-btn', {
-                size: 'invisible'
-            });
+            var appVerifier = getRecaptchaVerifier();
 
             firebase.auth().signInWithPhoneNumber(fullPhone, appVerifier)
                 .then(function(result) {
@@ -1693,7 +1693,7 @@
                     showToast('📱 Code SMS envoyé !', 'success');
                 })
                 .catch(function(error) {
-                    showToast('❌ Erreur: ' + error.message, 'error');
+                    showToast('❌ ' + error.message, 'error');
                 });
         });
 
@@ -1704,15 +1704,16 @@
             showToast('🔓 Mode test (sans SMS)', 'success');
         });
 
+        // OTP verification
         document.getElementById('otp-btn').addEventListener('click', function() {
-            let code = '';
-            otpInputs.forEach(inp => code += inp.value);
+            var code = '';
+            otpInputs.forEach(function(inp) { code += inp.value; });
             if (code.length < 6) {
                 showToast('Entrez les 6 chiffres du code', 'error');
                 return;
             }
 
-            // Mode test : 123456
+            // Mode test 123456
             if (code === '123456') {
                 isLoggedIn = true;
                 document.getElementById('bottom-nav').classList.add('active');
@@ -1721,28 +1722,28 @@
                 return;
             }
 
-            // Vrai SMS
             confirmationResult.confirm(code)
-                .then(function(result) {
+                .then(function() {
                     isLoggedIn = true;
                     document.getElementById('bottom-nav').classList.add('active');
                     navigateTo('dashboard');
                     showToast('✅ Connexion réussie !', 'success');
                 })
-                .catch(function(error) {
+                .catch(function() {
                     showToast('❌ Code incorrect. Réessayez.', 'error');
                 });
         });
 
         // ==========================================
-        // NAVIGATION + AUTRES FONCTIONS
+        // 5. BOTTOM NAV + QUICK ACTIONS
         // ==========================================
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.addEventListener('click', () => {
-                const screen = item.dataset.screen;
+        document.querySelectorAll('.nav-item').forEach(function(item) {
+            item.addEventListener('click', function() {
+                var screen = this.dataset.screen;
                 if (screen === 'notifications') {
-                    setTimeout(() => {
-                        document.querySelectorAll('.notif-item .dot').forEach(d => d.classList.add('read'));
+                    setTimeout(function() {
+                        document.querySelectorAll('.notif-item .dot').forEach(function(d) { d.classList
+                                .add('read'); });
                         updateBadge();
                     }, 300);
                 }
@@ -1750,23 +1751,55 @@
             });
         });
 
-        document.querySelectorAll('.qa-item').forEach(item => {
-            item.addEventListener('click', () => {
-                navigateTo(item.dataset.target);
+        document.querySelectorAll('.qa-item').forEach(function(item) {
+            item.addEventListener('click', function() {
+                navigateTo(this.dataset.target);
             });
         });
 
-        function renderFeed(filter = 'Tous') {
-            const container = document.getElementById('feed-list');
-            const filtered = filter === 'Tous' ? feedProducts : feedProducts.filter(p => p.cat === filter);
+        // ==========================================
+        // 6. FEED — Static (Firestore ready)
+        // ==========================================
+        var feedProducts = [
+            { emoji: '🥤', title: 'Bouteilles PET transparentes', loc: 'Douala, Bonapriso', price: '200 FCFA/kg',
+                qty: '15kg', cat: 'Plastique', status: 'Disponible' },
+            { emoji: '🥤', title: 'Bouteilles PET colorées', loc: 'Yaoundé, Bastos', price: '100 FCFA/kg',
+                qty: '10kg', cat: 'Plastique', status: 'Disponible' },
+            { emoji: '🥫', title: 'Canettes aluminium', loc: 'Bafoussam', price: '700 FCFA/kg', qty: '8kg',
+                cat: 'Métal', status: 'Disponible' },
+            { emoji: '🔩', title: 'Cuivre dénudé', loc: 'Douala, Akwa', price: '2 200 FCFA/kg', qty: '5kg',
+                cat: 'Métal', status: 'Premium' },
+            { emoji: '🔩', title: 'Fer lourd', loc: 'Yaoundé, Mvog-Mbi', price: '150 FCFA/kg', qty: '50kg',
+                cat: 'Métal', status: 'Disponible' },
+            { emoji: '📦', title: 'Carton ondulé propre', loc: 'Bamenda', price: '75 FCFA/kg', qty: '20kg',
+                cat: 'Carton', status: 'Disponible' },
+            { emoji: '📄', title: 'Papier blanc de bureau', loc: 'Douala, Bonapriso', price: '100 FCFA/kg',
+                qty: '12kg', cat: 'Carton', status: 'Disponible' },
+            { emoji: '🍾', title: 'Verre transparent', loc: 'Garoua', price: '50 FCFA/kg', qty: '25kg',
+                cat: 'Verre', status: 'Disponible' },
+            { emoji: '🍾', title: 'Verre coloré (brun/vert)', loc: 'Bafoussam', price: '30 FCFA/kg', qty: '18kg',
+                cat: 'Verre', status: 'Disponible' },
+            { emoji: '🛢️', title: 'Huile de friture usagée', loc: 'Douala, Akwa', price: '300 FCFA/L', qty: '10L',
+                cat: 'Huile', status: 'Disponible' },
+            { emoji: '🛢️', title: 'Huile moteur usagée', loc: 'Yaoundé, Bastos', price: '150 FCFA/L', qty: '20L',
+                cat: 'Huile', status: 'Disponible' },
+            { emoji: '💻', title: 'Ordinateurs complets', loc: 'Douala, Bonapriso', price: '400 FCFA/kg',
+                qty: '30kg', cat: 'Électronique', status: 'Négociable' }
+        ];
+
+        function renderFeed(filter) {
+            filter = filter || 'Tous';
+            var container = document.getElementById('feed-list');
+            var filtered = filter === 'Tous' ? feedProducts : feedProducts.filter(function(p) { return p.cat === filter; });
             if (filtered.length === 0) {
                 container.innerHTML =
                     '<div style="text-align:center;padding:40px 0;color:var(--text-muted);">Aucune annonce disponible</div>';
                 return;
             }
-            container.innerHTML = filtered.map((p, i) => {
-                const statusClass = p.status === 'Premium' ? 'premium' : p.status === 'Négociable' ? 'negotiable' : '';
-                return `
+            var html = '';
+            filtered.forEach(function(p, i) {
+                var statusClass = p.status === 'Premium' ? 'premium' : p.status === 'Négociable' ? 'negotiable' : '';
+                html += `
                 <div class="product-card" data-index="${i}">
                     <div class="emoji">${p.emoji}</div>
                     <div class="info">
@@ -1779,42 +1812,46 @@
                         <div style="font-size:11px;color:var(--text-muted);text-align:right;">${p.qty}</div>
                     </div>
                 </div>
-            `}).join('');
-            container.querySelectorAll('.product-card').forEach(el => {
-                el.addEventListener('click', () => {
-                    const idx = parseInt(el.dataset.index);
-                    const p = filtered[idx];
+            `;
+            });
+            container.innerHTML = html;
+            container.querySelectorAll('.product-card').forEach(function(el) {
+                el.addEventListener('click', function() {
+                    var idx = parseInt(this.dataset.index);
+                    var p = filtered[idx];
                     openDetail(p);
                 });
             });
         }
 
-        document.querySelectorAll('.category-chip').forEach(chip => {
-            chip.addEventListener('click', () => {
-                document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
-                chip.classList.add('active');
-                renderFeed(chip.dataset.cat);
+        document.querySelectorAll('.category-chip').forEach(function(chip) {
+            chip.addEventListener('click', function() {
+                document.querySelectorAll('.category-chip').forEach(function(c) { c.classList.remove('active'); });
+                this.classList.add('active');
+                renderFeed(this.dataset.cat);
             });
         });
 
+        // ==========================================
+        // 7. DETAIL
+        // ==========================================
         function openDetail(product) {
             document.getElementById('detail-emoji').textContent = product.emoji;
             document.getElementById('detail-title').textContent = product.title;
             document.getElementById('detail-location').textContent = product.loc;
             document.getElementById('detail-price').textContent = product.price;
             navigateTo('detail');
-            selectedRating = 0;
-            document.querySelectorAll('#rating-stars .star').forEach(s => s.textContent = '☆');
+            var stars = document.querySelectorAll('#rating-stars .star');
+            stars.forEach(function(s) { s.textContent = '☆'; });
         }
 
-        document.getElementById('detail-back').addEventListener('click', () => navigateTo('feed'));
+        document.getElementById('detail-back').addEventListener('click', function() { navigateTo('feed'); });
 
-        document.querySelectorAll('#rating-stars .star').forEach(star => {
-            star.addEventListener('click', () => {
-                const val = parseInt(star.dataset.val);
-                selectedRating = val;
-                document.querySelectorAll('#rating-stars .star').forEach(s => {
-                    const sv = parseInt(s.dataset.val);
+        document.querySelectorAll('#rating-stars .star').forEach(function(star) {
+            star.addEventListener('click', function() {
+                var val = parseInt(this.dataset.val);
+                document.querySelectorAll('#rating-stars .star').forEach(function(s) {
+                    var sv = parseInt(s.dataset.val);
                     s.textContent = sv <= val ? '★' : '☆';
                     s.classList.toggle('active', sv <= val);
                 });
@@ -1822,18 +1859,32 @@
             });
         });
 
-        document.querySelectorAll('#chat-list .product-card').forEach(el => {
-            el.addEventListener('click', () => {
-                const chatId = el.dataset.chat;
-                openChat(chatId);
+        // ==========================================
+        // 8. CHAT
+        // ==========================================
+        var chatMessages = {
+            paul: [
+                { text: "Bonjour, je suis intéressé par vos bouteilles PET", sent: false, time: "12:20" },
+                { text: "Bonjour ! Oui je les ai encore", sent: true, time: "12:22" },
+                { text: "Ok je suis dispo", sent: false, time: "12:30" }
+            ],
+            marie: [
+                { text: "Merci pour votre confiance", sent: false, time: "Hier" }
+            ],
+            jean: [
+                { text: "Quand pouvez-vous passer ?", sent: false, time: "Hier" }
+            ]
+        };
+        var chatActive = null;
+
+        document.querySelectorAll('#chat-list .product-card').forEach(function(el) {
+            el.addEventListener('click', function() {
+                openChat(this.dataset.chat);
             });
         });
 
-        document.getElementById('goto-chat-from-detail').addEventListener('click', () => {
-            navigateTo('chat');
-        });
-
-        document.getElementById('chat-back').addEventListener('click', () => {
+        document.getElementById('goto-chat-from-detail').addEventListener('click', function() { navigateTo('chat'); });
+        document.getElementById('chat-back').addEventListener('click', function() {
             document.getElementById('chat-conversation').style.display = 'none';
             document.getElementById('chat-list').style.display = 'block';
         });
@@ -1841,67 +1892,73 @@
         function openChat(chatId) {
             chatActive = chatId;
             document.getElementById('chat-list').style.display = 'none';
-            const conv = document.getElementById('chat-conversation');
-            conv.style.display = 'flex';
+            document.getElementById('chat-conversation').style.display = 'flex';
             renderChatMessages();
         }
 
         function renderChatMessages() {
-            const container = document.getElementById('chat-messages');
-            const msgs = chatMessages[chatActive] || [];
-            container.innerHTML = msgs.map(m => `
+            var container = document.getElementById('chat-messages');
+            var msgs = chatMessages[chatActive] || [];
+            var html = '';
+            msgs.forEach(function(m) {
+                html += `
                 <div class="chat-message ${m.sent ? 'sent' : ''}">
                     <div class="bubble">
                         <div class="text">${m.text}</div>
                         <div class="time">${m.time}</div>
                     </div>
                 </div>
-            `).join('');
+            `;
+            });
+            container.innerHTML = html;
             container.scrollTop = container.scrollHeight;
         }
 
         document.getElementById('chat-send-btn').addEventListener('click', sendMessage);
-        document.getElementById('chat-input-text').addEventListener('keydown', (e) => {
+        document.getElementById('chat-input-text').addEventListener('keydown', function(e) {
             if (e.key === 'Enter') sendMessage();
         });
 
         function sendMessage() {
-            const input = document.getElementById('chat-input-text');
-            const text = input.value.trim();
+            var input = document.getElementById('chat-input-text');
+            var text = input.value.trim();
             if (!text || !chatActive) return;
-            const now = new Date();
-            const time = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+            var now = new Date();
+            var time = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
             if (!chatMessages[chatActive]) chatMessages[chatActive] = [];
-            chatMessages[chatActive].push({ text, sent: true, time });
+            chatMessages[chatActive].push({ text: text, sent: true, time: time });
             input.value = '';
             renderChatMessages();
-            setTimeout(() => {
-                const replies = [
+            setTimeout(function() {
+                var replies = [
                     "Merci pour votre message ! Je vous réponds dans la journée.",
                     "Parfait, je confirme la collecte pour demain.",
                     "Très bien, je suis disponible.",
                     "D'accord, à bientôt !",
-                    "Je prends note de votre demande.",
+                    "Je prends note de votre demande."
                 ];
-                const reply = replies[Math.floor(Math.random() * replies.length)];
+                var reply = replies[Math.floor(Math.random() * replies.length)];
                 chatMessages[chatActive].push({ text: reply, sent: false, time: 'Maintenant' });
                 renderChatMessages();
                 showToast('📩 Nouveau message reçu', 'success');
             }, 1500);
         }
 
-        document.getElementById('goto-withdrawal').addEventListener('click', () => navigateTo('withdrawal'));
+        // ==========================================
+        // 9. WITHDRAWAL
+        // ==========================================
+        document.getElementById('goto-withdrawal').addEventListener('click', function() { navigateTo('withdrawal'); });
 
-        document.querySelectorAll('.provider-item').forEach(el => {
-            el.addEventListener('click', () => {
-                document.querySelectorAll('.provider-item').forEach(p => p.classList.remove('selected'));
-                el.classList.add('selected');
+        document.querySelectorAll('.provider-item').forEach(function(el) {
+            el.addEventListener('click', function() {
+                document.querySelectorAll('.provider-item').forEach(function(p) { p.classList.remove('selected'); });
+                this.classList.add('selected');
             });
         });
 
-        document.getElementById('withdrawal-submit').addEventListener('click', () => {
-            const amount = document.getElementById('withdrawal-amount').value;
-            const phone = document.getElementById('withdrawal-phone').value;
+        document.getElementById('withdrawal-submit').addEventListener('click', function() {
+            var amount = document.getElementById('withdrawal-amount').value;
+            var phone = document.getElementById('withdrawal-phone').value;
             if (!amount || parseFloat(amount) <= 0) {
                 showToast('Veuillez entrer un montant valide', 'error');
                 return;
@@ -1915,106 +1972,95 @@
             document.getElementById('withdrawal-phone').value = '';
         });
 
-        document.getElementById('goto-publish').addEventListener('click', () => navigateTo('publish'));
+        // ==========================================
+        // 10. PUBLISH
+        // ==========================================
+        document.getElementById('goto-publish').addEventListener('click', function() { navigateTo('publish'); });
 
-        document.querySelectorAll('.publish-photos .slot').forEach(slot => {
-            slot.addEventListener('click', () => {
-                slot.classList.toggle('filled');
-                slot.textContent = slot.classList.contains('filled') ? '✅' : '📷';
-                if (slot.classList.contains('filled')) {
+        document.querySelectorAll('.publish-photos .slot').forEach(function(slot) {
+            slot.addEventListener('click', function() {
+                this.classList.toggle('filled');
+                this.textContent = this.classList.contains('filled') ? '✅' : '📷';
+                if (this.classList.contains('filled')) {
                     showToast('📸 Photo ajoutée', 'success');
                 }
             });
         });
 
         document.getElementById('publish-submit').addEventListener('click', function() {
-            const title = document.getElementById('publish-title').value.trim();
-            const qty = document.getElementById('publish-qty').value.trim();
-            const price = document.getElementById('publish-price').value.trim();
-            const city = document.getElementById('publish-city').value.trim();
+            var title = document.getElementById('publish-title').value.trim();
+            var qty = document.getElementById('publish-qty').value.trim();
+            var price = document.getElementById('publish-price').value.trim();
+            var city = document.getElementById('publish-city').value.trim();
             if (!title || !qty || !price || !city) {
                 showToast('Veuillez remplir tous les champs', 'error');
                 return;
             }
-            const db = firebase.firestore();
-            const user = firebase.auth().currentUser;
-            if (!user) {
-                showToast('❌ Connectez-vous d\'abord', 'error');
-                return;
-            }
-            const productData = {
-                title: title,
-                qty: qty,
-                price: price + ' FCFA/kg',
-                city: city,
-                category: document.getElementById('publish-cat').value,
-                emoji: '📦',
-                loc: city,
-                userId: user.uid,
-                userPhone: user.phoneNumber,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                status: 'available'
-            };
-            db.collection('products').add(productData).then(() => {
-                showToast('✅ Annonce publiée !', 'success');
-                document.getElementById('publish-title').value = '';
-                document.getElementById('publish-qty').value = '';
-                document.getElementById('publish-price').value = '';
-                document.getElementById('publish-city').value = '';
-                document.querySelectorAll('.publish-photos .slot').forEach(s => {
-                    s.classList.remove('filled');
-                    s.textContent = '📷';
-                });
-                navigateTo('feed');
-                listenToProducts();
-            }).catch((error) => {
-                showToast('❌ Erreur: ' + error.message, 'error');
+            showToast('✅ Annonce publiée ! (simulée)', 'success');
+            document.getElementById('publish-title').value = '';
+            document.getElementById('publish-qty').value = '';
+            document.getElementById('publish-price').value = '';
+            document.getElementById('publish-city').value = '';
+            document.querySelectorAll('.publish-photos .slot').forEach(function(s) {
+                s.classList.remove('filled');
+                s.textContent = '📷';
             });
+            navigateTo('feed');
         });
 
-        document.querySelectorAll('.notif-item').forEach(item => {
-            item.addEventListener('click', () => {
-                const dot = item.querySelector('.dot');
+        // ==========================================
+        // 11. NOTIFICATIONS
+        // ==========================================
+        document.querySelectorAll('.notif-item').forEach(function(item) {
+            item.addEventListener('click', function() {
+                var dot = this.querySelector('.dot');
                 if (dot) dot.classList.add('read');
                 showToast('✅ Notification marquée comme lue', 'success');
                 updateBadge();
             });
         });
 
-        document.getElementById('notif-mark-all').addEventListener('click', () => {
-            document.querySelectorAll('.notif-item .dot').forEach(d => d.classList.add('read'));
+        document.getElementById('notif-mark-all').addEventListener('click', function() {
+            document.querySelectorAll('.notif-item .dot').forEach(function(d) { d.classList.add('read'); });
             showToast('✅ Toutes les notifications sont lues', 'success');
             updateBadge();
         });
 
-        document.querySelectorAll('.city-item').forEach(item => {
-            item.addEventListener('click', () => {
-                const city = item.querySelector('.name').textContent;
-                const address = item.querySelector('.address').textContent;
+        // ==========================================
+        // 12. MAP
+        // ==========================================
+        document.querySelectorAll('.city-item').forEach(function(item) {
+            item.addEventListener('click', function() {
+                var city = this.querySelector('.name').textContent;
+                var address = this.querySelector('.address').textContent;
                 document.getElementById('map-current-city').textContent = city;
                 document.getElementById('map-current-address').textContent = address;
                 showToast('📍 ' + city + ' sélectionné', 'success');
             });
         });
 
-        document.getElementById('goto-priceguide').addEventListener('click', () => navigateTo('priceguide'));
-        renderFeed();
-        updateBadge();
+        // ==========================================
+        // 13. PRICE GUIDE
+        // ==========================================
+        document.getElementById('goto-priceguide').addEventListener('click', function() { navigateTo('priceguide'); });
 
+        // ==========================================
+        // 14. DEEP LINKING
+        // ==========================================
         function handleDeepLink() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const productId = urlParams.get('product');
-            const action = urlParams.get('action');
+            var params = new URLSearchParams(window.location.search);
+            var productId = params.get('product');
+            var action = params.get('action');
             if (productId) {
                 console.log('🔗 Lien profond vers le produit:', productId);
-                setTimeout(() => {
+                setTimeout(function() {
                     navigateTo('detail');
                     showToast('📦 Produit chargé !', 'success');
                 }, 1000);
             }
             if (action === 'publish') {
                 console.log('📝 Action: publier une annonce');
-                setTimeout(() => {
+                setTimeout(function() {
                     navigateTo('publish');
                     showToast('✏️ Prêt à publier !', 'success');
                 }, 1000);
@@ -2023,47 +2069,40 @@
         document.addEventListener('DOMContentLoaded', handleDeepLink);
         setTimeout(handleDeepLink, 500);
 
+        // ==========================================
+        // 15. GEOLOCALISATION
+        // ==========================================
         function getUserLocation() {
             if ('geolocation' in navigator) {
                 navigator.geolocation.getCurrentPosition(
-                    function(position) {
-                        const lat = position.coords.latitude;
-                        const lng = position.coords.longitude;
+                    function(pos) {
+                        var lat = pos.coords.latitude;
+                        var lng = pos.coords.longitude;
                         console.log('📍 Position:', lat, lng);
-                        const user = firebase.auth().currentUser;
-                        if (user) {
-                            firebase.firestore().collection('users').doc(user.uid).set({
-                                location: { latitude: lat, longitude: lng,
-                                    timestamp: firebase.firestore.FieldValue.serverTimestamp() }
-                            }, { merge: true });
-                        }
                         showToast('📍 Position trouvée !', 'success');
                         displayUserLocation(lat, lng);
                         updateMapWithNearbyPoints(lat, lng);
                     },
-                    function(error) {
-                        console.log('⚠️ Erreur géolocalisation:', error);
+                    function() {
                         showToast('⚠️ Impossible de localiser', 'error');
                     }
                 );
-            } else {
-                console.log('⚠️ Géolocalisation non disponible');
             }
         }
 
         function displayUserLocation(lat, lng) {
-            const mapContainer = document.querySelector('.map-container');
-            if (mapContainer) {
-                const locationDisplay = document.createElement('div');
-                locationDisplay.style.cssText =
+            var container = document.querySelector('.map-container');
+            if (container) {
+                var div = document.createElement('div');
+                div.style.cssText =
                     'position:absolute;bottom:10px;left:10px;background:rgba(0,0,0,0.7);padding:8px 12px;border-radius:8px;font-size:11px;color:#22C55E;z-index:10;';
-                locationDisplay.textContent = '📍 Vous êtes ici (' + lat.toFixed(4) + ', ' + lng.toFixed(4) + ')';
-                mapContainer.appendChild(locationDisplay);
+                div.textContent = '📍 Vous êtes ici (' + lat.toFixed(4) + ', ' + lng.toFixed(4) + ')';
+                container.appendChild(div);
             }
         }
 
         function updateMapWithNearbyPoints(lat, lng) {
-            const collectPoints = [
+            var points = [
                 { name: 'Douala - Bonaberi', lat: 4.04, lng: 9.69 },
                 { name: 'Douala - Akwa', lat: 4.05, lng: 9.70 },
                 { name: 'Yaoundé - Bastos', lat: 3.87, lng: 11.52 },
@@ -2071,14 +2110,15 @@
                 { name: 'Bafoussam', lat: 5.48, lng: 10.42 },
                 { name: 'Garoua', lat: 9.30, lng: 13.40 }
             ];
-            const pointsWithDistance = collectPoints.map(point => {
-                const distance = calculateDistance(lat, lng, point.lat, point.lng);
-                return { ...point, distance: distance.toFixed(1) };
+            var withDist = points.map(function(p) {
+                var d = calculateDistance(lat, lng, p.lat, p.lng);
+                return { name: p.name, distance: d.toFixed(1) };
             });
-            pointsWithDistance.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
-            const cityList = document.getElementById('city-list');
-            if (cityList) {
-                cityList.innerHTML = pointsWithDistance.map(p => `
+            withDist.sort(function(a, b) { return parseFloat(a.distance) - parseFloat(b.distance); });
+            var list = document.getElementById('city-list');
+            if (list) {
+                list.innerHTML = withDist.map(function(p) {
+                    return `
                     <div class="city-item" data-city="${p.name}">
                         <div class="emoji">📍</div>
                         <div class="info">
@@ -2086,87 +2126,32 @@
                             <div class="address">À ${p.distance} km de vous</div>
                         </div>
                     </div>
-                `).join('');
+                `;
+                }).join('');
             }
         }
 
         function calculateDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371;
-            const dLat = (lat2 - lat1) * Math.PI / 180;
-            const dLon = (lon2 - lon1) * Math.PI / 180;
-            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            var R = 6371;
+            var dLat = (lat2 - lat1) * Math.PI / 180;
+            var dLon = (lon2 - lon1) * Math.PI / 180;
+            var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
                 Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
                 Math.sin(dLon / 2) * Math.sin(dLon / 2);
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
             return R * c;
         }
 
-        firebase.auth().onAuthStateChanged(function(user) {
-            if (user) {
-                setTimeout(getUserLocation, 2000);
-            }
-        });
+        // ==========================================
+        // 16. INIT
+        // ==========================================
+        renderFeed();
+        updateBadge();
 
-        function addLocationButton() {
-            const dashboard = document.getElementById('dashboard');
-            if (dashboard) {
-                const locationBtn = document.createElement('button');
-                locationBtn.textContent = '📍 Mettre à jour ma position';
-                locationBtn.className = 'btn-primary small';
-                locationBtn.style.cssText = 'margin: 10px 0; width: auto; padding: 8px 16px;';
-                locationBtn.onclick = getUserLocation;
-                const balanceCard = dashboard.querySelector('.balance-card');
-                if (balanceCard) {
-                    balanceCard.after(locationBtn);
-                }
-            }
-        }
-        setTimeout(addLocationButton, 1000);
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === '1' && e.ctrlKey) {
-                isLoggedIn = true;
-                document.getElementById('bottom-nav').classList.add('active');
-                navigateTo('dashboard');
-                showToast('🔓 Mode test activé', 'success');
-            }
-        });
-
-        function listenToProducts() {
-            const db = firebase.firestore();
-            const feedContainer = document.getElementById('feed-list');
-            db.collection('products').where('status', '==', 'available').orderBy('createdAt', 'desc').onSnapshot((
-                snapshot) => {
-                let html = '';
-                if (snapshot.empty) {
-                    html =
-                        '<div style="text-align:center;padding:40px 0;color:var(--text-muted);">Aucune annonce disponible</div>';
-                } else {
-                    snapshot.forEach((doc) => {
-                        const data = doc.data();
-                        html += `
-                            <div class="product-card" data-id="${doc.id}">
-                                <div class="emoji">${data.emoji || '📦'}</div>
-                                <div class="info">
-                                    <div class="title">${data.title || 'Annonce'}</div>
-                                    <div class="location">${data.loc || data.city || 'Cameroun'}</div>
-                                    <span class="status">${data.status || 'Disponible'}</span>
-                                </div>
-                                <div>
-                                    <div class="price">${data.price || 'Prix non défini'}</div>
-                                    <div style="font-size:11px;color:var(--text-muted);text-align:right;">${data.qty || 'Quantité'}</div>
-                                </div>
-                            </div>
-                        `;
-                    });
-                }
-                feedContainer.innerHTML = html;
-            }, (error) => {
-                console.error('Erreur Firestore:', error);
-            });
-        }
-
-        const firebaseConfig = {
+        // ==========================================
+        // 17. FIREBASE CONFIG
+        // ==========================================
+        var firebaseConfig = {
             apiKey: "AIzaSyADPKnfoIsqMaK1J7imfRcSKaaR4GRzpU8",
             authDomain: "examens-maths.firebaseapp.com",
             projectId: "examens-maths",
@@ -2182,14 +2167,8 @@
             console.log('⚠️ Firebase non chargé ou déjà initialisé');
         }
 
-        setTimeout(function() {
-            listenToProducts();
-        }, 500);
-
         console.log('♻️ ReLife Cameroun - Application chargée !');
         console.log('🔑 Code OTP : 123456 (test) ou vrai SMS');
-        console.log('📊 Prix réels du recyclage au Cameroun intégrés');
-        console.log('📱 Guide des prix disponible dans le profil');
     </script>
 </body>
 </html>
