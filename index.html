@@ -990,7 +990,6 @@
         .gap-8 { gap: 8px; }
         .hidden { display: none !important; }
 
-        /* BOUTON BILINGUISME TRÈS VISIBLE */
         #lang-toggle {
             background: var(--gold) !important;
             color: black !important;
@@ -1054,26 +1053,26 @@
             <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:20px 0;">
                 <div class="text-center" style="margin-bottom:32px;">
                     <div style="font-size:56px;margin-bottom:12px;">♻️</div>
-                    <h1 style="font-size:28px;font-weight:700;">Bienvenue</h1>
-                    <p style="color:var(--text-muted);font-size:14px;">Entrez votre numéro de téléphone</p>
+                    <h1 style="font-size:28px;font-weight:700;" id="lbl-welcome">Bienvenue</h1>
+                    <p style="color:var(--text-muted);font-size:14px;" id="lbl-enter-phone">Entrez votre numéro de téléphone</p>
                 </div>
                 <div class="form-group">
-                    <label>Numéro de téléphone</label>
+                    <label id="lbl-phone-label">Numéro de téléphone</label>
                     <div style="display:flex;align-items:center;background:var(--glass);border-radius:14px;border:1px solid var(--glass-border);padding:0 4px;">
                         <span style="padding:14px 12px;color:var(--text-muted);font-weight:600;">+237</span>
                         <input type="tel" id="phone-input" placeholder="6XXXXXXXX" style="border:none;background:transparent;padding:14px 12px;color:white;font-size:16px;flex:1;outline:none;">
                     </div>
                 </div>
-                <button class="btn-primary" id="login-btn" style="margin-top:12px;">Se connecter</button>
-                <button id="login-skip" style="background:none;border:none;color:var(--text-muted);font-size:13px;margin-top:16px;cursor:pointer;">Continuer sans compte (test)</button>
+                <button class="btn-primary" id="login-btn" style="margin-top:12px;" id="lbl-login-btn">Se connecter</button>
+                <button id="login-skip" style="background:none;border:none;color:var(--text-muted);font-size:13px;margin-top:16px;cursor:pointer;" id="lbl-skip">Continuer sans compte (test)</button>
             </div>
         </div>
         <div id="otp" class="screen">
             <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:20px 0;">
                 <div class="text-center" style="margin-bottom:32px;">
                     <div style="font-size:48px;margin-bottom:12px;">🔐</div>
-                    <h2 style="font-size:24px;font-weight:700;">Vérification</h2>
-                    <p style="color:var(--text-muted);font-size:14px;">Code envoyé au <span id="otp-phone">+237 6XXXXXXXX</span></p>
+                    <h2 style="font-size:24px;font-weight:700;" id="lbl-verify">Vérification</h2>
+                    <p style="color:var(--text-muted);font-size:14px;" id="lbl-code-sent">Code envoyé au <span id="otp-phone">+237 6XXXXXXXX</span></p>
                 </div>
                 <div style="display:flex;gap:10px;justify-content:center;margin-bottom:24px;">
                     <input type="text" maxlength="1" class="otp-input" style="width:44px;height:52px;text-align:center;font-size:22px;font-weight:700;border-radius:12px;border:1px solid var(--glass-border);background:var(--glass);color:white;outline:none;">
@@ -1083,8 +1082,8 @@
                     <input type="text" maxlength="1" class="otp-input" style="width:44px;height:52px;text-align:center;font-size:22px;font-weight:700;border-radius:12px;border:1px solid var(--glass-border);background:var(--glass);color:white;outline:none;">
                     <input type="text" maxlength="1" class="otp-input" style="width:44px;height:52px;text-align:center;font-size:22px;font-weight:700;border-radius:12px;border:1px solid var(--glass-border);background:var(--glass);color:white;outline:none;">
                 </div>
-                <button class="btn-primary" id="otp-btn">Vérifier</button>
-                <button style="background:none;border:none;color:var(--text-muted);font-size:13px;margin-top:12px;cursor:pointer;">Renvoyer le code</button>
+                <button class="btn-primary" id="otp-btn" id="lbl-verify-btn">Vérifier</button>
+                <button style="background:none;border:none;color:var(--text-muted);font-size:13px;margin-top:12px;cursor:pointer;" id="lbl-resend">Renvoyer le code</button>
             </div>
         </div>
         <div id="dashboard" class="screen">
@@ -1340,178 +1339,198 @@
     </div>
     <script>
         // ==========================================
-        // BILINGUISME (FR / EN)
+        // BILINGUISME (FR / EN) — FONCTIONNEL !
         // ==========================================
         let currentLang = 'fr';
-        const texts = {
+
+        const translations = {
             fr: {
-                greeting: 'Bonjour',
-                greeting_sub: 'Prêt à recycler aujourd\'hui ?',
-                map: 'Carte',
-                messages: 'Messages',
-                stats: 'Stats',
-                marketplace: 'Marché',
-                balance: '💰 Solde Mobile Money',
-                withdraw: 'Retirer',
-                sales: 'Ventes',
-                recycled: 'Recyclés',
-                rating: 'Note',
-                recent: '⚡ Activité récente',
-                pet: 'Collecte de bouteilles PET',
-                aluminum: 'Canettes aluminium',
-                cardboard: 'Cartons recyclables',
-                marketplace_title: '🛒 Marché',
-                publish: 'Publier',
-                all: 'Tous',
-                plastic: 'Plastique',
-                metal: 'Métal',
-                cardboard_cat: 'Carton',
-                glass_cat: 'Verre',
-                oil: 'Huile',
-                electronic: 'Électronique',
-                back: '← Retour',
-                available: 'Disponible',
-                contact: 'Contacter',
-                rate_seller: '⭐ Noter ce vendeur',
-                reviews: '📝 Avis (12)',
-                days_ago_2: 'Il y a 2j',
-                days_ago_5: 'Il y a 5j',
-                new_ad: '➕ Nouvelle annonce',
-                category: 'Catégorie',
-                title_label: 'Titre',
-                quantity_label: 'Quantité',
-                price_label: 'Prix (FCFA/kg)',
-                city_label: 'Ville',
-                publish_ad: 'Publier l\'annonce',
-                withdraw_momo: '💰 Retrait MoMo',
-                balance_label: 'Solde : 5 000 FCFA',
-                amount_label: 'Montant (FCFA)',
-                phone_label: 'Numéro de téléphone',
-                confirm_withdraw: 'Confirmer le retrait',
-                fees: 'Frais : 1.5% · Délai : instantané',
-                collection_points: '📍 Points de collecte',
-                price_guide_title: '📊 Guide des prix',
-                price_guide_sub: 'Prix indicatifs du recyclage au Cameroun (FCFA/kg)',
-                price_guide: 'Guide des prix',
-                price_advice: '💡 Conseil : Les prix varient selon la qualité et la quantité. Ces prix sont indicatifs et peuvent être négociés.',
-                messages_title: '💬 Messages',
-                notif_title: '🔔 Notifications',
-                mark_all: 'Tout marquer comme lu',
-                notif_msg1: 'Nouveau message de Paul',
-                notif_msg2: 'Collecte confirmée',
-                notif_msg3: 'Offre Premium disponible',
-                notif_msg4: 'Nouvel avis reçu',
-                stats_title: '📊 Statistiques',
-                weekly: '📈 Collectes par semaine',
-                waste_distribution: '🧩 Répartition des déchets',
-                plastic_pct: 'Plastique 40%',
-                metal_pct: 'Métal 20%',
-                glass_pct: 'Verre 20%',
-                cardboard_pct: 'Carton 20%',
-                monthly_revenue: '💰 Revenus mensuels',
-                change_password: 'Changer le mot de passe',
-                notifications: 'Notifications',
-                active: 'Actives',
-                language: 'Langue',
-                dark_mode: 'Mode sombre',
-                enabled: 'Activé',
-                my_ads: 'Mes annonces',
-                my_premium: 'Mon abonnement Premium',
-                active_premium: 'Actif',
-                logout: 'Déconnexion',
-                home: 'Accueil',
-                notif: 'Notif.',
-                profile: 'Profil'
+                'lbl-welcome': 'Bienvenue',
+                'lbl-enter-phone': 'Entrez votre numéro de téléphone',
+                'lbl-phone-label': 'Numéro de téléphone',
+                'lbl-login-btn': 'Se connecter',
+                'lbl-skip': 'Continuer sans compte (test)',
+                'lbl-verify': 'Vérification',
+                'lbl-code-sent': 'Code envoyé au',
+                'lbl-verify-btn': 'Vérifier',
+                'lbl-resend': 'Renvoyer le code',
+                'greeting-text': 'Bonjour',
+                'greeting-sub': 'Prêt à recycler aujourd\'hui ?',
+                'lbl-map': 'Carte',
+                'lbl-messages': 'Messages',
+                'lbl-stats': 'Stats',
+                'lbl-marketplace': 'Marché',
+                'lbl-balance': '💰 Solde Mobile Money',
+                'lbl-withdraw': 'Retirer',
+                'lbl-sales': 'Ventes',
+                'lbl-recycled': 'Recyclés',
+                'lbl-rating': 'Note',
+                'lbl-recent': '⚡ Activité récente',
+                'lbl-pet': 'Collecte de bouteilles PET',
+                'lbl-aluminum': 'Canettes aluminium',
+                'lbl-cardboard': 'Cartons recyclables',
+                'lbl-marketplace_title': '🛒 Marché',
+                'lbl-publish': 'Publier',
+                'lbl-all': 'Tous',
+                'lbl-plastic': 'Plastique',
+                'lbl-metal': 'Métal',
+                'lbl-cardboard_cat': 'Carton',
+                'lbl-glass_cat': 'Verre',
+                'lbl-oil': 'Huile',
+                'lbl-electronic': 'Électronique',
+                'lbl-back': '← Retour',
+                'lbl-available': 'Disponible',
+                'lbl-contact': 'Contacter',
+                'lbl-rate_seller': '⭐ Noter ce vendeur',
+                'lbl-reviews': '📝 Avis (12)',
+                'lbl-days_ago_2': 'Il y a 2j',
+                'lbl-days_ago_5': 'Il y a 5j',
+                'lbl-new_ad': '➕ Nouvelle annonce',
+                'lbl-category': 'Catégorie',
+                'lbl-title_label': 'Titre',
+                'lbl-quantity_label': 'Quantité',
+                'lbl-price_label': 'Prix (FCFA/kg)',
+                'lbl-city_label': 'Ville',
+                'lbl-publish_ad': 'Publier l\'annonce',
+                'lbl-withdraw_momo': '💰 Retrait MoMo',
+                'lbl-balance_label': 'Solde : 5 000 FCFA',
+                'lbl-amount_label': 'Montant (FCFA)',
+                'lbl-phone_label': 'Numéro de téléphone',
+                'lbl-confirm_withdraw': 'Confirmer le retrait',
+                'lbl-fees': 'Frais : 1.5% · Délai : instantané',
+                'lbl-collection_points': '📍 Points de collecte',
+                'lbl-price_guide_title': '📊 Guide des prix',
+                'lbl-price_guide_sub': 'Prix indicatifs du recyclage au Cameroun (FCFA/kg)',
+                'lbl-price_guide': 'Guide des prix',
+                'lbl-price_advice': '💡 Conseil : Les prix varient selon la qualité et la quantité. Ces prix sont indicatifs et peuvent être négociés.',
+                'lbl-messages_title': '💬 Messages',
+                'lbl-notif_title': '🔔 Notifications',
+                'lbl-mark_all': 'Tout marquer comme lu',
+                'lbl-notif_msg1': 'Nouveau message de Paul',
+                'lbl-notif_msg2': 'Collecte confirmée',
+                'lbl-notif_msg3': 'Offre Premium disponible',
+                'lbl-notif_msg4': 'Nouvel avis reçu',
+                'lbl-stats_title': '📊 Statistiques',
+                'lbl-weekly': '📈 Collectes par semaine',
+                'lbl-waste_distribution': '🧩 Répartition des déchets',
+                'lbl-plastic_pct': 'Plastique 40%',
+                'lbl-metal_pct': 'Métal 20%',
+                'lbl-glass_pct': 'Verre 20%',
+                'lbl-cardboard_pct': 'Carton 20%',
+                'lbl-monthly_revenue': '💰 Revenus mensuels',
+                'lbl-change_password': 'Changer le mot de passe',
+                'lbl-notifications': 'Notifications',
+                'lbl-active': 'Actives',
+                'lbl-language': 'Langue',
+                'lbl-dark_mode': 'Mode sombre',
+                'lbl-enabled': 'Activé',
+                'lbl-my_ads': 'Mes annonces',
+                'lbl-my_premium': 'Mon abonnement Premium',
+                'lbl-active_premium': 'Actif',
+                'lbl-logout': 'Déconnexion',
+                'lbl-home': 'Accueil',
+                'lbl-notif': 'Notif.',
+                'lbl-profile': 'Profil'
             },
             en: {
-                greeting: 'Hello',
-                greeting_sub: 'Ready to recycle today?',
-                map: 'Map',
-                messages: 'Messages',
-                stats: 'Stats',
-                marketplace: 'Marketplace',
-                balance: '💰 Mobile Money Balance',
-                withdraw: 'Withdraw',
-                sales: 'Sales',
-                recycled: 'Recycled',
-                rating: 'Rating',
-                recent: '⚡ Recent Activity',
-                pet: 'PET bottles collection',
-                aluminum: 'Aluminum cans',
-                cardboard: 'Recyclable cardboard',
-                marketplace_title: '🛒 Marketplace',
-                publish: 'Publish',
-                all: 'All',
-                plastic: 'Plastic',
-                metal: 'Metal',
-                cardboard_cat: 'Cardboard',
-                glass_cat: 'Glass',
-                oil: 'Oil',
-                electronic: 'Electronics',
-                back: '← Back',
-                available: 'Available',
-                contact: 'Contact',
-                rate_seller: '⭐ Rate this seller',
-                reviews: '📝 Reviews (12)',
-                days_ago_2: '2 days ago',
-                days_ago_5: '5 days ago',
-                new_ad: '➕ New ad',
-                category: 'Category',
-                title_label: 'Title',
-                quantity_label: 'Quantity',
-                price_label: 'Price (FCFA/kg)',
-                city_label: 'City',
-                publish_ad: 'Publish ad',
-                withdraw_momo: '💰 MoMo Withdrawal',
-                balance_label: 'Balance: 5,000 FCFA',
-                amount_label: 'Amount (FCFA)',
-                phone_label: 'Phone number',
-                confirm_withdraw: 'Confirm withdrawal',
-                fees: 'Fees: 1.5% · Instant delivery',
-                collection_points: '📍 Collection points',
-                price_guide_title: '📊 Price guide',
-                price_guide_sub: 'Indicative recycling prices in Cameroon (FCFA/kg)',
-                price_guide: 'Price guide',
-                price_advice: '💡 Tip: Prices vary by quality and quantity. These are indicative and negotiable.',
-                messages_title: '💬 Messages',
-                notif_title: '🔔 Notifications',
-                mark_all: 'Mark all as read',
-                notif_msg1: 'New message from Paul',
-                notif_msg2: 'Collection confirmed',
-                notif_msg3: 'Premium offer available',
-                notif_msg4: 'New review received',
-                stats_title: '📊 Statistics',
-                weekly: '📈 Weekly collections',
-                waste_distribution: '🧩 Waste distribution',
-                plastic_pct: 'Plastic 40%',
-                metal_pct: 'Metal 20%',
-                glass_pct: 'Glass 20%',
-                cardboard_pct: 'Cardboard 20%',
-                monthly_revenue: '💰 Monthly revenue',
-                change_password: 'Change password',
-                notifications: 'Notifications',
-                active: 'Active',
-                language: 'Language',
-                dark_mode: 'Dark mode',
-                enabled: 'Enabled',
-                my_ads: 'My ads',
-                my_premium: 'My Premium subscription',
-                active_premium: 'Active',
-                logout: 'Logout',
-                home: 'Home',
-                notif: 'Notif.',
-                profile: 'Profile'
+                'lbl-welcome': 'Welcome',
+                'lbl-enter-phone': 'Enter your phone number',
+                'lbl-phone-label': 'Phone number',
+                'lbl-login-btn': 'Sign in',
+                'lbl-skip': 'Continue without account (test)',
+                'lbl-verify': 'Verification',
+                'lbl-code-sent': 'Code sent to',
+                'lbl-verify-btn': 'Verify',
+                'lbl-resend': 'Resend code',
+                'greeting-text': 'Hello',
+                'greeting-sub': 'Ready to recycle today?',
+                'lbl-map': 'Map',
+                'lbl-messages': 'Messages',
+                'lbl-stats': 'Stats',
+                'lbl-marketplace': 'Marketplace',
+                'lbl-balance': '💰 Mobile Money Balance',
+                'lbl-withdraw': 'Withdraw',
+                'lbl-sales': 'Sales',
+                'lbl-recycled': 'Recycled',
+                'lbl-rating': 'Rating',
+                'lbl-recent': '⚡ Recent Activity',
+                'lbl-pet': 'PET bottles collection',
+                'lbl-aluminum': 'Aluminum cans',
+                'lbl-cardboard': 'Recyclable cardboard',
+                'lbl-marketplace_title': '🛒 Marketplace',
+                'lbl-publish': 'Publish',
+                'lbl-all': 'All',
+                'lbl-plastic': 'Plastic',
+                'lbl-metal': 'Metal',
+                'lbl-cardboard_cat': 'Cardboard',
+                'lbl-glass_cat': 'Glass',
+                'lbl-oil': 'Oil',
+                'lbl-electronic': 'Electronics',
+                'lbl-back': '← Back',
+                'lbl-available': 'Available',
+                'lbl-contact': 'Contact',
+                'lbl-rate_seller': '⭐ Rate this seller',
+                'lbl-reviews': '📝 Reviews (12)',
+                'lbl-days_ago_2': '2 days ago',
+                'lbl-days_ago_5': '5 days ago',
+                'lbl-new_ad': '➕ New ad',
+                'lbl-category': 'Category',
+                'lbl-title_label': 'Title',
+                'lbl-quantity_label': 'Quantity',
+                'lbl-price_label': 'Price (FCFA/kg)',
+                'lbl-city_label': 'City',
+                'lbl-publish_ad': 'Publish ad',
+                'lbl-withdraw_momo': '💰 MoMo Withdrawal',
+                'lbl-balance_label': 'Balance: 5,000 FCFA',
+                'lbl-amount_label': 'Amount (FCFA)',
+                'lbl-phone_label': 'Phone number',
+                'lbl-confirm_withdraw': 'Confirm withdrawal',
+                'lbl-fees': 'Fees: 1.5% · Instant delivery',
+                'lbl-collection_points': '📍 Collection points',
+                'lbl-price_guide_title': '📊 Price guide',
+                'lbl-price_guide_sub': 'Indicative recycling prices in Cameroon (FCFA/kg)',
+                'lbl-price_guide': 'Price guide',
+                'lbl-price_advice': '💡 Tip: Prices vary by quality and quantity. These are indicative and negotiable.',
+                'lbl-messages_title': '💬 Messages',
+                'lbl-notif_title': '🔔 Notifications',
+                'lbl-mark_all': 'Mark all as read',
+                'lbl-notif_msg1': 'New message from Paul',
+                'lbl-notif_msg2': 'Collection confirmed',
+                'lbl-notif_msg3': 'Premium offer available',
+                'lbl-notif_msg4': 'New review received',
+                'lbl-stats_title': '📊 Statistics',
+                'lbl-weekly': '📈 Weekly collections',
+                'lbl-waste_distribution': '🧩 Waste distribution',
+                'lbl-plastic_pct': 'Plastic 40%',
+                'lbl-metal_pct': 'Metal 20%',
+                'lbl-glass_pct': 'Glass 20%',
+                'lbl-cardboard_pct': 'Cardboard 20%',
+                'lbl-monthly_revenue': '💰 Monthly revenue',
+                'lbl-change_password': 'Change password',
+                'lbl-notifications': 'Notifications',
+                'lbl-active': 'Active',
+                'lbl-language': 'Language',
+                'lbl-dark_mode': 'Dark mode',
+                'lbl-enabled': 'Enabled',
+                'lbl-my_ads': 'My ads',
+                'lbl-my_premium': 'My Premium subscription',
+                'lbl-active_premium': 'Active',
+                'lbl-logout': 'Logout',
+                'lbl-home': 'Home',
+                'lbl-notif': 'Notif.',
+                'lbl-profile': 'Profile'
             }
         };
 
         function updateLanguage() {
             const lang = currentLang;
             document.querySelectorAll('[id^="lbl-"]').forEach(el => {
-                const key = el.id.replace('lbl-', '');
-                if (texts[lang][key] !== undefined) {
-                    el.textContent = texts[lang][key];
+                const key = el.id;
+                if (translations[lang][key] !== undefined) {
+                    el.textContent = translations[lang][key];
                 }
             });
+            // Changer le texte du bouton
             const btn = document.getElementById('lang-toggle');
             if (currentLang === 'fr') {
                 btn.innerHTML = '<span class="lang-icon">🇫🇷</span> FR';
