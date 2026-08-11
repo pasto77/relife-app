@@ -1,8 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr"> <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<html lang="fr">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
@@ -10,31 +7,26 @@
     <meta name="theme-color" content="#0F0F0F" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
     <style>
-        /* ===== RESET ===== */
-        *,
-        *::before,
-        *::after {
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
         :root {
             --glass: rgba(255, 255, 255, 0.06);
             --glass-border: rgba(255, 255, 255, 0.08);
             --green: #2D5016;
-            --green-light: #4A7A2A;
             --gold: #FFD700;
-            --gold-light: #FFE44D;
             --bg: #0F0F0F;
-            --card: #1A1A1A;
             --text: #FFFFFF;
             --text-muted: #666666;
             --radius: 20px;
-            --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
         }
-
         html,
         body {
             height: 100%;
@@ -43,9 +35,7 @@
             color: var(--text);
             overflow: hidden;
             touch-action: manipulation;
-            -webkit-tap-highlight-color: transparent;
         }
-
         #app {
             height: 100%;
             display: flex;
@@ -55,8 +45,6 @@
             position: relative;
             background: var(--bg);
         }
-
-        /* ===== SCREENS ===== */
         .screen {
             display: none;
             flex: 1;
@@ -68,7 +56,6 @@
         .screen.active {
             display: flex;
         }
-
         @keyframes fadeUp {
             0% {
                 opacity: 0;
@@ -88,14 +75,6 @@
                 transform: scale(1.08);
             }
         }
-        @keyframes shimmer {
-            0% {
-                background-position: -200% 0;
-            }
-            100% {
-                background-position: 200% 0;
-            }
-        }
         @keyframes float {
             0%,
             100% {
@@ -105,18 +84,6 @@
                 transform: translateY(-10px);
             }
         }
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        /* ===== SPLASH ===== */
         #splash {
             display: flex;
             align-items: center;
@@ -158,8 +125,6 @@
             border-radius: 4px;
             transition: width 0.1s;
         }
-
-        /* ===== ONBOARDING ===== */
         .onboarding-slide {
             display: none;
             flex-direction: column;
@@ -206,7 +171,6 @@
             width: 24px;
             border-radius: 4px;
         }
-
         .btn-primary {
             background: var(--green);
             color: white;
@@ -223,41 +187,19 @@
         .btn-primary:active {
             transform: scale(0.97);
         }
-        .btn-primary.gold {
-            background: var(--gold);
-            color: black;
-        }
         .btn-primary.small {
             padding: 10px 20px;
             font-size: 14px;
             max-width: 120px;
         }
-        .btn-secondary {
-            background: transparent;
-            color: var(--text-muted);
-            border: 1px solid var(--glass-border);
-            padding: 14px 24px;
-            border-radius: 16px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: 0.3s;
-            width: 100%;
-        }
-        .btn-secondary:active {
-            transform: scale(0.97);
-        }
-
-        /* ===== GLASS CARD ===== */
         .glass {
             background: var(--glass);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
             border-radius: var(--radius);
-            box-shadow: var(--shadow);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
         }
-
-        /* ===== BOTTOM NAV ===== */
         #bottom-nav {
             display: none;
             position: fixed;
@@ -268,7 +210,6 @@
             max-width: 430px;
             background: rgba(15, 15, 15, 0.92);
             backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
             border-top: 1px solid rgba(255, 255, 255, 0.06);
             padding: 8px 0 env(safe-area-inset-bottom, 8px) 0;
             justify-content: space-around;
@@ -304,9 +245,6 @@
         .nav-item.active {
             color: var(--gold);
         }
-        .nav-item.active .icon {
-            transform: scale(1.1);
-        }
         .nav-item .badge {
             position: absolute;
             top: 2px;
@@ -325,13 +263,9 @@
         .nav-item .badge.hidden {
             display: none;
         }
-
-        /* ===== SCROLLBAR ===== */
         .screen::-webkit-scrollbar {
             width: 0;
         }
-
-        /* ===== DASHBOARD ===== */
         .greeting {
             font-size: 22px;
             font-weight: 700;
@@ -353,7 +287,6 @@
             padding: 14px 8px;
             background: var(--glass);
             backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--glass-border);
             border-radius: 16px;
             cursor: pointer;
@@ -371,7 +304,6 @@
             font-size: 10px;
             font-weight: 500;
         }
-
         .balance-card {
             background: linear-gradient(135deg, rgba(45, 80, 22, 0.3), rgba(255, 215, 0, 0.08));
             border: 1px solid rgba(255, 215, 0, 0.15);
@@ -391,7 +323,6 @@
             font-size: 12px;
             color: var(--text-muted);
         }
-
         .stats-row {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -403,7 +334,6 @@
             padding: 14px 8px;
             background: var(--glass);
             backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--glass-border);
             border-radius: 16px;
         }
@@ -416,13 +346,11 @@
             color: var(--text-muted);
             margin-top: 2px;
         }
-
         .section-title {
             font-size: 16px;
             font-weight: 600;
             margin: 16px 0 12px;
         }
-
         .activity-item {
             display: flex;
             align-items: center;
@@ -455,8 +383,6 @@
             font-size: 11px;
             color: var(--text-muted);
         }
-
-        /* ===== FEED ===== */
         .feed-categories {
             display: flex;
             gap: 8px;
@@ -484,14 +410,12 @@
             color: white;
             border-color: var(--green);
         }
-
         .product-card {
             display: flex;
             gap: 14px;
             padding: 14px;
             background: var(--glass);
             backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--glass-border);
             border-radius: var(--radius);
             margin-bottom: 10px;
@@ -546,8 +470,6 @@
             background: rgba(255, 165, 0, 0.15);
             color: #FFA500;
         }
-
-        /* ===== DETAIL ===== */
         .detail-image {
             width: 100%;
             height: 200px;
@@ -577,8 +499,6 @@
         .rating-stars .star.active {
             color: var(--gold);
         }
-
-        /* ===== PRICE GUIDE ===== */
         .price-guide-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -588,7 +508,6 @@
             padding: 14px;
             background: var(--glass);
             backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--glass-border);
             border-radius: 14px;
             text-align: center;
@@ -610,8 +529,6 @@
             font-size: 10px;
             color: var(--text-muted);
         }
-
-        /* ===== CHAT ===== */
         .chat-message {
             display: flex;
             margin-bottom: 12px;
@@ -625,7 +542,6 @@
             border-radius: 16px;
             background: var(--glass);
             backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--glass-border);
         }
         .chat-message.sent .bubble {
@@ -674,8 +590,6 @@
         .chat-input button:active {
             transform: scale(0.92);
         }
-
-        /* ===== MAP ===== */
         .map-container {
             height: 300px;
             background: linear-gradient(135deg, #1A2A1A, #2A3A2A);
@@ -720,7 +634,6 @@
             color: var(--gold);
             margin-top: 4px;
         }
-
         .city-list {
             display: flex;
             flex-direction: column;
@@ -733,7 +646,6 @@
             padding: 12px 16px;
             background: var(--glass);
             backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--glass-border);
             border-radius: 14px;
             cursor: pointer;
@@ -755,15 +667,12 @@
             font-size: 12px;
             color: var(--text-muted);
         }
-
-        /* ===== NOTIFICATIONS ===== */
         .notif-item {
             display: flex;
             gap: 12px;
             padding: 14px;
             background: var(--glass);
             backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--glass-border);
             border-radius: var(--radius);
             margin-bottom: 10px;
@@ -803,8 +712,6 @@
         .notif-item .dot.read {
             background: transparent;
         }
-
-        /* ===== STATS ===== */
         .chart-bars {
             display: flex;
             align-items: flex-end;
@@ -855,8 +762,6 @@
             margin-right: 4px;
             vertical-align: middle;
         }
-
-        /* ===== PROFILE ===== */
         .profile-header {
             display: flex;
             flex-direction: column;
@@ -903,7 +808,6 @@
             padding: 12px;
             background: var(--glass);
             backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--glass-border);
             border-radius: 14px;
         }
@@ -930,7 +834,6 @@
             border-radius: 14px;
             background: var(--glass);
             backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--glass-border);
             cursor: pointer;
             transition: 0.2s;
@@ -952,8 +855,6 @@
         .profile-menu .item.danger .label {
             color: #EF4444;
         }
-
-        /* ===== PUBLISH ===== */
         .publish-photos {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -964,7 +865,6 @@
             aspect-ratio: 1;
             background: var(--glass);
             backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
             border: 2px dashed var(--glass-border);
             border-radius: 14px;
             display: flex;
@@ -983,7 +883,6 @@
             border-color: var(--green);
             background: rgba(45, 80, 22, 0.2);
         }
-
         .form-group {
             margin-bottom: 16px;
         }
@@ -997,8 +896,7 @@
             margin-bottom: 6px;
         }
         .form-group input,
-        .form-group select,
-        .form-group textarea {
+        .form-group select {
             width: 100%;
             padding: 14px 16px;
             border-radius: 14px;
@@ -1010,19 +908,12 @@
             transition: 0.2s;
         }
         .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
+        .form-group select:focus {
             border-color: var(--green);
-        }
-        .form-group textarea {
-            resize: vertical;
-            min-height: 80px;
         }
         .form-group select option {
             background: var(--bg);
         }
-
-        /* ===== WITHDRAWAL ===== */
         .provider-select {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -1053,8 +944,6 @@
             font-weight: 600;
             margin-top: 4px;
         }
-
-        /* ===== TOAST ===== */
         .toast {
             position: fixed;
             bottom: 100px;
@@ -1062,7 +951,6 @@
             transform: translateX(-50%) translateY(20px);
             background: rgba(0, 0, 0, 0.9);
             backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
             padding: 14px 24px;
             border-radius: 14px;
             border: 1px solid var(--glass-border);
@@ -1086,8 +974,6 @@
         .toast.error {
             border-color: #EF4444;
         }
-
-        /* ===== UTILITY ===== */
         .mt-8 {
             margin-top: 8px;
         }
@@ -1125,19 +1011,13 @@
 </head>
 <body>
     <div id="app">
-
-        <!-- ===== TOAST ===== -->
         <div id="toast" class="toast"></div>
-
-        <!-- ===== SPLASH ===== -->
         <div id="splash" class="screen active">
             <div class="emoji">♻️</div>
             <h1>ReLife</h1>
             <div class="sub">CAMEROUN</div>
             <div class="loader-bar"><div class="fill" id="loader-fill"></div></div>
         </div>
-
-        <!-- ===== ONBOARDING ===== -->
         <div id="onboarding" class="screen">
             <div id="slide-0" class="onboarding-slide active">
                 <div class="emoji">♻️</div>
@@ -1167,8 +1047,6 @@
             </div>
             <button class="btn-primary" id="onboarding-btn">Suivant</button>
         </div>
-
-        <!-- ===== LOGIN ===== -->
         <div id="login" class="screen">
             <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:20px 0;">
                 <div class="text-center" style="margin-bottom:32px;">
@@ -1187,8 +1065,6 @@
                 <button id="login-skip" style="background:none;border:none;color:var(--text-muted);font-size:13px;margin-top:16px;cursor:pointer;">Continuer sans compte (test)</button>
             </div>
         </div>
-
-        <!-- ===== OTP ===== -->
         <div id="otp" class="screen">
             <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:20px 0;">
                 <div class="text-center" style="margin-bottom:32px;">
@@ -1208,8 +1084,6 @@
                 <button style="background:none;border:none;color:var(--text-muted);font-size:13px;margin-top:12px;cursor:pointer;">Renvoyer le code</button>
             </div>
         </div>
-
-        <!-- ===== DASHBOARD ===== -->
         <div id="dashboard" class="screen">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
                 <div>
@@ -1218,32 +1092,26 @@
                 </div>
                 <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--gold));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;">R</div>
             </div>
-
             <div class="quick-actions">
                 <div class="qa-item" data-target="map"><span class="icon">📍</span><span class="label">Carte</span></div>
                 <div class="qa-item" data-target="chat"><span class="icon">💬</span><span class="label">Messages</span></div>
                 <div class="qa-item" data-target="stats"><span class="icon">📊</span><span class="label">Stats</span></div>
                 <div class="qa-item" data-target="feed"><span class="icon">🛒</span><span class="label">Marché</span></div>
             </div>
-
             <div class="balance-card">
                 <div><div class="label">💰 Solde Mobile Money</div><div class="amount">5 000 FCFA</div></div>
                 <button class="btn-primary small" id="goto-withdrawal">Retirer</button>
             </div>
-
             <div class="stats-row">
                 <div class="stat-item"><div class="value">12</div><div class="label">Ventes</div></div>
                 <div class="stat-item"><div class="value">45 kg</div><div class="label">Recyclés</div></div>
                 <div class="stat-item"><div class="value">⭐ 4.8</div><div class="label">Note</div></div>
             </div>
-
             <div class="section-title">⚡ Activité récente</div>
             <div class="activity-item"><div class="emoji">♻️</div><div class="info"><div class="title">Collecte de bouteilles PET</div><div class="sub">15kg • 2 250 FCFA</div></div><div class="time">Il y a 2h</div></div>
             <div class="activity-item"><div class="emoji">🥫</div><div class="info"><div class="title">Canettes aluminium</div><div class="sub">5kg • 1 000 FCFA</div></div><div class="time">Hier</div></div>
             <div class="activity-item"><div class="emoji">📦</div><div class="info"><div class="title">Cartons recyclables</div><div class="sub">10kg • 500 FCFA</div></div><div class="time">Hier</div></div>
         </div>
-
-        <!-- ===== FEED ===== -->
         <div id="feed" class="screen">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
                 <h2 style="font-size:20px;">🛒 Marché</h2>
@@ -1260,8 +1128,6 @@
             </div>
             <div id="feed-list"></div>
         </div>
-
-        <!-- ===== DETAIL ===== -->
         <div id="detail" class="screen">
             <button style="background:none;border:none;color:white;font-size:16px;padding:4px 0;margin-bottom:12px;cursor:pointer;text-align:left;" id="detail-back">← Retour</button>
             <div class="detail-image" id="detail-emoji">🥤</div>
@@ -1289,8 +1155,6 @@
             <div style="padding:12px 16px;background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-border);border-radius:14px;margin-bottom:8px;"><div style="display:flex;justify-content:space-between;"><span style="font-weight:600;">Paul N.</span><span style="color:var(--text-muted);font-size:12px;">Il y a 2j</span></div><div style="font-size:13px;color:var(--text-muted);">⭐ 5/5 · Transaction rapide et fiable !</div></div>
             <div style="padding:12px 16px;background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-border);border-radius:14px;margin-bottom:8px;"><div style="display:flex;justify-content:space-between;"><span style="font-weight:600;">Aicha M.</span><span style="color:var(--text-muted);font-size:12px;">Il y a 5j</span></div><div style="font-size:13px;color:var(--text-muted);">⭐ 4/5 · Bon produit, livraison un peu lente</div></div>
         </div>
-
-        <!-- ===== PUBLISH ===== -->
         <div id="publish" class="screen">
             <h2 style="font-size:20px;margin-bottom:16px;">➕ Nouvelle annonce</h2>
             <div class="publish-photos">
@@ -1305,8 +1169,6 @@
             <div class="form-group"><label>Ville</label><input type="text" placeholder="Ex: Douala" id="publish-city"></div>
             <button class="btn-primary" id="publish-submit">Publier l'annonce</button>
         </div>
-
-        <!-- ===== WITHDRAWAL ===== -->
         <div id="withdrawal" class="screen">
             <h2 style="font-size:20px;margin-bottom:4px;">💰 Retrait MoMo</h2>
             <div style="color:var(--text-muted);font-size:14px;margin-bottom:16px;">Solde : 5 000 FCFA</div>
@@ -1319,8 +1181,6 @@
             <button class="btn-primary" id="withdrawal-submit">Confirmer le retrait</button>
             <div style="text-align:center;font-size:12px;color:var(--text-muted);margin-top:12px;">Frais : 1.5% · Délai : instantané</div>
         </div>
-
-        <!-- ===== MAP ===== -->
         <div id="map" class="screen">
             <h2 style="font-size:20px;margin-bottom:12px;">📍 Points de collecte</h2>
             <div class="map-container">
@@ -1340,8 +1200,6 @@
                 <div class="city-item" data-city="Garoua"><div class="emoji">📍</div><div class="info"><div class="name">Garoua</div><div class="address">Rue du commerce, chez Marie</div></div></div>
             </div>
         </div>
-
-        <!-- ===== PRICE GUIDE ===== -->
         <div id="priceguide" class="screen">
             <h2 style="font-size:20px;margin-bottom:12px;">📊 Guide des prix</h2>
             <p style="color:var(--text-muted);font-size:13px;margin-bottom:16px;">Prix indicatifs du recyclage au Cameroun (FCFA/kg)</p>
@@ -1363,8 +1221,6 @@
                 <p style="font-size:12px;color:var(--text-muted);">💡 <strong>Conseil :</strong> Les prix varient selon la qualité et la quantité. Ces prix sont indicatifs et peuvent être négociés.</p>
             </div>
         </div>
-
-        <!-- ===== CHAT ===== -->
         <div id="chat" class="screen">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
                 <h2 style="font-size:20px;">💬 Messages</h2>
@@ -1396,8 +1252,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- ===== NOTIFICATIONS ===== -->
         <div id="notifications" class="screen">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
                 <h2 style="font-size:20px;">🔔 Notifications</h2>
@@ -1410,8 +1264,6 @@
                 <div class="notif-item" data-notif="4"><div class="icon">📝</div><div class="info"><div class="title">Nouvel avis reçu</div><div class="body">"Excellent service, je recommande !"</div><div class="time">Il y a 2j</div></div><div class="dot"></div></div>
             </div>
         </div>
-
-        <!-- ===== STATS ===== -->
         <div id="stats" class="screen">
             <h2 style="font-size:20px;margin-bottom:12px;">📊 Statistiques</h2>
             <div class="stats-row">
@@ -1445,8 +1297,6 @@
                 <div><div style="display:flex;justify-content:space-between;font-size:13px;"><span>Avr</span><span>30 500 FCFA</span></div><div style="width:100%;height:6px;background:var(--glass);border-radius:4px;overflow:hidden;"><div style="width:61%;height:100%;background:linear-gradient(90deg,var(--green),var(--gold));border-radius:4px;"></div></div></div>
             </div>
         </div>
-
-        <!-- ===== PROFILE ===== -->
         <div id="profile" class="screen">
             <div class="profile-header">
                 <div class="profile-avatar">👤</div>
@@ -1472,8 +1322,6 @@
                 <div class="item danger"><span class="icon">🚪</span><span class="label" style="color:#EF4444;">Déconnexion</span><span class="arrow">›</span></div>
             </div>
         </div>
-
-        <!-- ===== BOTTOM NAV ===== -->
         <div id="bottom-nav" class="active">
             <button class="nav-item active" data-screen="dashboard"><span class="icon">🏠</span><span class="label">Accueil</span></button>
             <button class="nav-item" data-screen="feed"><span class="icon">🛒</span><span class="label">Marché</span></button>
@@ -1482,17 +1330,13 @@
             <button class="nav-item" data-screen="profile"><span class="icon">👤</span><span class="label">Profil</span></button>
         </div>
     </div>
-
     <script>
-        // ==========================================
-        // 1. GLOBAL STATE
-        // ==========================================
+        // ===== GLOBAL STATE =====
         let currentScreen = 'splash';
         let onboardingSlide = 0;
         let isLoggedIn = false;
         let selectedRating = 0;
         let chatActive = null;
-        let phoneVerificationId = '';
         let chatMessages = {
             paul: [
                 { text: "Bonjour, je suis intéressé par vos bouteilles PET", sent: false, time: "12:20" },
@@ -1506,10 +1350,6 @@
                 { text: "Quand pouvez-vous passer ?", sent: false, time: "Hier" },
             ]
         };
-
-        // ==========================================
-        // 2. PRIX RÉELS DU RECYCLAGE AU CAMEROUN
-        // ==========================================
         const feedProducts = [
             { emoji: '🥤', title: 'Bouteilles PET transparentes', loc: 'Douala, Bonapriso', price: '200 FCFA/kg', qty: '15kg',
                 cat: 'Plastique', status: 'Disponible' },
@@ -1537,9 +1377,6 @@
                 cat: 'Électronique', status: 'Négociable' },
         ];
 
-        // ==========================================
-        // 3. TOAST & NAVIGATION
-        // ==========================================
         function showToast(msg, type = '') {
             const t = document.getElementById('toast');
             t.textContent = msg;
@@ -1576,9 +1413,6 @@
             }
         }
 
-        // ==========================================
-        // 4. SPLASH & ONBOARDING
-        // ==========================================
         let progress = 0;
         const loaderInterval = setInterval(() => {
             progress += 2;
@@ -1618,10 +1452,6 @@
             });
         });
 
-        // ==========================================
-        // 5. AUTHENTIFICATION (TEST - SANS SMS)
-        // ==========================================
-        // Pour la version de test, on garde l'OTP 123456
         document.getElementById('login-btn').addEventListener('click', () => {
             const phone = document.getElementById('phone-input').value.trim();
             if (phone.length < 8) {
@@ -1670,9 +1500,6 @@
             }
         });
 
-        // ==========================================
-        // 6. BOTTOM NAVIGATION
-        // ==========================================
         document.querySelectorAll('.nav-item').forEach(item => {
             item.addEventListener('click', () => {
                 const screen = item.dataset.screen;
@@ -1686,18 +1513,12 @@
             });
         });
 
-        // ==========================================
-        // 7. QUICK ACTIONS
-        // ==========================================
         document.querySelectorAll('.qa-item').forEach(item => {
             item.addEventListener('click', () => {
                 navigateTo(item.dataset.target);
             });
         });
 
-        // ==========================================
-        // 8. FEED
-        // ==========================================
         function renderFeed(filter = 'Tous') {
             const container = document.getElementById('feed-list');
             const filtered = filter === 'Tous' ? feedProducts : feedProducts.filter(p => p.cat === filter);
@@ -1739,9 +1560,6 @@
             });
         });
 
-        // ==========================================
-        // 9. DETAIL
-        // ==========================================
         function openDetail(product) {
             document.getElementById('detail-emoji').textContent = product.emoji;
             document.getElementById('detail-title').textContent = product.title;
@@ -1767,9 +1585,6 @@
             });
         });
 
-        // ==========================================
-        // 10. CHAT
-        // ==========================================
         document.querySelectorAll('#chat-list .product-card').forEach(el => {
             el.addEventListener('click', () => {
                 const chatId = el.dataset.chat;
@@ -1838,9 +1653,6 @@
             }, 1500);
         }
 
-        // ==========================================
-        // 11. WITHDRAWAL
-        // ==========================================
         document.getElementById('goto-withdrawal').addEventListener('click', () => navigateTo('withdrawal'));
 
         document.querySelectorAll('.provider-item').forEach(el => {
@@ -1866,9 +1678,6 @@
             document.getElementById('withdrawal-phone').value = '';
         });
 
-        // ==========================================
-        // 12. PUBLISH
-        // ==========================================
         document.getElementById('goto-publish').addEventListener('click', () => navigateTo('publish'));
 
         document.querySelectorAll('.publish-photos .slot').forEach(slot => {
@@ -1902,9 +1711,6 @@
             navigateTo('feed');
         });
 
-        // ==========================================
-        // 13. NOTIFICATIONS
-        // ==========================================
         document.querySelectorAll('.notif-item').forEach(item => {
             item.addEventListener('click', () => {
                 const dot = item.querySelector('.dot');
@@ -1920,9 +1726,6 @@
             updateBadge();
         });
 
-        // ==========================================
-        // 14. MAP
-        // ==========================================
         document.querySelectorAll('.city-item').forEach(item => {
             item.addEventListener('click', () => {
                 const city = item.querySelector('.name').textContent;
@@ -1933,16 +1736,133 @@
             });
         });
 
-        // ==========================================
-        // 15. PRICE GUIDE
-        // ==========================================
         document.getElementById('goto-priceguide').addEventListener('click', () => navigateTo('priceguide'));
-
-        // ==========================================
-        // 16. INIT
-        // ==========================================
         renderFeed();
         updateBadge();
+
+        // ===== DEEP LINKING =====
+        function handleDeepLink() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('product');
+            const action = urlParams.get('action');
+            if (productId) {
+                console.log('🔗 Lien profond vers le produit:', productId);
+                setTimeout(() => {
+                    navigateTo('detail');
+                    showToast('📦 Produit chargé !', 'success');
+                }, 1000);
+            }
+            if (action === 'publish') {
+                console.log('📝 Action: publier une annonce');
+                setTimeout(() => {
+                    navigateTo('publish');
+                    showToast('✏️ Prêt à publier !', 'success');
+                }, 1000);
+            }
+        }
+        document.addEventListener('DOMContentLoaded', handleDeepLink);
+        setTimeout(handleDeepLink, 500);
+
+        // ===== GÉOLOCALISATION =====
+        function getUserLocation() {
+            if ('geolocation' in navigator) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        console.log('📍 Position:', lat, lng);
+                        const user = firebase.auth().currentUser;
+                        if (user) {
+                            firebase.firestore().collection('users').doc(user.uid).set({
+                                location: { latitude: lat, longitude: lng,
+                                    timestamp: firebase.firestore.FieldValue.serverTimestamp() }
+                            }, { merge: true });
+                        }
+                        showToast('📍 Position trouvée !', 'success');
+                        displayUserLocation(lat, lng);
+                        updateMapWithNearbyPoints(lat, lng);
+                    },
+                    function(error) {
+                        console.log('⚠️ Erreur géolocalisation:', error);
+                        showToast('⚠️ Impossible de localiser', 'error');
+                    }
+                );
+            } else {
+                console.log('⚠️ Géolocalisation non disponible');
+            }
+        }
+
+        function displayUserLocation(lat, lng) {
+            const mapContainer = document.querySelector('.map-container');
+            if (mapContainer) {
+                const locationDisplay = document.createElement('div');
+                locationDisplay.style.cssText =
+                    'position:absolute;bottom:10px;left:10px;background:rgba(0,0,0,0.7);padding:8px 12px;border-radius:8px;font-size:11px;color:#22C55E;z-index:10;';
+                locationDisplay.textContent = `📍 Vous êtes ici (${lat.toFixed(4)}, ${lng.toFixed(4)})`;
+                mapContainer.appendChild(locationDisplay);
+            }
+        }
+
+        function updateMapWithNearbyPoints(lat, lng) {
+            const collectPoints = [
+                { name: 'Douala - Bonaberi', lat: 4.04, lng: 9.69 },
+                { name: 'Douala - Akwa', lat: 4.05, lng: 9.70 },
+                { name: 'Yaoundé - Bastos', lat: 3.87, lng: 11.52 },
+                { name: 'Yaoundé - Mvog-Mbi', lat: 3.86, lng: 11.51 },
+                { name: 'Bafoussam', lat: 5.48, lng: 10.42 },
+                { name: 'Garoua', lat: 9.30, lng: 13.40 }
+            ];
+            const pointsWithDistance = collectPoints.map(point => {
+                const distance = calculateDistance(lat, lng, point.lat, point.lng);
+                return { ...point, distance: distance.toFixed(1) };
+            });
+            pointsWithDistance.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
+            const cityList = document.getElementById('city-list');
+            if (cityList) {
+                cityList.innerHTML = pointsWithDistance.map(p => `
+                    <div class="city-item" data-city="${p.name}">
+                        <div class="emoji">📍</div>
+                        <div class="info">
+                            <div class="name">${p.name}</div>
+                            <div class="address">À ${p.distance} km de vous</div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c;
+        }
+
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+                setTimeout(getUserLocation, 2000);
+            }
+        });
+
+        function addLocationButton() {
+            const dashboard = document.getElementById('dashboard');
+            if (dashboard) {
+                const locationBtn = document.createElement('button');
+                locationBtn.textContent = '📍 Mettre à jour ma position';
+                locationBtn.className = 'btn-primary small';
+                locationBtn.style.cssText = 'margin: 10px 0; width: auto; padding: 8px 16px;';
+                locationBtn.onclick = getUserLocation;
+                const balanceCard = dashboard.querySelector('.balance-card');
+                if (balanceCard) {
+                    balanceCard.after(locationBtn);
+                }
+            }
+        }
+        setTimeout(addLocationButton, 1000);
 
         document.addEventListener('keydown', (e) => {
             if (e.key === '1' && e.ctrlKey) {
@@ -1953,9 +1873,7 @@
             }
         });
 
-        // ==========================================
-        // 17. FIREBASE CONFIG
-        // ==========================================
+        // ===== FIREBASE CONFIG =====
         const firebaseConfig = {
             apiKey: "AIzaSyADPKnfoIsqMaK1J7imfRcSKaaR4GRzpU8",
             authDomain: "examens-maths.firebaseapp.com",
@@ -1965,7 +1883,6 @@
             appId: "1:175227858090:web:be5b5a5ed381301dc334d3"
         };
 
-        // Initialiser Firebase
         if (typeof firebase !== 'undefined' && !firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
             console.log('🔥 Firebase connecté !');
@@ -1980,4 +1897,3 @@
     </script>
 </body>
 </html>
-"Version Firebase OK - OTP 123456"
