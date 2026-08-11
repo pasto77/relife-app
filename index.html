@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr"> <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
@@ -1481,7 +1484,23 @@
     </div>
 
     <script>
-        // ===== GLOBAL STATE =====
+        // ===== GLOBAL STATE =====// ===== FIREBASE CONFIG =====
+const firebaseConfig = {
+  apiKey: "AIzaSyADPKnfoIsqMaK1J7imfRcSKaaR4GRzpU8",
+  authDomain: "examens-maths.firebaseapp.com",
+  projectId: "examens-maths",
+  storageBucket: "examens-maths.firebasestorage.app",
+  messagingSenderId: "175227858090",
+  appId: "1:175227858090:web:be5b5a5ed381301dc334d3"
+};
+
+// Initialiser Firebase
+if (typeof firebase !== 'undefined') {
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+    console.log('🔥 Firebase connecté !');
+  }
+}
         let currentScreen = 'splash';
         let onboardingSlide = 0;
         let isLoggedIn = false;
