@@ -1484,28 +1484,15 @@
     </div>
 
     <script>
-        // ===== GLOBAL STATE =====// ===== FIREBASE CONFIG =====
-const firebaseConfig = {
-  apiKey: "AIzaSyADPKnfoIsqMaK1J7imfRcSKaaR4GRzpU8",
-  authDomain: "examens-maths.firebaseapp.com",
-  projectId: "examens-maths",
-  storageBucket: "examens-maths.firebasestorage.app",
-  messagingSenderId: "175227858090",
-  appId: "1:175227858090:web:be5b5a5ed381301dc334d3"
-};
-
-// Initialiser Firebase
-if (typeof firebase !== 'undefined') {
-  if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-    console.log('🔥 Firebase connecté !');
-  }
-}
+        // ==========================================
+        // 1. GLOBAL STATE
+        // ==========================================
         let currentScreen = 'splash';
         let onboardingSlide = 0;
         let isLoggedIn = false;
         let selectedRating = 0;
         let chatActive = null;
+        let phoneVerificationId = '';
         let chatMessages = {
             paul: [
                 { text: "Bonjour, je suis intéressé par vos bouteilles PET", sent: false, time: "12:20" },
@@ -1520,7 +1507,9 @@ if (typeof firebase !== 'undefined') {
             ]
         };
 
-        // ===== PRIX RÉELS DU RECYCLAGE AU CAMEROUN =====
+        // ==========================================
+        // 2. PRIX RÉELS DU RECYCLAGE AU CAMEROUN
+        // ==========================================
         const feedProducts = [
             { emoji: '🥤', title: 'Bouteilles PET transparentes', loc: 'Douala, Bonapriso', price: '200 FCFA/kg', qty: '15kg',
                 cat: 'Plastique', status: 'Disponible' },
@@ -1548,7 +1537,9 @@ if (typeof firebase !== 'undefined') {
                 cat: 'Électronique', status: 'Négociable' },
         ];
 
-        // ===== TOAST =====
+        // ==========================================
+        // 3. TOAST & NAVIGATION
+        // ==========================================
         function showToast(msg, type = '') {
             const t = document.getElementById('toast');
             t.textContent = msg;
@@ -1557,7 +1548,6 @@ if (typeof firebase !== 'undefined') {
             t._timeout = setTimeout(() => t.className = 'toast', 2500);
         }
 
-        // ===== NAVIGATION =====
         function navigateTo(screenId) {
             if (screenId === currentScreen && screenId !== 'splash') return;
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -1586,7 +1576,9 @@ if (typeof firebase !== 'undefined') {
             }
         }
 
-        // ===== SPLASH =====
+        // ==========================================
+        // 4. SPLASH & ONBOARDING
+        // ==========================================
         let progress = 0;
         const loaderInterval = setInterval(() => {
             progress += 2;
@@ -1598,7 +1590,6 @@ if (typeof firebase !== 'undefined') {
             }
         }, 30);
 
-        // ===== ONBOARDING =====
         const totalSlides = 4;
         document.getElementById('onboarding-btn').addEventListener('click', () => {
             if (onboardingSlide < totalSlides - 1) {
@@ -1627,7 +1618,10 @@ if (typeof firebase !== 'undefined') {
             });
         });
 
-        // ===== LOGIN =====
+        // ==========================================
+        // 5. AUTHENTIFICATION (TEST - SANS SMS)
+        // ==========================================
+        // Pour la version de test, on garde l'OTP 123456
         document.getElementById('login-btn').addEventListener('click', () => {
             const phone = document.getElementById('phone-input').value.trim();
             if (phone.length < 8) {
@@ -1645,7 +1639,6 @@ if (typeof firebase !== 'undefined') {
             showToast('Mode test activé', 'success');
         });
 
-        // ===== OTP =====
         const otpInputs = document.querySelectorAll('.otp-input');
         otpInputs.forEach((input, idx) => {
             input.addEventListener('input', () => {
@@ -1677,7 +1670,9 @@ if (typeof firebase !== 'undefined') {
             }
         });
 
-        // ===== NAVIGATION BOTTOM =====
+        // ==========================================
+        // 6. BOTTOM NAVIGATION
+        // ==========================================
         document.querySelectorAll('.nav-item').forEach(item => {
             item.addEventListener('click', () => {
                 const screen = item.dataset.screen;
@@ -1691,14 +1686,18 @@ if (typeof firebase !== 'undefined') {
             });
         });
 
-        // ===== QUICK ACTIONS =====
+        // ==========================================
+        // 7. QUICK ACTIONS
+        // ==========================================
         document.querySelectorAll('.qa-item').forEach(item => {
             item.addEventListener('click', () => {
                 navigateTo(item.dataset.target);
             });
         });
 
-        // ===== FEED =====
+        // ==========================================
+        // 8. FEED
+        // ==========================================
         function renderFeed(filter = 'Tous') {
             const container = document.getElementById('feed-list');
             const filtered = filter === 'Tous' ? feedProducts : feedProducts.filter(p => p.cat === filter);
@@ -1732,7 +1731,6 @@ if (typeof firebase !== 'undefined') {
             });
         }
 
-        // ===== CATEGORY FILTER =====
         document.querySelectorAll('.category-chip').forEach(chip => {
             chip.addEventListener('click', () => {
                 document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
@@ -1741,7 +1739,9 @@ if (typeof firebase !== 'undefined') {
             });
         });
 
-        // ===== DETAIL =====
+        // ==========================================
+        // 9. DETAIL
+        // ==========================================
         function openDetail(product) {
             document.getElementById('detail-emoji').textContent = product.emoji;
             document.getElementById('detail-title').textContent = product.title;
@@ -1754,7 +1754,6 @@ if (typeof firebase !== 'undefined') {
 
         document.getElementById('detail-back').addEventListener('click', () => navigateTo('feed'));
 
-        // ===== RATING =====
         document.querySelectorAll('#rating-stars .star').forEach(star => {
             star.addEventListener('click', () => {
                 const val = parseInt(star.dataset.val);
@@ -1768,7 +1767,9 @@ if (typeof firebase !== 'undefined') {
             });
         });
 
-        // ===== CHAT =====
+        // ==========================================
+        // 10. CHAT
+        // ==========================================
         document.querySelectorAll('#chat-list .product-card').forEach(el => {
             el.addEventListener('click', () => {
                 const chatId = el.dataset.chat;
@@ -1837,7 +1838,9 @@ if (typeof firebase !== 'undefined') {
             }, 1500);
         }
 
-        // ===== WITHDRAWAL =====
+        // ==========================================
+        // 11. WITHDRAWAL
+        // ==========================================
         document.getElementById('goto-withdrawal').addEventListener('click', () => navigateTo('withdrawal'));
 
         document.querySelectorAll('.provider-item').forEach(el => {
@@ -1863,7 +1866,9 @@ if (typeof firebase !== 'undefined') {
             document.getElementById('withdrawal-phone').value = '';
         });
 
-        // ===== PUBLISH =====
+        // ==========================================
+        // 12. PUBLISH
+        // ==========================================
         document.getElementById('goto-publish').addEventListener('click', () => navigateTo('publish'));
 
         document.querySelectorAll('.publish-photos .slot').forEach(slot => {
@@ -1897,7 +1902,9 @@ if (typeof firebase !== 'undefined') {
             navigateTo('feed');
         });
 
-        // ===== NOTIFICATIONS =====
+        // ==========================================
+        // 13. NOTIFICATIONS
+        // ==========================================
         document.querySelectorAll('.notif-item').forEach(item => {
             item.addEventListener('click', () => {
                 const dot = item.querySelector('.dot');
@@ -1913,7 +1920,9 @@ if (typeof firebase !== 'undefined') {
             updateBadge();
         });
 
-        // ===== MAP =====
+        // ==========================================
+        // 14. MAP
+        // ==========================================
         document.querySelectorAll('.city-item').forEach(item => {
             item.addEventListener('click', () => {
                 const city = item.querySelector('.name').textContent;
@@ -1924,14 +1933,17 @@ if (typeof firebase !== 'undefined') {
             });
         });
 
-        // ===== PRICE GUIDE =====
+        // ==========================================
+        // 15. PRICE GUIDE
+        // ==========================================
         document.getElementById('goto-priceguide').addEventListener('click', () => navigateTo('priceguide'));
 
-        // ===== INIT =====
+        // ==========================================
+        // 16. INIT
+        // ==========================================
         renderFeed();
         updateBadge();
 
-        // ===== KEYBOARD SHORTCUT =====
         document.addEventListener('keydown', (e) => {
             if (e.key === '1' && e.ctrlKey) {
                 isLoggedIn = true;
@@ -1941,6 +1953,26 @@ if (typeof firebase !== 'undefined') {
             }
         });
 
+        // ==========================================
+        // 17. FIREBASE CONFIG
+        // ==========================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyADPKnfoIsqMaK1J7imfRcSKaaR4GRzpU8",
+            authDomain: "examens-maths.firebaseapp.com",
+            projectId: "examens-maths",
+            storageBucket: "examens-maths.firebasestorage.app",
+            messagingSenderId: "175227858090",
+            appId: "1:175227858090:web:be5b5a5ed381301dc334d3"
+        };
+
+        // Initialiser Firebase
+        if (typeof firebase !== 'undefined' && !firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+            console.log('🔥 Firebase connecté !');
+        } else {
+            console.log('⚠️ Firebase non chargé ou déjà initialisé');
+        }
+
         console.log('♻️ ReLife Cameroun - Application chargée !');
         console.log('🔑 Code OTP : 123456');
         console.log('📊 Prix réels du recyclage au Cameroun intégrés');
@@ -1948,3 +1980,4 @@ if (typeof firebase !== 'undefined') {
     </script>
 </body>
 </html>
+"Version Firebase OK - OTP 123456"
