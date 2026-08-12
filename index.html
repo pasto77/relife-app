@@ -3,591 +3,2588 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0F0F0F">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <title>ReLife Cameroun</title>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js">
+    </script>
     <style>
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{background:#0F0F0F;color:#fff;font-family:sans-serif;display:flex;justify-content:center;align-items:center;height:100vh}
-        #app{max-width:430px;width:100%;padding:20px;background:#1A1A1A;border-radius:20px;text-align:center}
-        .emoji{font-size:72px;display:block;margin-bottom:12px}
-        h1{font-size:36px;color:#FFD700;margin-bottom:4px}
-        .sub{color:#888;letter-spacing:4px;font-size:14px;margin-bottom:24px}
-        .btn{background:#2D5016;color:#fff;border:none;padding:14px 24px;border-radius:12px;font-size:16px;font-weight:600;width:100%;cursor:pointer;margin-top:12px}
-        .btn:active{transform:scale(0.97)}
-        .input{width:100%;padding:14px;border-radius:12px;border:1px solid #333;background:#222;color:#fff;font-size:16px;outline:none;margin-top:8px}
-        .input:focus{border-color:#2D5016}
-        .hidden{display:none}
-        .otp-group{display:flex;gap:8px;justify-content:center;margin:16px 0}
-        .otp-input{width:44px;height:52px;text-align:center;font-size:22px;font-weight:700;border-radius:10px;border:1px solid #333;background:#222;color:#fff;outline:none}
-        .otp-input:focus{border-color:#FFD700}
-        .link{background:none;border:none;color:#888;font-size:13px;cursor:pointer;margin-top:12px}
-        .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#222;padding:12px 24px;border-radius:12px;border:1px solid #333;color:#fff;font-size:14px;opacity:0;transition:.4s;z-index:999;pointer-events:none}
-        .toast.show{opacity:1}
-        .toast.success{border-color:#2D5016}
-        .toast.error{border-color:#EF4444}
-        .loader-bar{width:160px;height:4px;background:#333;border-radius:4px;margin:24px auto;overflow:hidden}
-        .loader-fill{height:100%;width:0%;background:linear-gradient(90deg,#2D5016,#FFD700);transition:width .1s}
-        .flex{display:flex;gap:8px;flex-wrap:wrap}
-        .flex-col{flex-direction:column}
-        .items-center{align-items:center}
-        .justify-between{justify-content:space-between}
+        /* ===== RESET & BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --bg: #0F0F0F;
+            --bg2: #1A1A1A;
+            --surface: rgba(255, 255, 255, 0.06);
+            --surface2: rgba(255, 255, 255, 0.10);
+            --border: rgba(255, 255, 255, 0.08);
+            --border2: rgba(255, 255, 255, 0.12);
+            --text: #FFFFFF;
+            --text2: #A0A0A0;
+            --text3: #666666;
+            --primary: #2D5016;
+            --primary-light: #3A6B1E;
+            --accent: #FFD700;
+            --accent-dark: #B8860B;
+            --success: #22C55E;
+            --danger: #EF4444;
+            --info: #3B82F6;
+            --radius: 20px;
+            --radius-sm: 12px;
+            --radius-full: 9999px;
+            --nav-height: 64px;
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
+            --safe-top: env(safe-area-inset-top, 0px);
+            --space-xs: 4px;
+            --space-sm: 8px;
+            --space-md: 12px;
+            --space-lg: 16px;
+            --space-xl: 20px;
+            --space-2xl: 24px;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            --shadow-glow: 0 0 25px rgba(255, 215, 0, 0.3);
+            --transition: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        html,
+        body {
+            height: 100%;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow: hidden;
+            touch-action: manipulation;
+        }
+        #app {
+            height: 100%;
+            max-width: 430px;
+            margin: 0 auto;
+            position: relative;
+            background: var(--bg);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ===== SCREENS ===== */
+        .screen {
+            display: none;
+            flex: 1;
+            flex-direction: column;
+            overflow-y: auto;
+            padding: var(--space-xl) var(--space-lg) calc(var(--nav-height) + var(--safe-bottom) + var(--space-xl));
+            animation: fadeUp 0.4s ease;
+            scrollbar-width: none;
+        }
+        .screen::-webkit-scrollbar {
+            display: none;
+        }
+        .screen.active {
+            display: flex;
+        }
+        .screen-exit {
+            animation: fadeDown 0.3s ease forwards;
+        }
+        @keyframes fadeUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes fadeDown {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+        }
+
+        /* ===== SPLASH ===== */
+        #splash {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            background: linear-gradient(135deg, #0A0A0A, #1A2A1A);
+            padding: 0;
+            animation: none;
+        }
+        #splash .emoji {
+            font-size: 72px;
+            animation: pulse 1.2s ease-in-out infinite;
+        }
+        #splash h1 {
+            font-size: 36px;
+            margin-top: 12px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        #splash .sub {
+            font-size: 14px;
+            color: var(--text3);
+            letter-spacing: 6px;
+            margin-top: 4px;
+            text-transform: uppercase;
+        }
+        .loader-bar {
+            width: 160px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-full);
+            margin-top: 40px;
+            overflow: hidden;
+        }
+        .loader-bar .fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: var(--radius-full);
+            transition: width 0.15s linear;
+        }
+        @keyframes pulse {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.08);
+            }
+        }
+        @keyframes float {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* ===== ONBOARDING ===== */
+        .onboarding-slide {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            text-align: center;
+            padding: var(--space-xl);
+            animation: fadeUp 0.5s ease;
+        }
+        .onboarding-slide.active {
+            display: flex;
+        }
+        .onboarding-slide .emoji {
+            font-size: 72px;
+            margin-bottom: var(--space-xl);
+            animation: float 3s ease-in-out infinite;
+        }
+        .onboarding-slide h2 {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: var(--space-md);
+            line-height: 1.2;
+        }
+        .onboarding-slide p {
+            color: var(--text2);
+            font-size: 16px;
+            line-height: 1.6;
+            max-width: 320px;
+        }
+        .dot-indicators {
+            display: flex;
+            gap: var(--space-sm);
+            justify-content: center;
+            margin: var(--space-xl) 0 var(--space-2xl);
+        }
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: var(--radius-full);
+            background: var(--text3);
+            border: none;
+            cursor: pointer;
+            transition: all var(--transition);
+            padding: 0;
+        }
+        .dot.active {
+            background: var(--accent);
+            width: 24px;
+            border-radius: var(--radius-sm);
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-sm);
+            border: none;
+            border-radius: var(--radius-lg);
+            font-family: inherit;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition);
+            padding: var(--space-md) var(--space-xl);
+            font-size: 16px;
+            width: 100%;
+            max-width: 300px;
+            color: #fff;
+            background: var(--primary);
+            box-shadow: var(--shadow-sm);
+        }
+        .btn:active {
+            transform: scale(0.96);
+        }
+        .btn-sm {
+            padding: var(--space-sm) var(--space-md);
+            font-size: 14px;
+            max-width: 120px;
+        }
+        .btn-ghost {
+            background: transparent;
+            color: var(--text2);
+            font-size: 14px;
+            padding: var(--space-sm);
+            max-width: none;
+        }
+        .btn-lang {
+            background: var(--accent) !important;
+            color: black !important;
+            padding: var(--space-sm) var(--space-lg);
+            border-radius: var(--radius-full);
+            font-size: 14px;
+            font-weight: 700;
+            box-shadow: var(--shadow-glow);
+            max-width: none;
+            width: auto;
+        }
+        .btn-lang:active {
+            transform: scale(0.95);
+        }
+
+        /* ===== CARDS ===== */
+        .card {
+            background: var(--surface);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: var(--space-md);
+        }
+        .card-glass {
+            background: var(--surface);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: var(--space-xl);
+            box-shadow: var(--shadow);
+        }
+
+        /* ===== FORM ===== */
+        .form-group {
+            margin-bottom: var(--space-md);
+        }
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: var(--space-sm);
+        }
+        .input {
+            width: 100%;
+            padding: var(--space-md) var(--space-lg);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+            font-family: inherit;
+            font-size: 16px;
+            outline: none;
+            transition: all var(--transition);
+        }
+        .input::placeholder {
+            color: var(--text3);
+        }
+        .input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(45, 80, 22, 0.2);
+        }
+        .input-group {
+            display: flex;
+            align-items: center;
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            padding: 0 var(--space-sm);
+            transition: all var(--transition);
+        }
+        .input-group:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(45, 80, 22, 0.2);
+        }
+        .input-group .prefix {
+            padding: var(--space-md) var(--space-sm);
+            color: var(--text3);
+            font-weight: 600;
+            font-size: 16px;
+            user-select: none;
+        }
+        .input-group .input {
+            border: none;
+            background: transparent;
+            padding: var(--space-md) var(--space-sm);
+            box-shadow: none;
+        }
+
+        /* ===== OTP ===== */
+        .otp-container {
+            display: flex;
+            gap: var(--space-sm);
+            justify-content: center;
+            margin-bottom: var(--space-xl);
+        }
+        .otp-input {
+            width: 48px;
+            height: 56px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: 700;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+            outline: none;
+            transition: all var(--transition);
+        }
+        .otp-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2);
+            transform: scale(1.05);
+        }
+
+        /* ===== BOTTOM NAV ===== */
+        #bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 430px;
+            background: rgba(15, 15, 15, 0.92);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-top: 1px solid var(--border);
+            padding: var(--space-sm) 0 var(--safe-bottom);
+            justify-content: space-around;
+            z-index: 100;
+        }
+        #bottom-nav.active {
+            display: flex;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            padding: var(--space-xs) var(--space-sm);
+            border: none;
+            background: none;
+            color: var(--text3);
+            font-size: 10px;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all var(--transition);
+            min-height: 44px;
+            min-width: 44px;
+            position: relative;
+            border-radius: var(--radius-md);
+        }
+        .nav-item .icon {
+            font-size: 22px;
+            transition: transform var(--transition);
+        }
+        .nav-item .label {
+            font-size: 9px;
+            font-weight: 500;
+        }
+        .nav-item.active {
+            color: var(--accent);
+        }
+        .nav-item.active .icon {
+            transform: translateY(-2px);
+        }
+        .nav-item .badge {
+            position: absolute;
+            top: 0;
+            right: 4px;
+            background: var(--danger);
+            color: #fff;
+            font-size: 9px;
+            font-weight: 700;
+            min-width: 18px;
+            height: 18px;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+        }
+        .nav-item .badge.hidden {
+            display: none;
+        }
+
+        /* ===== DASHBOARD ===== */
+        .greeting {
+            font-size: 22px;
+            font-weight: 700;
+        }
+        .greeting .highlight {
+            color: var(--accent);
+        }
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--space-sm);
+            margin: var(--space-lg) 0 var(--space-xl);
+        }
+        .qa-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-sm);
+            padding: var(--space-md) var(--space-xs);
+            background: var(--surface);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all var(--transition);
+            font-size: 12px;
+            color: var(--text2);
+            border: none;
+            font-family: inherit;
+        }
+        .qa-item:active {
+            transform: scale(0.93);
+        }
+        .qa-item .icon {
+            font-size: 28px;
+        }
+        .qa-item .label {
+            font-size: 10px;
+            font-weight: 500;
+        }
+
+        .balance-card {
+            background: linear-gradient(135deg, rgba(45, 80, 22, 0.3), rgba(255, 215, 0, 0.08));
+            border: 1px solid rgba(255, 215, 0, 0.15);
+            border-radius: var(--radius);
+            padding: var(--space-xl);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-xl);
+            position: relative;
+            overflow: hidden;
+        }
+        .balance-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.1), transparent 70%);
+            pointer-events: none;
+        }
+        .balance-card .amount {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .balance-card .label {
+            font-size: 12px;
+            color: var(--text2);
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-sm);
+            margin-bottom: var(--space-xl);
+        }
+        .stat-item {
+            text-align: center;
+            padding: var(--space-md) var(--space-sm);
+            background: var(--surface);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            transition: transform var(--transition);
+        }
+        .stat-item:active {
+            transform: scale(0.95);
+        }
+        .stat-item .value {
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .stat-item .label {
+            font-size: 10px;
+            color: var(--text2);
+            margin-top: 2px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin: var(--space-lg) 0 var(--space-md);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            padding: var(--space-md);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: var(--radius-md);
+            margin: 0 calc(-1 * var(--space-md));
+        }
+        .activity-item .emoji {
+            font-size: 28px;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--surface);
+            border-radius: var(--radius-md);
+            flex-shrink: 0;
+        }
+        .activity-item .info {
+            flex: 1;
+        }
+        .activity-item .info .title {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .activity-item .info .sub {
+            font-size: 12px;
+            color: var(--text2);
+        }
+        .activity-item .time {
+            font-size: 11px;
+            color: var(--text2);
+            flex-shrink: 0;
+        }
+
+        /* ===== FEED ===== */
+        .feed-categories {
+            display: flex;
+            gap: var(--space-sm);
+            overflow-x: auto;
+            padding: var(--space-xs) 0 var(--space-lg);
+            scrollbar-width: none;
+        }
+        .feed-categories::-webkit-scrollbar {
+            display: none;
+        }
+        .category-chip {
+            padding: var(--space-sm) var(--space-lg);
+            border-radius: var(--radius-full);
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text2);
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all var(--transition);
+            border: none;
+            font-family: inherit;
+        }
+        .category-chip.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(45, 80, 22, 0.3);
+        }
+
+        .product-card {
+            display: flex;
+            gap: var(--space-md);
+            padding: var(--space-md);
+            background: var(--surface);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: var(--space-sm);
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+        .product-card:active {
+            transform: scale(0.97);
+        }
+        .product-card .emoji {
+            font-size: 36px;
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: var(--radius-lg);
+            flex-shrink: 0;
+        }
+        .product-card .info {
+            flex: 1;
+        }
+        .product-card .info .title {
+            font-weight: 600;
+            font-size: 15px;
+        }
+        .product-card .info .location {
+            font-size: 12px;
+            color: var(--text2);
+        }
+        .product-card .price {
+            font-weight: 700;
+            color: var(--accent);
+            font-size: 16px;
+            text-align: right;
+        }
+        .product-card .qty {
+            font-size: 11px;
+            color: var(--text2);
+            text-align: right;
+        }
+        .status-badge {
+            font-size: 10px;
+            font-weight: 600;
+            padding: 2px 10px;
+            border-radius: var(--radius-full);
+            display: inline-block;
+        }
+        .status-badge.available {
+            background: rgba(34, 197, 94, 0.15);
+            color: var(--success);
+        }
+        .status-badge.premium {
+            background: rgba(255, 215, 0, 0.15);
+            color: var(--accent);
+        }
+
+        /* ===== DETAIL ===== */
+        .detail-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #1A2A1A, #2A3A2A);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 64px;
+            margin-bottom: var(--space-lg);
+        }
+        .detail-price {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .rating-stars {
+            display: flex;
+            gap: var(--space-sm);
+            font-size: 24px;
+        }
+        .rating-stars .star {
+            color: var(--text3);
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 24px;
+            transition: all var(--transition);
+        }
+        .rating-stars .star.active {
+            color: var(--accent);
+            transform: scale(1.1);
+        }
+
+        /* ===== MAP ===== */
+        .map-container {
+            height: 300px;
+            background: linear-gradient(135deg, #1A2A1A, #2A3A2A);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-lg);
+            position: relative;
+            overflow: hidden;
+        }
+        .map-container .grid {
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background-image: radial-gradient(circle, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+            background-size: 40px 40px;
+            animation: scrollGrid 20s linear infinite;
+        }
+        @keyframes scrollGrid {
+            0% {
+                transform: translate(0, 0);
+            }
+            100% {
+                transform: translate(-40px, -40px);
+            }
+        }
+        .map-pin {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+        .map-pin .emoji {
+            font-size: 48px;
+            filter: drop-shadow(0 4px 16px rgba(255, 215, 0, 0.4));
+        }
+        .map-pin .city {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--accent);
+            margin-top: var(--space-xs);
+        }
+
+        .city-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            padding: var(--space-md);
+            background: var(--surface);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all var(--transition);
+            border: none;
+            font-family: inherit;
+            color: inherit;
+            text-align: left;
+            width: 100%;
+        }
+        .city-item:active {
+            transform: scale(0.97);
+        }
+        .city-item .emoji {
+            font-size: 24px;
+        }
+        .city-item .info {
+            flex: 1;
+        }
+        .city-item .info .name {
+            font-weight: 500;
+        }
+        .city-item .info .address {
+            font-size: 12px;
+            color: var(--text2);
+        }
+
+        /* ===== PRICE GUIDE ===== */
+        .price-guide-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-sm);
+        }
+        .price-guide-item {
+            padding: var(--space-md);
+            background: var(--surface);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            text-align: center;
+        }
+        .price-guide-item .emoji {
+            font-size: 32px;
+        }
+        .price-guide-item .name {
+            font-size: 12px;
+            font-weight: 500;
+            margin: 4px 0 2px;
+        }
+        .price-guide-item .price {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .price-guide-item .sub {
+            font-size: 10px;
+            color: var(--text2);
+        }
+
+        /* ===== CHAT ===== */
+        .chat-message {
+            display: flex;
+            margin-bottom: var(--space-md);
+        }
+        .chat-message.sent {
+            justify-content: flex-end;
+        }
+        .chat-message .bubble {
+            max-width: 80%;
+            padding: var(--space-md) var(--space-lg);
+            border-radius: var(--radius-lg);
+            background: var(--surface);
+            border: 1px solid var(--border);
+        }
+        .chat-message.sent .bubble {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+        .chat-message .bubble .text {
+            font-size: 14px;
+        }
+        .chat-message .bubble .time {
+            font-size: 10px;
+            color: var(--text2);
+            margin-top: var(--space-xs);
+            text-align: right;
+        }
+        .chat-input {
+            display: flex;
+            gap: var(--space-sm);
+            padding: var(--space-md) 0;
+            border-top: 1px solid var(--border);
+        }
+        .chat-input input {
+            flex: 1;
+            padding: var(--space-md) var(--space-lg);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+            font-size: 14px;
+            outline: none;
+        }
+        .chat-input input::placeholder {
+            color: var(--text3);
+        }
+        .chat-input button {
+            background: var(--primary);
+            border: none;
+            color: #fff;
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-full);
+            font-size: 20px;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+        .chat-input button:active {
+            transform: scale(0.92);
+        }
+
+        /* ===== NOTIFICATIONS ===== */
+        .notif-item {
+            display: flex;
+            gap: var(--space-md);
+            padding: var(--space-md);
+            background: var(--surface);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: var(--space-sm);
+            cursor: pointer;
+            transition: all var(--transition);
+            border: none;
+            font-family: inherit;
+            color: inherit;
+            text-align: left;
+            width: 100%;
+        }
+        .notif-item:active {
+            transform: scale(0.97);
+        }
+        .notif-item .icon {
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+        .notif-item .info {
+            flex: 1;
+        }
+        .notif-item .info .title {
+            font-weight: 500;
+            font-size: 14px;
+        }
+        .notif-item .info .body {
+            font-size: 13px;
+            color: var(--text2);
+        }
+        .notif-item .info .time {
+            font-size: 11px;
+            color: var(--text2);
+            margin-top: var(--space-xs);
+        }
+        .notif-item .dot {
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: var(--radius-full);
+            flex-shrink: 0;
+            margin-top: 6px;
+            transition: background var(--transition);
+        }
+        .notif-item .dot.read {
+            background: transparent;
+        }
+
+        /* ===== STATS ===== */
+        .chart-bars {
+            display: flex;
+            align-items: flex-end;
+            gap: var(--space-sm);
+            height: 120px;
+            padding: var(--space-sm) 0;
+        }
+        .chart-bar {
+            flex: 1;
+            border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+            min-height: 4px;
+            background: linear-gradient(180deg, var(--accent), var(--primary));
+            transition: height 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .chart-label {
+            text-align: center;
+            font-size: 10px;
+            color: var(--text2);
+            margin-top: var(--space-xs);
+        }
+        .donut-container {
+            display: flex;
+            justify-content: center;
+            padding: var(--space-md) 0;
+        }
+        .donut {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: conic-gradient(var(--primary) 0% 40%, var(--accent) 40% 60%, var(--info) 60% 80%, var(--danger) 80% 100%);
+        }
+        .donut-legend {
+            display: flex;
+            gap: var(--space-lg);
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: var(--space-md);
+        }
+        .donut-legend span {
+            font-size: 12px;
+            color: var(--text2);
+        }
+        .donut-legend .color {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: var(--space-xs);
+            margin-right: var(--space-xs);
+            vertical-align: middle;
+        }
+
+        /* ===== PROFILE ===== */
+        .profile-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: var(--space-2xl) 0;
+        }
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: var(--radius-full);
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            margin-bottom: var(--space-md);
+            box-shadow: 0 4px 20px rgba(45, 80, 22, 0.3);
+        }
+        .profile-name {
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .profile-username {
+            color: var(--text2);
+            font-size: 14px;
+        }
+        .profile-badge {
+            padding: var(--space-xs) var(--space-lg);
+            border-radius: var(--radius-full);
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            color: black;
+            font-size: 12px;
+            font-weight: 700;
+            margin-top: var(--space-sm);
+        }
+        .profile-menu {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-xs);
+            width: 100%;
+            margin-top: var(--space-sm);
+        }
+        .profile-menu .item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            padding: var(--space-md);
+            border-radius: var(--radius-lg);
+            background: var(--surface);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all var(--transition);
+            border: none;
+            font-family: inherit;
+            color: inherit;
+            text-align: left;
+            width: 100%;
+        }
+        .profile-menu .item:active {
+            transform: scale(0.97);
+        }
+        .profile-menu .item .icon {
+            font-size: 20px;
+        }
+        .profile-menu .item .label {
+            flex: 1;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .profile-menu .item .arrow {
+            color: var(--text2);
+        }
+        .profile-menu .item.danger .label {
+            color: var(--danger);
+        }
+
+        /* ===== PUBLISH ===== */
+        .publish-photos {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-sm);
+            margin-bottom: var(--space-lg);
+        }
+        .photo-slot {
+            aspect-ratio: 1;
+            background: var(--surface);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 2px dashed var(--border);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: var(--text3);
+            cursor: pointer;
+            transition: all var(--transition);
+            border: none;
+            font-family: inherit;
+        }
+        .photo-slot:active {
+            transform: scale(0.95);
+        }
+        .photo-slot.filled {
+            border-style: solid;
+            border-color: var(--primary);
+            background: rgba(45, 80, 22, 0.2);
+        }
+
+        /* ===== WITHDRAWAL ===== */
+        .provider-select {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-md);
+            margin-bottom: var(--space-lg);
+        }
+        .provider-item {
+            padding: var(--space-xl);
+            text-align: center;
+            border-radius: var(--radius-lg);
+            border: 2px solid var(--border);
+            background: var(--surface);
+            cursor: pointer;
+            transition: all var(--transition);
+            border: none;
+            font-family: inherit;
+            color: inherit;
+        }
+        .provider-item:active {
+            transform: scale(0.95);
+        }
+        .provider-item.selected {
+            border-color: var(--accent);
+            background: rgba(255, 215, 0, 0.06);
+            box-shadow: 0 0 0 2px var(--accent);
+        }
+        .provider-item .emoji {
+            font-size: 32px;
+        }
+        .provider-item .name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: var(--space-xs);
+        }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed;
+            bottom: calc(var(--nav-height) + var(--safe-bottom) + var(--space-xl));
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: var(--space-md) var(--space-xl);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            color: #fff;
+            font-size: 14px;
+            font-weight: 500;
+            opacity: 0;
+            transition: all var(--transition);
+            z-index: 200;
+            max-width: 90%;
+            text-align: center;
+            pointer-events: none;
+            box-shadow: var(--shadow);
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        .toast.success {
+            border-color: var(--success);
+        }
+        .toast.error {
+            border-color: var(--danger);
+        }
+
+        /* ===== UTILITY ===== */
+        .hidden {
+            display: none !important;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .flex {
+            display: flex;
+        }
+        .flex-col {
+            flex-direction: column;
+        }
+        .items-center {
+            align-items: center;
+        }
+        .justify-between {
+            justify-content: space-between;
+        }
+        .gap-sm {
+            gap: var(--space-sm);
+        }
+        .gap-md {
+            gap: var(--space-md);
+        }
+        .mt-sm {
+            margin-top: var(--space-sm);
+        }
+        .mt-md {
+            margin-top: var(--space-md);
+        }
+        .mt-lg {
+            margin-top: var(--space-lg);
+        }
+        .mb-sm {
+            margin-bottom: var(--space-sm);
+        }
+        .mb-md {
+            margin-bottom: var(--space-md);
+        }
+        .mb-lg {
+            margin-bottom: var(--space-lg);
+        }
+        .w-full {
+            width: 100%;
+        }
+        .relative {
+            position: relative;
+        }
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
     </style>
 </head>
 <body>
 
-<div id="toast" class="toast"></div>
+    <div id="toast" class="toast"></div>
 
-<div id="app">
-    <!-- SPLASH -->
-    <div id="splash">
-        <span class="emoji">♻️</span>
-        <h1>ReLife</h1>
-        <div class="sub">CAMEROUN</div>
-        <div class="loader-bar"><div class="loader-fill" id="loader-fill"></div></div>
+    <div id="app">
+
+        <!-- ===== SPLASH ===== -->
+        <div id="splash" class="screen active">
+            <div class="emoji">♻️</div>
+            <h1>ReLife</h1>
+            <div class="sub">CAMEROUN</div>
+            <div class="loader-bar"><div class="fill" id="loader-fill"></div></div>
+        </div>
+
+        <!-- ===== ONBOARDING ===== -->
+        <div id="onboarding" class="screen">
+            <div id="slide-0" class="onboarding-slide active">
+                <div class="emoji">♻️</div>
+                <h2>Valorisez vos déchets</h2>
+                <p>Transformez vos déchets recyclables en une source de revenus</p>
+            </div>
+            <div id="slide-1" class="onboarding-slide">
+                <div class="emoji">💰</div>
+                <h2>Gagnez de l'argent</h2>
+                <p>Recevez un paiement immédiat pour chaque kilogramme collecté</p>
+            </div>
+            <div id="slide-2" class="onboarding-slide">
+                <div class="emoji">🌍</div>
+                <h2>Protégez l'environnement</h2>
+                <p>Contribuez à un Cameroun plus propre et plus vert</p>
+            </div>
+            <div id="slide-3" class="onboarding-slide">
+                <div class="emoji">⭐</div>
+                <h2>Devenez Premium</h2>
+                <p>Accédez à des tarifs préférentiels et des collectes prioritaires</p>
+            </div>
+            <div class="dot-indicators">
+                <button class="dot active" data-slide="0" aria-label="Slide 1"></button>
+                <button class="dot" data-slide="1" aria-label="Slide 2"></button>
+                <button class="dot" data-slide="2" aria-label="Slide 3"></button>
+                <button class="dot" data-slide="3" aria-label="Slide 4"></button>
+            </div>
+            <button class="btn" id="onboarding-btn">Suivant</button>
+        </div>
+
+        <!-- ===== LOGIN ===== -->
+        <div id="login" class="screen">
+            <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:20px 0;">
+                <div class="text-center" style="margin-bottom:32px;">
+                    <div style="font-size:56px;margin-bottom:12px;">♻️</div>
+                    <h1 style="font-size:28px;font-weight:700;">Bienvenue</h1>
+                    <p style="color:var(--text2);font-size:14px;">Entrez votre numéro de téléphone</p>
+                </div>
+                <div class="form-group">
+                    <label>Numéro de téléphone</label>
+                    <div class="input-group">
+                        <span class="prefix">+237</span>
+                        <input type="tel" id="phone-input" class="input" placeholder="6XXXXXXXX" maxlength="9" inputmode="tel">
+                    </div>
+                </div>
+                <button class="btn" id="login-btn" style="margin-top:12px;">Se connecter</button>
+                <button class="btn btn-ghost" id="login-skip">Continuer sans compte (test)</button>
+            </div>
+            <div id="recaptcha-container"></div>
+        </div>
+
+        <!-- ===== OTP ===== -->
+        <div id="otp" class="screen">
+            <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:20px 0;">
+                <div class="text-center" style="margin-bottom:32px;">
+                    <div style="font-size:48px;margin-bottom:12px;">🔐</div>
+                    <h2 style="font-size:24px;font-weight:700;">Vérification</h2>
+                    <p style="color:var(--text2);font-size:14px;">Code envoyé au <span id="otp-phone">+237 6XXXXXXXX</span></p>
+                </div>
+                <div class="otp-container" id="otp-group">
+                    <input type="text" inputmode="numeric" maxlength="1" class="otp-input" data-index="0" autocomplete="one-time-code">
+                    <input type="text" inputmode="numeric" maxlength="1" class="otp-input" data-index="1">
+                    <input type="text" inputmode="numeric" maxlength="1" class="otp-input" data-index="2">
+                    <input type="text" inputmode="numeric" maxlength="1" class="otp-input" data-index="3">
+                    <input type="text" inputmode="numeric" maxlength="1" class="otp-input" data-index="4">
+                    <input type="text" inputmode="numeric" maxlength="1" class="otp-input" data-index="5">
+                </div>
+                <button class="btn" id="otp-btn">Vérifier</button>
+                <button class="btn btn-ghost" id="otp-resend">Renvoyer le code</button>
+            </div>
+        </div>
+
+        <!-- ===== DASHBOARD ===== -->
+        <div id="dashboard" class="screen">
+            <div class="flex justify-between items-center" style="margin-bottom:4px;">
+                <div>
+                    <div class="greeting" id="greeting-text">Bonjour <span class="highlight">👋</span></div>
+                    <div style="color:var(--text2);font-size:13px;" id="greeting-sub">Prêt à recycler aujourd'hui ?</div>
+                </div>
+                <div class="flex items-center gap-sm">
+                    <button id="lang-toggle" class="btn-lang">🇫🇷 FR</button>
+                    <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;">R</div>
+                </div>
+            </div>
+
+            <div class="quick-actions">
+                <button class="qa-item" data-target="map"><span class="icon">📍</span><span class="label">Carte</span></button>
+                <button class="qa-item" data-target="chat"><span class="icon">💬</span><span class="label">Messages</span></button>
+                <button class="qa-item" data-target="stats"><span class="icon">📊</span><span class="label">Stats</span></button>
+                <button class="qa-item" data-target="feed"><span class="icon">🛒</span><span class="label">Marché</span></button>
+            </div>
+
+            <div class="balance-card">
+                <div>
+                    <div class="label">💰 Solde Mobile Money</div>
+                    <div class="amount" id="balance-amount">5 000 FCFA</div>
+                </div>
+                <button class="btn btn-sm" id="goto-withdrawal">Retirer</button>
+            </div>
+
+            <div class="stats-row">
+                <div class="stat-item"><div class="value" id="stat-sales">12</div><div class="label">Ventes</div></div>
+                <div class="stat-item"><div class="value" id="stat-recycled">45 kg</div><div class="label">Recyclés</div></div>
+                <div class="stat-item"><div class="value">⭐ <span id="stat-rating">4.8</span></div><div class="label">Note</div></div>
+            </div>
+
+            <div class="section-title">⚡ Activité récente</div>
+            <div id="activity-list">
+                <div class="activity-item"><div class="emoji">♻️</div><div class="info"><div class="title">Collecte de bouteilles PET</div><div class="sub">15kg • 2 250 FCFA</div></div><div class="time">Il y a 2h</div></div>
+                <div class="activity-item"><div class="emoji">🥫</div><div class="info"><div class="title">Canettes aluminium</div><div class="sub">5kg • 1 000 FCFA</div></div><div class="time">Hier</div></div>
+                <div class="activity-item"><div class="emoji">📦</div><div class="info"><div class="title">Cartons recyclables</div><div class="sub">10kg • 500 FCFA</div></div><div class="time">Hier</div></div>
+            </div>
+        </div>
+
+        <!-- ===== FEED ===== -->
+        <div id="feed" class="screen">
+            <div class="flex justify-between items-center" style="margin-bottom:12px;">
+                <h2 style="font-size:20px;">🛒 Marché</h2>
+                <button class="btn btn-sm" id="goto-publish">+ Publier</button>
+            </div>
+            <div class="feed-categories" id="feed-categories">
+                <button class="category-chip active" data-cat="Tous">Tous</button>
+                <button class="category-chip" data-cat="Plastique">Plastique</button>
+                <button class="category-chip" data-cat="Métal">Métal</button>
+                <button class="category-chip" data-cat="Carton">Carton</button>
+                <button class="category-chip" data-cat="Verre">Verre</button>
+                <button class="category-chip" data-cat="Huile">Huile</button>
+                <button class="category-chip" data-cat="Électronique">Électronique</button>
+            </div>
+            <div id="feed-list"></div>
+        </div>
+
+        <!-- ===== DETAIL ===== -->
+        <div id="detail" class="screen">
+            <button class="btn btn-ghost" id="detail-back" style="padding-left:0;margin-bottom:12px;">← Retour</button>
+            <div class="detail-image" id="detail-emoji">🥤</div>
+            <h2 id="detail-title" style="font-size:20px;">Bouteilles PET transparentes</h2>
+            <div style="color:var(--text2);font-size:14px;" id="detail-location">Douala, Bonapriso</div>
+            <div class="detail-price" id="detail-price">200 FCFA/kg</div>
+            <div style="display:flex;gap:8px;margin:8px 0 16px;">
+                <span class="status-badge available" id="detail-status">Disponible</span>
+                <span style="padding:2px 12px;border-radius:100px;background:rgba(59,130,246,0.15);color:#3B82F6;font-size:12px;font-weight:600;">15kg en stock</span>
+            </div>
+            <div class="card" style="display:flex;align-items:center;gap:12px;padding:14px;margin-bottom:16px;">
+                <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;font-size:20px;">👤</div>
+                <div style="flex:1;"><div style="font-weight:600;">Marie K.</div><div style="font-size:12px;color:var(--text2);">⭐ 4.9 · 23 ventes</div></div>
+                <button class="btn btn-sm" id="goto-chat-from-detail">Contacter</button>
+            </div>
+            <div class="section-title">⭐ Noter ce vendeur</div>
+            <div class="rating-stars" id="rating-stars">
+                <button class="star" data-val="1">☆</button>
+                <button class="star" data-val="2">☆</button>
+                <button class="star" data-val="3">☆</button>
+                <button class="star" data-val="4">☆</button>
+                <button class="star" data-val="5">☆</button>
+            </div>
+            <div class="section-title" style="margin-top:16px;">📝 Avis (12)</div>
+            <div class="card" style="margin-bottom:8px;"><div style="display:flex;justify-content:space-between;"><span style="font-weight:600;">Paul N.</span><span style="color:var(--text2);font-size:12px;">Il y a 2j</span></div><div style="font-size:13px;color:var(--text2);">⭐ 5/5 · Transaction rapide et fiable !</div></div>
+            <div class="card"><div style="display:flex;justify-content:space-between;"><span style="font-weight:600;">Aicha M.</span><span style="color:var(--text2);font-size:12px;">Il y a 5j</span></div><div style="font-size:13px;color:var(--text2);">⭐ 4/5 · Bon produit, livraison un peu lente</div></div>
+        </div>
+
+        <!-- ===== PUBLISH ===== -->
+        <div id="publish" class="screen">
+            <h2 style="font-size:20px;margin-bottom:16px;">➕ Nouvelle annonce</h2>
+            <div class="publish-photos">
+                <button class="photo-slot" data-photo="0">📷</button>
+                <button class="photo-slot" data-photo="1">📷</button>
+                <button class="photo-slot" data-photo="2">📷</button>
+            </div>
+            <div class="form-group">
+                <label>Catégorie</label>
+                <select id="publish-cat" class="input">
+                    <option>Plastique</option><option>Métal</option><option>Carton</option>
+                    <option>Verre</option><option>Huile</option><option>Électronique</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Titre</label>
+                <input type="text" id="publish-title" class="input" placeholder="Ex: Bouteilles PET transparentes">
+            </div>
+            <div class="form-group">
+                <label>Quantité</label>
+                <input type="text" id="publish-qty" class="input" placeholder="Ex: 15 kg">
+            </div>
+            <div class="form-group">
+                <label>Prix (FCFA/kg)</label>
+                <input type="number" id="publish-price" class="input" placeholder="Ex: 200">
+            </div>
+            <div class="form-group">
+                <label>Ville</label>
+                <input type="text" id="publish-city" class="input" placeholder="Ex: Douala">
+            </div>
+            <button class="btn" id="publish-submit">Publier l'annonce</button>
+        </div>
+
+        <!-- ===== WITHDRAWAL ===== -->
+        <div id="withdrawal" class="screen">
+            <h2 style="font-size:20px;margin-bottom:4px;">💰 Retrait MoMo</h2>
+            <div style="color:var(--text2);font-size:14px;margin-bottom:16px;">Solde : 5 000 FCFA</div>
+            <div class="provider-select">
+                <button class="provider-item selected" data-provider="MTN"><div class="emoji">📡</div><div class="name">MTN</div></button>
+                <button class="provider-item" data-provider="Orange"><div class="emoji">📡</div><div class="name">Orange</div></button>
+            </div>
+            <div class="form-group">
+                <label>Montant (FCFA)</label>
+                <input type="number" id="withdrawal-amount" class="input" placeholder="Ex: 1000">
+            </div>
+            <div class="form-group">
+                <label>Numéro de téléphone</label>
+                <input type="tel" id="withdrawal-phone" class="input" placeholder="6XXXXXXXX">
+            </div>
+            <button class="btn" id="withdrawal-submit">Confirmer le retrait</button>
+            <div style="text-align:center;font-size:12px;color:var(--text2);margin-top:12px;">Frais : 1.5% · Délai : instantané</div>
+        </div>
+
+        <!-- ===== MAP ===== -->
+        <div id="map" class="screen">
+            <h2 style="font-size:20px;margin-bottom:12px;">📍 Points de collecte</h2>
+            <div class="map-container">
+                <div class="grid"></div>
+                <div class="map-pin">
+                    <div class="emoji">📍</div>
+                    <div class="city" id="map-current-city">Douala</div>
+                    <div style="font-size:12px;color:var(--text2);" id="map-current-address">Bonaberi, en face du marché</div>
+                </div>
+            </div>
+            <div id="city-list"></div>
+        </div>
+
+        <!-- ===== PRICE GUIDE ===== -->
+        <div id="priceguide" class="screen">
+            <h2 style="font-size:20px;margin-bottom:12px;">📊 Guide des prix</h2>
+            <p style="color:var(--text2);font-size:13px;margin-bottom:16px;">Prix indicatifs du recyclage au Cameroun (FCFA/kg)</p>
+            <div class="price-guide-grid" id="price-guide-grid"></div>
+            <div class="card" style="margin-top:16px;padding:12px 16px;">
+                <p style="font-size:12px;color:var(--text2);">💡 <strong>Conseil :</strong> Les prix varient selon la qualité et la quantité. Ces prix sont indicatifs et peuvent être négociés.</p>
+            </div>
+        </div>
+
+        <!-- ===== CHAT ===== -->
+        <div id="chat" class="screen">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                <h2 style="font-size:20px;">💬 Messages</h2>
+                <span style="font-size:12px;color:var(--text2);">3 discussions</span>
+            </div>
+            <div id="chat-list"></div>
+            <div id="chat-conversation" style="display:none;flex:1;flex-direction:column;gap:8px;padding-bottom:8px;">
+                <button class="btn btn-ghost" id="chat-back" style="padding-left:0;margin-bottom:8px;">← Retour</button>
+                <div id="chat-messages" style="flex:1;display:flex;flex-direction:column;gap:8px;overflow-y:auto;padding-bottom:12px;"></div>
+                <div class="chat-input">
+                    <input type="text" id="chat-input-text" placeholder="Écrire un message...">
+                    <button id="chat-send-btn">📤</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== NOTIFICATIONS ===== -->
+        <div id="notifications" class="screen">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+                <h2 style="font-size:20px;">🔔 Notifications</h2>
+                <button class="btn btn-ghost" id="notif-mark-all" style="font-size:12px;">Tout marquer comme lu</button>
+            </div>
+            <div id="notif-list"></div>
+        </div>
+
+        <!-- ===== STATS ===== -->
+        <div id="stats" class="screen">
+            <h2 style="font-size:20px;margin-bottom:12px;">📊 Statistiques</h2>
+            <div class="stats-row">
+                <div class="stat-item"><div class="value">12</div><div class="label">Ventes</div></div>
+                <div class="stat-item"><div class="value">45 kg</div><div class="label">Recyclés</div></div>
+                <div class="stat-item"><div class="value">⭐ 4.8</div><div class="label">Note</div></div>
+            </div>
+            <div class="section-title">📈 Collectes par semaine</div>
+            <div class="chart-bars" id="chart-bars"></div>
+            <div class="section-title" style="margin-top:16px;">🧩 Répartition des déchets</div>
+            <div class="donut-container"><div class="donut"></div></div>
+            <div class="donut-legend">
+                <span><span class="color" style="background:var(--primary);"></span>Plastique 40%</span>
+                <span><span class="color" style="background:var(--accent);"></span>Métal 20%</span>
+                <span><span class="color" style="background:var(--info);"></span>Verre 20%</span>
+                <span><span class="color" style="background:var(--danger);"></span>Carton 20%</span>
+            </div>
+            <div class="section-title" style="margin-top:16px;">💰 Revenus mensuels</div>
+            <div id="revenue-bars" style="display:flex;flex-direction:column;gap:6px;"></div>
+        </div>
+
+        <!-- ===== PROFILE ===== -->
+        <div id="profile" class="screen">
+            <div class="profile-header">
+                <div class="profile-avatar">👤</div>
+                <div class="profile-name">Jean Dupont</div>
+                <div class="profile-username">@jean_dupont_237</div>
+                <div class="profile-badge">⭐ PREMIUM</div>
+            </div>
+            <div class="stats-row">
+                <div class="stat"><div class="value">12</div><div class="label">Ventes</div></div>
+                <div class="stat"><div class="value">45kg</div><div class="label">Recyclés</div></div>
+                <div class="stat"><div class="value">⭐ 4.8</div><div class="label">Note</div></div>
+            </div>
+            <div class="profile-menu">
+                <button class="item" id="goto-priceguide"><span class="icon">📊</span><span class="label">Guide des prix</span><span class="arrow">›</span></button>
+                <button class="item"><span class="icon">📍</span><span class="label">Douala, Cameroun</span><span class="arrow">›</span></button>
+                <button class="item"><span class="icon">📞</span><span class="label">+237 677 123 456</span><span class="arrow">›</span></button>
+                <button class="item"><span class="icon">🔒</span><span class="label">Changer le mot de passe</span><span class="arrow">›</span></button>
+                <button class="item"><span class="icon">🔔</span><span class="label">Notifications</span><span style="color:#22C55E;font-size:12px;font-weight:600;">Actives</span></button>
+                <button class="item"><span class="icon">🌐</span><span class="label">Langue</span><span class="arrow">Français ›</span></button>
+                <button class="item"><span class="icon">🌙</span><span class="label">Mode sombre</span><span style="color:#22C55E;font-size:12px;font-weight:600;">Activé</span></button>
+                <button class="item"><span class="icon">📋</span><span class="label">Mes annonces</span><span class="arrow">3 ›</span></button>
+                <button class="item"><span class="icon">⭐</span><span class="label">Mon abonnement Premium</span><span style="color:var(--accent);font-size:12px;font-weight:600;">Actif</span></button>
+                <button class="item danger"><span class="icon">🚪</span><span class="label" style="color:#EF4444;">Déconnexion</span><span class="arrow">›</span></button>
+            </div>
+        </div>
+
+        <!-- ===== BOTTOM NAV ===== -->
+        <div id="bottom-nav">
+            <button class="nav-item active" data-screen="dashboard"><span class="icon">🏠</span><span class="label">Accueil</span></button>
+            <button class="nav-item" data-screen="feed"><span class="icon">🛒</span><span class="label">Marché</span></button>
+            <button class="nav-item" data-screen="publish"><span class="icon">➕</span><span class="label">Publier</span></button>
+            <button class="nav-item" data-screen="notifications"><span class="icon">🔔</span><span class="label">Notif.</span><span class="badge" id="notif-badge">4</span></button>
+            <button class="nav-item" data-screen="profile"><span class="icon">👤</span><span class="label">Profil</span></button>
+        </div>
+
     </div>
 
-    <!-- ONBOARDING -->
-    <div id="onboarding" class="hidden">
-        <div id="slide0"><span class="emoji">♻️</span><h2 style="font-size:24px;margin-bottom:8px">Valorisez vos déchets</h2><p style="color:#888;font-size:16px">Transformez vos déchets recyclables en revenus</p></div>
-        <div id="slide1" class="hidden"><span class="emoji">💰</span><h2 style="font-size:24px;margin-bottom:8px">Gagnez de l'argent</h2><p style="color:#888;font-size:16px">Paiement immédiat au kilogramme</p></div>
-        <div id="slide2" class="hidden"><span class="emoji">🌍</span><h2 style="font-size:24px;margin-bottom:8px">Protégez l'environnement</h2><p style="color:#888;font-size:16px">Un Cameroun plus propre</p></div>
-        <div id="slide3" class="hidden"><span class="emoji">⭐</span><h2 style="font-size:24px;margin-bottom:8px">Devenez Premium</h2><p style="color:#888;font-size:16px">Tarifs préférentiels</p></div>
-        <div style="display:flex;gap:8px;justify-content:center;margin:16px 0">
-            <span class="dot" data-slide="0" style="width:8px;height:8px;border-radius:50%;background:#FFD700;display:inline-block;cursor:pointer"></span>
-            <span class="dot" data-slide="1" style="width:8px;height:8px;border-radius:50%;background:#666;display:inline-block;cursor:pointer"></span>
-            <span class="dot" data-slide="2" style="width:8px;height:8px;border-radius:50%;background:#666;display:inline-block;cursor:pointer"></span>
-            <span class="dot" data-slide="3" style="width:8px;height:8px;border-radius:50%;background:#666;display:inline-block;cursor:pointer"></span>
-        </div>
-        <button class="btn" id="onboarding-btn">Suivant</button>
-    </div>
+    <script>
+        // ==========================================
+        // DONNÉES STATIQUES (POUR LE MODE TEST)
+        // ==========================================
+        const staticProducts = [
+            { emoji: '🥤', title: 'Bouteilles PET transparentes', loc: 'Douala, Bonapriso', price: '200 FCFA/kg',
+                qty: '15kg', cat: 'Plastique' },
+            { emoji: '🥤', title: 'Bouteilles PET colorées', loc: 'Yaoundé, Bastos', price: '100 FCFA/kg', qty: '10kg',
+                cat: 'Plastique' },
+            { emoji: '🥫', title: 'Canettes aluminium', loc: 'Bafoussam', price: '700 FCFA/kg', qty: '8kg',
+                cat: 'Métal' },
+            { emoji: '🔩', title: 'Cuivre dénudé', loc: 'Douala, Akwa', price: '2 200 FCFA/kg', qty: '5kg',
+                cat: 'Métal' },
+            { emoji: '🔩', title: 'Fer lourd', loc: 'Yaoundé, Mvog-Mbi', price: '150 FCFA/kg', qty: '50kg',
+                cat: 'Métal' },
+            { emoji: '📦', title: 'Carton ondulé propre', loc: 'Bamenda', price: '75 FCFA/kg', qty: '20kg',
+                cat: 'Carton' },
+            { emoji: '📄', title: 'Papier blanc de bureau', loc: 'Douala, Bonapriso', price: '100 FCFA/kg',
+                qty: '12kg', cat: 'Carton' },
+            { emoji: '🍾', title: 'Verre transparent', loc: 'Garoua', price: '50 FCFA/kg', qty: '25kg', cat: 'Verre' },
+            { emoji: '🍾', title: 'Verre coloré (brun/vert)', loc: 'Bafoussam', price: '30 FCFA/kg', qty: '18kg',
+                cat: 'Verre' },
+            { emoji: '🛢️', title: 'Huile de friture usagée', loc: 'Douala, Akwa', price: '300 FCFA/L', qty: '10L',
+                cat: 'Huile' },
+            { emoji: '🛢️', title: 'Huile moteur usagée', loc: 'Yaoundé, Bastos', price: '150 FCFA/L', qty: '20L',
+                cat: 'Huile' },
+            { emoji: '💻', title: 'Ordinateurs complets', loc: 'Douala, Bonapriso', price: '400 FCFA/kg', qty: '30kg',
+                cat: 'Électronique' }
+        ];
 
-    <!-- LOGIN -->
-    <div id="login" class="hidden">
-        <span class="emoji">♻️</span>
-        <h2 style="font-size:24px;margin-bottom:4px">Bienvenue</h2>
-        <p style="color:#888;font-size:14px;margin-bottom:16px">Entrez votre numéro de téléphone</p>
-        <div style="display:flex;align-items:center;background:#222;border-radius:12px;border:1px solid #333;padding:0 8px">
-            <span style="color:#888;font-weight:600">+237</span>
-            <input type="tel" id="phone-input" style="border:none;background:transparent;padding:14px 8px;width:100%;color:#fff;font-size:16px;outline:none" placeholder="6XXXXXXXX">
-        </div>
-        <button class="btn" id="login-btn">Se connecter</button>
-        <button class="link" id="login-skip">Continuer sans compte (test)</button>
-    </div>
+        const cityData = [
+            { name: 'Douala - Bonaberi', address: 'En face du marché central', city: 'Douala' },
+            { name: 'Douala - Akwa', address: 'Rue des palmiers, immeuble ReLife', city: 'Douala' },
+            { name: 'Yaoundé - Bastos', address: 'Carrefour de la poste', city: 'Yaoundé' },
+            { name: 'Yaoundé - Mvog-Mbi', address: 'En face de l\'hôpital', city: 'Yaoundé' },
+            { name: 'Bafoussam', address: 'Marché A, côté station Total', city: 'Bafoussam' },
+            { name: 'Garoua', address: 'Rue du commerce, chez Marie', city: 'Garoua' }
+        ];
 
-    <!-- OTP -->
-    <div id="otp" class="hidden">
-        <span style="font-size:48px;display:block;margin-bottom:8px">🔐</span>
-        <h2 style="font-size:24px;margin-bottom:4px">Vérification</h2>
-        <p style="color:#888;font-size:14px;margin-bottom:16px">Code envoyé au <span id="otp-phone">+237 6XXXXXXXX</span></p>
-        <div class="otp-group">
-            <input type="text" maxlength="1" class="otp-input">
-            <input type="text" maxlength="1" class="otp-input">
-            <input type="text" maxlength="1" class="otp-input">
-            <input type="text" maxlength="1" class="otp-input">
-            <input type="text" maxlength="1" class="otp-input">
-            <input type="text" maxlength="1" class="otp-input">
-        </div>
-        <button class="btn" id="otp-btn">Vérifier</button>
-        <button class="link">Renvoyer le code</button>
-    </div>
+        const priceGuideData = [
+            { emoji: '🥤', name: 'PET transparent', price: '150-200', sub: 'Bouteilles d\'eau' },
+            { emoji: '🥤', name: 'PET coloré', price: '75-100', sub: 'Bouteilles colorées' },
+            { emoji: '🥫', name: 'Aluminium', price: '500-800', sub: 'Canettes, casseroles' },
+            { emoji: '🔩', name: 'Cuivre dénudé', price: '2 000-2 500', sub: 'Haute valeur' },
+            { emoji: '🔩', name: 'Fer/Acier', price: '100-150', sub: 'Lourd, bonne qualité' },
+            { emoji: '📦', name: 'Carton ondulé', price: '50-75', sub: 'Propre, sec' },
+            { emoji: '📄', name: 'Papier blanc', price: '75-100', sub: 'Bureau, impression' },
+            { emoji: '🍾', name: 'Verre transparent', price: '25-50', sub: 'Bouteilles, bocaux' },
+            { emoji: '🍾', name: 'Verre coloré', price: '20-40', sub: 'Brun, vert' },
+            { emoji: '🛢️', name: 'Huile de friture', price: '200-300', sub: 'Par litre' },
+            { emoji: '🛢️', name: 'Huile moteur', price: '100-200', sub: 'Par litre' },
+            { emoji: '💻', name: 'Ordinateurs', price: '200-500', sub: 'Complets' }
+        ];
 
-    <!-- DASHBOARD -->
-    <div id="dashboard" class="hidden">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-            <div><h2 style="font-size:20px">Bonjour 👋</h2><p style="color:#888;font-size:13px">Prêt à recycler ?</p></div>
-            <button id="lang-toggle" style="background:#FFD700;color:#000;border:none;padding:6px 16px;border-radius:20px;font-weight:700;cursor:pointer">🇫🇷 FR</button>
-        </div>
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px">
-            <button class="qa" data-target="map" style="background:#222;border:1px solid #333;border-radius:12px;padding:12px;cursor:pointer;color:#fff;border:none">📍 Carte</button>
-            <button class="qa" data-target="chat" style="background:#222;border:1px solid #333;border-radius:12px;padding:12px;cursor:pointer;color:#fff;border:none">💬 Messages</button>
-            <button class="qa" data-target="stats" style="background:#222;border:1px solid #333;border-radius:12px;padding:12px;cursor:pointer;color:#fff;border:none">📊 Stats</button>
-            <button class="qa" data-target="feed" style="background:#222;border:1px solid #333;border-radius:12px;padding:12px;cursor:pointer;color:#fff;border:none">🛒 Marché</button>
-        </div>
-        <div style="background:linear-gradient(135deg,rgba(45,80,22,0.3),rgba(255,215,0,0.08));border:1px solid rgba(255,215,0,0.15);border-radius:16px;padding:16px;display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-            <div><div style="font-size:12px;color:#888">💰 Solde</div><div style="font-size:28px;font-weight:700;color:#FFD700">5 000 FCFA</div></div>
-            <button class="btn" style="max-width:100px;padding:8px 16px;font-size:13px" id="goto-withdrawal">Retirer</button>
-        </div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px">
-            <div style="text-align:center;padding:12px;background:#222;border-radius:12px;border:1px solid #333"><div style="font-size:20px;font-weight:700">12</div><div style="font-size:10px;color:#888">Ventes</div></div>
-            <div style="text-align:center;padding:12px;background:#222;border-radius:12px;border:1px solid #333"><div style="font-size:20px;font-weight:700">45 kg</div><div style="font-size:10px;color:#888">Recyclés</div></div>
-            <div style="text-align:center;padding:12px;background:#222;border-radius:12px;border:1px solid #333"><div style="font-size:20px;font-weight:700">⭐ 4.8</div><div style="font-size:10px;color:#888">Note</div></div>
-        </div>
-        <div style="font-weight:600;margin-bottom:8px">⚡ Activité récente</div>
-        <div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04)"><span style="font-size:24px">♻️</span><div style="flex:1"><div style="font-size:14px">Collecte PET</div><div style="font-size:12px;color:#888">15kg • 2 250 FCFA</div></div><div style="font-size:11px;color:#888">2h</div></div>
-        <div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04)"><span style="font-size:24px">🥫</span><div style="flex:1"><div style="font-size:14px">Canettes alu</div><div style="font-size:12px;color:#888">5kg • 1 000 FCFA</div></div><div style="font-size:11px;color:#888">Hier</div></div>
-        <div style="display:flex;align-items:center;gap:12px;padding:8px 0"><span style="font-size:24px">📦</span><div style="flex:1"><div style="font-size:14px">Cartons</div><div style="font-size:12px;color:#888">10kg • 500 FCFA</div></div><div style="font-size:11px;color:#888">Hier</div></div>
-    </div>
+        const revenueData = [
+            { month: 'Jan', amount: 12500, pct: 25 },
+            { month: 'Fév', amount: 18200, pct: 36 },
+            { month: 'Mar', amount: 22800, pct: 46 },
+            { month: 'Avr', amount: 30500, pct: 61 }
+        ];
 
-    <!-- FEED -->
-    <div id="feed" class="hidden">
-        <h2 style="font-size:20px;margin-bottom:12px">🛒 Marché</h2>
-        <div style="display:flex;gap:8px;overflow-x:auto;padding:4px 0 12px" id="feed-categories">
-            <button class="cat-chip active" data-cat="Tous" style="padding:6px 16px;border-radius:20px;background:#2D5016;color:#fff;font-size:13px;cursor:pointer;border:none">Tous</button>
-            <button class="cat-chip" data-cat="Plastique" style="padding:6px 16px;border-radius:20px;background:#222;color:#888;font-size:13px;cursor:pointer;border:none">Plastique</button>
-            <button class="cat-chip" data-cat="Métal" style="padding:6px 16px;border-radius:20px;background:#222;color:#888;font-size:13px;cursor:pointer;border:none">Métal</button>
-            <button class="cat-chip" data-cat="Carton" style="padding:6px 16px;border-radius:20px;background:#222;color:#888;font-size:13px;cursor:pointer;border:none">Carton</button>
-        </div>
-        <div id="feed-list"></div>
-        <button class="btn" id="goto-publish" style="margin-top:12px">+ Publier</button>
-    </div>
+        const chatMessages = {
+            paul: [
+                { text: "Bonjour, je suis intéressé par vos bouteilles PET", sent: false, time: "12:20" },
+                { text: "Bonjour ! Oui je les ai encore", sent: true, time: "12:22" },
+                { text: "Ok je suis dispo", sent: false, time: "12:30" }
+            ],
+            marie: [
+                { text: "Merci pour votre confiance", sent: false, time: "Hier" }
+            ],
+            jean: [
+                { text: "Quand pouvez-vous passer ?", sent: false, time: "Hier" }
+            ]
+        };
 
-    <!-- PUBLISH -->
-    <div id="publish" class="hidden">
-        <h2 style="font-size:20px;margin-bottom:16px">➕ Nouvelle annonce</h2>
-        <div style="margin-bottom:12px"><label style="font-size:12px;color:#888;display:block;margin-bottom:4px">Catégorie</label><select id="publish-cat" style="width:100%;padding:12px;border-radius:12px;border:1px solid #333;background:#222;color:#fff;font-size:14px"><option>Plastique</option><option>Métal</option><option>Carton</option><option>Verre</option></select></div>
-        <div style="margin-bottom:12px"><label style="font-size:12px;color:#888;display:block;margin-bottom:4px">Titre</label><input type="text" id="publish-title" style="width:100%;padding:12px;border-radius:12px;border:1px solid #333;background:#222;color:#fff;font-size:14px;outline:none" placeholder="Ex: Bouteilles PET"></div>
-        <div style="margin-bottom:12px"><label style="font-size:12px;color:#888;display:block;margin-bottom:4px">Quantité</label><input type="text" id="publish-qty" style="width:100%;padding:12px;border-radius:12px;border:1px solid #333;background:#222;color:#fff;font-size:14px;outline:none" placeholder="Ex: 15 kg"></div>
-        <div style="margin-bottom:12px"><label style="font-size:12px;color:#888;display:block;margin-bottom:4px">Prix</label><input type="number" id="publish-price" style="width:100%;padding:12px;border-radius:12px;border:1px solid #333;background:#222;color:#fff;font-size:14px;outline:none" placeholder="Ex: 200"></div>
-        <div style="margin-bottom:16px"><label style="font-size:12px;color:#888;display:block;margin-bottom:4px">Ville</label><input type="text" id="publish-city" style="width:100%;padding:12px;border-radius:12px;border:1px solid #333;background:#222;color:#fff;font-size:14px;outline:none" placeholder="Ex: Douala"></div>
-        <button class="btn" id="publish-submit">Publier</button>
-        <button class="link" id="goto-feed-from-publish">← Retour au marché</button>
-    </div>
+        const notifications = [
+            { icon: '💬', title: 'Nouveau message de Paul', body: '"Ok je suis dispo pour la collecte"', time: 'Il y a 10 min' },
+            { icon: '♻️', title: 'Collecte confirmée', body: 'Votre collecte de 15kg est planifiée demain',
+            time: 'Il y a 2h' },
+            { icon: '⭐', title: 'Offre Premium disponible', body: 'Devenez Premium pour 5000 FCFA/mois',
+            time: 'Il y a 1j' },
+            { icon: '📝', title: 'Nouvel avis reçu', body: '"Excellent service, je recommande !"', time: 'Il y a 2j' }
+        ];
 
-    <!-- MAP -->
-    <div id="map" class="hidden">
-        <h2 style="font-size:20px;margin-bottom:12px">📍 Points de collecte</h2>
-        <div style="height:150px;background:linear-gradient(135deg,#1A2A1A,#2A3A2A);border-radius:16px;display:flex;align-items:center;justify-content:center;flex-direction:column;margin-bottom:16px">
-            <span style="font-size:48px">📍</span>
-            <div style="font-size:14px;font-weight:600;color:#FFD700" id="map-city">Douala</div>
-            <div style="font-size:12px;color:#888" id="map-address">Bonaberi, en face du marché</div>
-        </div>
-        <div id="city-list" style="display:flex;flex-direction:column;gap:8px"></div>
-    </div>
+        // ==========================================
+        // ÉTAT GLOBAL
+        // ==========================================
+        let currentScreen = 'splash';
+        let onboardingSlide = 0;
+        let isLoggedIn = false;
+        let chatActive = null;
+        let confirmationResult = null;
+        let recaptchaVerifier = null;
+        let currentFilter = 'Tous';
+        let products = [];
+        let lang = 'fr';
 
-    <!-- CHAT -->
-    <div id="chat" class="hidden">
-        <h2 style="font-size:20px;margin-bottom:12px">💬 Messages</h2>
-        <div id="chat-list"></div>
-        <div id="chat-conversation" style="display:none;flex-direction:column;gap:8px">
-            <button id="chat-back" style="background:none;border:none;color:#fff;font-size:16px;cursor:pointer;text-align:left">← Retour</button>
-            <div id="chat-messages" style="display:flex;flex-direction:column;gap:8px;max-height:200px;overflow-y:auto;padding-bottom:8px"></div>
-            <div style="display:flex;gap:8px"><input type="text" id="chat-input" style="flex:1;padding:10px;border-radius:12px;border:1px solid #333;background:#222;color:#fff;outline:none" placeholder="Écrire..."><button id="chat-send" style="background:#2D5016;border:none;color:#fff;padding:10px 16px;border-radius:12px;cursor:pointer">Envoyer</button></div>
-        </div>
-    </div>
+        // ==========================================
+        // FIREBASE CONFIG
+        // ==========================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyADPKnfoIsqMaK1J7imfRcSKaaR4GRzpU8",
+            authDomain: "examens-maths.firebaseapp.com",
+            projectId: "examens-maths",
+            storageBucket: "examens-maths.firebasestorage.app",
+            messagingSenderId: "175227858090",
+            appId: "1:175227858090:web:be5b5a5ed381301dc334d3"
+        };
 
-    <!-- NOTIFICATIONS -->
-    <div id="notifications" class="hidden">
-        <h2 style="font-size:20px;margin-bottom:12px">🔔 Notifications</h2>
-        <div id="notif-list"></div>
-    </div>
+        if (typeof firebase !== 'undefined' && !firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+            console.log('🔥 Firebase connecté');
+        }
 
-    <!-- STATS -->
-    <div id="stats" class="hidden">
-        <h2 style="font-size:20px;margin-bottom:12px">📊 Statistiques</h2>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px">
-            <div style="text-align:center;padding:12px;background:#222;border-radius:12px"><div style="font-size:20px;font-weight:700">12</div><div style="font-size:10px;color:#888">Ventes</div></div>
-            <div style="text-align:center;padding:12px;background:#222;border-radius:12px"><div style="font-size:20px;font-weight:700">45 kg</div><div style="font-size:10px;color:#888">Recyclés</div></div>
-            <div style="text-align:center;padding:12px;background:#222;border-radius:12px"><div style="font-size:20px;font-weight:700">⭐ 4.8</div><div style="font-size:10px;color:#888">Note</div></div>
-        </div>
-        <div style="font-weight:600;margin-bottom:8px">📈 Collectes</div>
-        <div style="display:flex;gap:6px;height:80px;margin-bottom:16px">
-            <div style="flex:1;display:flex;flex-direction:column;align-items:center"><div style="width:100%;height:40%;background:linear-gradient(180deg,#FFD700,#2D5016);border-radius:4px 4px 0 0"></div><div style="font-size:9px;color:#888">Lun</div></div>
-            <div style="flex:1;display:flex;flex-direction:column;align-items:center"><div style="width:100%;height:60%;background:linear-gradient(180deg,#FFD700,#2D5016);border-radius:4px 4px 0 0"></div><div style="font-size:9px;color:#888">Mar</div></div>
-            <div style="flex:1;display:flex;flex-direction:column;align-items:center"><div style="width:100%;height:90%;background:linear-gradient(180deg,#FFD700,#2D5016);border-radius:4px 4px 0 0"></div><div style="font-size:9px;color:#888">Mer</div></div>
-            <div style="flex:1;display:flex;flex-direction:column;align-items:center"><div style="width:100%;height:70%;background:linear-gradient(180deg,#FFD700,#2D5016);border-radius:4px 4px 0 0"></div><div style="font-size:9px;color:#888">Jeu</div></div>
-            <div style="flex:1;display:flex;flex-direction:column;align-items:center"><div style="width:100%;height:50%;background:linear-gradient(180deg,#FFD700,#2D5016);border-radius:4px 4px 0 0"></div><div style="font-size:9px;color:#888">Ven</div></div>
-        </div>
-        <div style="font-weight:600;margin-bottom:8px">🧩 Répartition</div>
-        <div style="display:flex;justify-content:center"><div style="width:80px;height:80px;border-radius:50%;background:conic-gradient(#2D5016 0% 40%,#FFD700 40% 60%,#3B82F6 60% 80%,#EF4444 80% 100%)"></div></div>
-    </div>
+        const db = firebase.firestore ? firebase.firestore() : null;
+        let productsUnsubscribe = null;
 
-    <!-- PROFILE -->
-    <div id="profile" class="hidden">
-        <div style="display:flex;flex-direction:column;align-items:center;padding:16px 0">
-            <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#2D5016,#FFD700);display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:8px">👤</div>
-            <div style="font-size:18px;font-weight:700">Jean Dupont</div>
-            <div style="color:#888;font-size:13px">@jean_dupont_237</div>
-            <div style="padding:4px 16px;border-radius:20px;background:linear-gradient(135deg,#FFD700,#B8860B);color:#000;font-size:11px;font-weight:700;margin-top:8px">⭐ PREMIUM</div>
-        </div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px">
-            <div style="text-align:center;padding:10px;background:#222;border-radius:12px"><div style="font-size:16px;font-weight:700">12</div><div style="font-size:10px;color:#888">Ventes</div></div>
-            <div style="text-align:center;padding:10px;background:#222;border-radius:12px"><div style="font-size:16px;font-weight:700">45kg</div><div style="font-size:10px;color:#888">Recyclés</div></div>
-            <div style="text-align:center;padding:10px;background:#222;border-radius:12px"><div style="font-size:16px;font-weight:700">⭐ 4.8</div><div style="font-size:10px;color:#888">Note</div></div>
-        </div>
-        <button id="goto-priceguide" style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:12px;background:#222;border:1px solid #333;cursor:pointer;color:#fff;width:100%;text-align:left;border:none;margin-bottom:4px"><span>📊</span><span style="flex:1">Guide des prix</span><span style="color:#888">›</span></button>
-        <button style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:12px;background:#222;border:1px solid #333;cursor:pointer;color:#fff;width:100%;text-align:left;border:none;margin-bottom:4px"><span>📍</span><span style="flex:1">Douala, Cameroun</span><span style="color:#888">›</span></button>
-    </div>
+        // ==========================================
+        // TOAST
+        // ==========================================
+        function showToast(msg, type) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.className = 'toast ' + (type || '') + ' show';
+            clearTimeout(t._timeout);
+            t._timeout = setTimeout(() => t.className = 'toast', 2500);
+        }
 
-    <!-- BOTTOM NAV -->
-    <div style="display:flex;justify-content:space-around;padding:8px 0;border-top:1px solid #333;margin-top:16px;background:#0F0F0F">
-        <button class="nav-btn active" data-screen="dashboard" style="display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;color:#FFD700;font-size:9px;cursor:pointer;padding:4px 6px"><span style="font-size:18px">🏠</span><span>Accueil</span></button>
-        <button class="nav-btn" data-screen="feed" style="display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;color:#888;font-size:9px;cursor:pointer;padding:4px 6px"><span style="font-size:18px">🛒</span><span>Marché</span></button>
-        <button class="nav-btn" data-screen="publish" style="display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;color:#888;font-size:9px;cursor:pointer;padding:4px 6px"><span style="font-size:18px">➕</span><span>Publier</span></button>
-        <button class="nav-btn" data-screen="notifications" style="display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;color:#888;font-size:9px;cursor:pointer;padding:4px 6px;position:relative"><span style="font-size:18px">🔔</span><span>Notif.</span><span id="notif-badge" style="position:absolute;top:-4px;right:-6px;background:#EF4444;color:#fff;font-size:8px;font-weight:700;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center">4</span></button>
-        <button class="nav-btn" data-screen="profile" style="display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;color:#888;font-size:9px;cursor:pointer;padding:4px 6px"><span style="font-size:18px">👤</span><span>Profil</span></button>
-    </div>
-</div>
-
-<script>
-    // ===== VARIABLES GLOBALES =====
-    let currentScreen = 'splash';
-    let onboardingSlide = 0;
-    let isLoggedIn = false;
-    let chatActive = null;
-    let lang = 'fr';
-
-    // ===== DONNÉES =====
-    const feedProducts = [
-        { emoji: '🥤', title: 'Bouteilles PET', loc: 'Douala', price: '200 FCFA/kg', qty: '15kg', cat: 'Plastique' },
-        { emoji: '🥫', title: 'Canettes alu', loc: 'Bafoussam', price: '700 FCFA/kg', qty: '8kg', cat: 'Métal' },
-        { emoji: '📦', title: 'Cartons', loc: 'Bamenda', price: '75 FCFA/kg', qty: '20kg', cat: 'Carton' },
-        { emoji: '🍾', title: 'Verre', loc: 'Garoua', price: '50 FCFA/kg', qty: '25kg', cat: 'Verre' },
-        { emoji: '🛢️', title: 'Huile de friture', loc: 'Douala', price: '300 FCFA/L', qty: '10L', cat: 'Huile' }
-    ];
-
-    const chatMessages = {
-        paul: [{ text: "Bonjour, je suis intéressé", sent: false, time: "12:20" }, { text: "Oui je les ai encore",
-            sent: true, time: "12:22" }],
-        marie: [{ text: "Merci pour votre confiance", sent: false, time: "Hier" }],
-        jean: [{ text: "Quand pouvez-vous passer ?", sent: false, time: "Hier" }]
-    };
-
-    const cityData = [
-        { name: 'Douala - Bonaberi', address: 'En face du marché', city: 'Douala' },
-        { name: 'Douala - Akwa', address: 'Rue des palmiers', city: 'Douala' },
-        { name: 'Yaoundé - Bastos', address: 'Carrefour de la poste', city: 'Yaoundé' },
-        { name: 'Bafoussam', address: 'Marché A', city: 'Bafoussam' },
-        { name: 'Garoua', address: 'Rue du commerce', city: 'Garoua' }
-    ];
-
-    const notifs = [
-        { icon: '💬', title: 'Message de Paul', body: '"Ok je suis dispo"', time: '10 min' },
-        { icon: '♻️', title: 'Collecte confirmée', body: '15kg planifiée demain', time: '2h' },
-        { icon: '⭐', title: 'Offre Premium', body: '5000 FCFA/mois', time: '1j' },
-        { icon: '📝', title: 'Nouvel avis', body: '"Excellent service"', time: '2j' }
-    ];
-
-    // ===== TOAST =====
-    function showToast(msg, type) {
-        const t = document.getElementById('toast');
-        t.textContent = msg;
-        t.className = 'toast ' + (type || '') + ' show';
-        clearTimeout(t._timeout);
-        t._timeout = setTimeout(() => t.className = 'toast', 2500);
-    }
-
-    // ===== NAVIGATION =====
-    function navigateTo(screen) {
-        document.querySelectorAll('#app > div:not(#toast)').forEach(el => el.classList.add('hidden'));
-        const target = document.getElementById(screen);
-        if (target) target.classList.remove('hidden');
-        currentScreen = screen;
-        document.querySelectorAll('.nav-btn').forEach(n => n.classList.remove('active'));
-        document.querySelector('.nav-btn[data-screen="' + screen + '"]')?.classList.add('active');
-        if (screen === 'notifications') {
-            document.querySelectorAll('.notif-item .dot').forEach(d => d.style.background = 'transparent');
+        // ==========================================
+        // NAVIGATION
+        // ==========================================
+        function navigateTo(screen) {
+            if (screen === currentScreen && screen !== 'splash') return;
+            document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+            const target = document.getElementById(screen);
+            if (target) {
+                target.classList.add('active');
+                target.style.animation = 'none';
+                requestAnimationFrame(() => {
+                    target.style.animation = 'fadeUp 0.4s ease';
+                });
+            }
+            currentScreen = screen;
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.querySelector(`.nav-item[data-screen="${screen}"]`)?.classList.add('active');
             updateBadge();
         }
-        updateBadge();
-    }
 
-    function updateBadge() {
-        const badge = document.getElementById('notif-badge');
-        if (badge) badge.textContent = '4';
-    }
-
-    // ===== SPLASH =====
-    let progress = 0;
-    const loaderInterval = setInterval(() => {
-        progress += 3;
-        if (progress > 100) { progress = 100;
-            clearInterval(loaderInterval); }
-        document.querySelector('.loader-fill').style.width = progress + '%';
-        if (progress >= 100) {
-            setTimeout(() => navigateTo('onboarding'), 500);
+        function updateBadge() {
+            const unread = document.querySelectorAll('.notif-item .dot:not(.read)').length;
+            const badge = document.getElementById('notif-badge');
+            if (badge) {
+                badge.textContent = unread || '0';
+                badge.classList.toggle('hidden', unread === 0);
+            }
         }
-    }, 30);
 
-    // ===== ONBOARDING =====
-    function updateOnboarding() {
-        document.querySelectorAll('.onboarding-slide').forEach((el, i) => el.classList.toggle('hidden', i !== onboardingSlide));
-        document.querySelectorAll('.dot').forEach((el, i) => el.style.background = i === onboardingSlide ? '#FFD700' : '#666');
-        document.getElementById('onboarding-btn').textContent = onboardingSlide === 3 ? '🚀 Démarrer' : 'Suivant';
-    }
+        // ==========================================
+        // SPLASH
+        // ==========================================
+        let progress = 0;
+        const loaderInterval = setInterval(() => {
+            progress += 2;
+            if (progress >= 100) { progress = 100;
+                clearInterval(loaderInterval); }
+            document.getElementById('loader-fill').style.width = progress + '%';
+            if (progress >= 100) {
+                setTimeout(() => navigateTo('onboarding'), 500);
+            }
+        }, 30);
 
-    document.getElementById('onboarding-btn').addEventListener('click', function() {
-        if (onboardingSlide < 3) { onboardingSlide++;
-            updateOnboarding(); } else { navigateTo('login'); }
-    });
+        // ==========================================
+        // ONBOARDING
+        // ==========================================
+        function updateOnboarding() {
+            document.querySelectorAll('.onboarding-slide').forEach((el, i) => {
+                el.classList.toggle('active', i === onboardingSlide);
+            });
+            document.querySelectorAll('.dot').forEach((el, i) => {
+                el.classList.toggle('active', i === onboardingSlide);
+            });
+            document.getElementById('onboarding-btn').textContent = onboardingSlide === 3 ? '🚀 Démarrer' : 'Suivant';
+        }
 
-    document.querySelectorAll('.dot').forEach(d => {
-        d.addEventListener('click', function() {
-            onboardingSlide = parseInt(this.dataset.slide);
-            updateOnboarding();
+        document.getElementById('onboarding-btn').addEventListener('click', function() {
+            if (onboardingSlide < 3) { onboardingSlide++;
+                updateOnboarding(); } else { navigateTo('login'); }
         });
-    });
 
-    // ===== LOGIN =====
-    document.getElementById('login-btn').addEventListener('click', function() {
-        const phone = document.getElementById('phone-input').value.trim();
-        if (phone.length < 8) { showToast('Numéro invalide', 'error'); return; }
-        document.getElementById('otp-phone').textContent = '+237 ' + phone;
-        navigateTo('otp');
-    });
-
-    document.getElementById('login-skip').addEventListener('click', function() {
-        isLoggedIn = true;
-        navigateTo('dashboard');
-        showToast('Mode test activé', 'success');
-    });
-
-    // ===== OTP =====
-    const otpInputs = document.querySelectorAll('.otp-input');
-    otpInputs.forEach((input, idx) => {
-        input.addEventListener('input', function() {
-            if (this.value.length === 1 && idx < otpInputs.length - 1) otpInputs[idx + 1].focus();
+        document.querySelectorAll('.dot').forEach(d => {
+            d.addEventListener('click', function() {
+                onboardingSlide = parseInt(this.dataset.slide);
+                updateOnboarding();
+            });
         });
-        input.addEventListener('keydown', function(e) {
-            if (e.key === 'Backspace' && this.value.length === 0 && idx > 0) otpInputs[idx - 1].focus();
-        });
-    });
 
-    document.getElementById('otp-btn').addEventListener('click', function() {
-        let code = '';
-        otpInputs.forEach(inp => code += inp.value);
-        if (code.length < 6) { showToast('Code incomplet', 'error'); return; }
-        if (code === '123456') {
+        // ==========================================
+        // AUTHENTIFICATION
+        // ==========================================
+        function getRecaptchaVerifier() {
+            if (!recaptchaVerifier) {
+                recaptchaVerifier = new firebase.auth.RecaptchaVerifier('login-btn', { size: 'invisible' });
+            }
+            return recaptchaVerifier;
+        }
+
+        document.querySelectorAll('.otp-input').forEach((input, idx) => {
+            input.addEventListener('input', function() {
+                if (this.value.length === 1 && idx < 5) {
+                    document.querySelectorAll('.otp-input')[idx + 1].focus();
+                }
+            });
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Backspace' && this.value.length === 0 && idx > 0) {
+                    document.querySelectorAll('.otp-input')[idx - 1].focus();
+                }
+            });
+        });
+
+        document.getElementById('login-btn').addEventListener('click', function() {
+            const phone = document.getElementById('phone-input').value.trim();
+            if (phone.length < 8) { showToast('Numéro invalide. Format: 6XXXXXXXX', 'error'); return; }
+            const fullPhone = '+237' + phone;
+            const appVerifier = getRecaptchaVerifier();
+
+            firebase.auth().signInWithPhoneNumber(fullPhone, appVerifier)
+                .then(function(result) {
+                    confirmationResult = result;
+                    document.getElementById('otp-phone').textContent = fullPhone;
+                    navigateTo('otp');
+                    showToast('📱 Code SMS envoyé !', 'success');
+                })
+                .catch(function(error) {
+                    showToast('❌ ' + error.message, 'error');
+                });
+        });
+
+        document.getElementById('login-skip').addEventListener('click', function() {
             isLoggedIn = true;
+            document.getElementById('bottom-nav').classList.add('active');
             navigateTo('dashboard');
-            showToast('✅ Connexion réussie !', 'success');
-        } else {
-            showToast('❌ Code incorrect', 'error');
-            otpInputs.forEach(i => { i.value = '';
-                i.style.borderColor = '#EF4444'; });
-            setTimeout(() => otpInputs.forEach(i => i.style.borderColor = '#333'), 1000);
+            showToast('🔓 Mode test (sans SMS)', 'success');
+        });
+
+        document.getElementById('otp-btn').addEventListener('click', function() {
+            let code = '';
+            document.querySelectorAll('.otp-input').forEach(inp => code += inp.value);
+            if (code.length < 6) { showToast('Entrez les 6 chiffres du code', 'error'); return; }
+
+            // Mode test 123456
+            if (code === '123456') {
+                isLoggedIn = true;
+                document.getElementById('bottom-nav').classList.add('active');
+                navigateTo('dashboard');
+                showToast('✅ Mode test (123456)', 'success');
+                return;
+            }
+
+            if (!confirmationResult) {
+                showToast('❌ Aucun code envoyé. Recommencez.', 'error');
+                return;
+            }
+
+            confirmationResult.confirm(code)
+                .then(function() {
+                    isLoggedIn = true;
+                    document.getElementById('bottom-nav').classList.add('active');
+                    navigateTo('dashboard');
+                    showToast('✅ Connexion réussie !', 'success');
+                })
+                .catch(function() {
+                    showToast('❌ Code incorrect. Réessayez.', 'error');
+                });
+        });
+
+        document.getElementById('otp-resend').addEventListener('click', function() {
+            const phone = document.getElementById('phone-input').value.trim();
+            if (phone.length < 8) { showToast('Entrez d\'abord un numéro', 'error'); return; }
+            const fullPhone = '+237' + phone;
+            const appVerifier = getRecaptchaVerifier();
+            firebase.auth().signInWithPhoneNumber(fullPhone, appVerifier)
+                .then(function(result) {
+                    confirmationResult = result;
+                    showToast('📱 Nouveau code envoyé !', 'success');
+                })
+                .catch(function(error) {
+                    showToast('❌ ' + error.message, 'error');
+                });
+        });
+
+        // ==========================================
+        // BILINGUISME
+        // ==========================================
+        const translations = {
+            fr: {
+                greeting: 'Bonjour',
+                greeting_sub: 'Prêt à recycler aujourd\'hui ?',
+                map: 'Carte',
+                messages: 'Messages',
+                stats: 'Stats',
+                marketplace: 'Marché',
+                balance: '💰 Solde Mobile Money',
+                withdraw: 'Retirer',
+                sales: 'Ventes',
+                recycled: 'Recyclés',
+                rating: 'Note',
+                recent: '⚡ Activité récente',
+                pet: 'Collecte de bouteilles PET',
+                aluminum: 'Canettes aluminium',
+                cardboard: 'Cartons recyclables',
+                marketplace_title: '🛒 Marché',
+                publish: 'Publier',
+                all: 'Tous',
+                plastic: 'Plastique',
+                metal: 'Métal',
+                cardboard_cat: 'Carton',
+                glass_cat: 'Verre',
+                oil: 'Huile',
+                electronic: 'Électronique',
+                back: '← Retour',
+                available: 'Disponible',
+                contact: 'Contacter',
+                rate_seller: '⭐ Noter ce vendeur',
+                reviews: '📝 Avis (12)',
+                days_ago_2: 'Il y a 2j',
+                days_ago_5: 'Il y a 5j',
+                new_ad: '➕ Nouvelle annonce',
+                category: 'Catégorie',
+                title_label: 'Titre',
+                quantity_label: 'Quantité',
+                price_label: 'Prix (FCFA/kg)',
+                city_label: 'Ville',
+                publish_ad: 'Publier l\'annonce',
+                withdraw_momo: '💰 Retrait MoMo',
+                balance_label: 'Solde : 5 000 FCFA',
+                amount_label: 'Montant (FCFA)',
+                phone_label: 'Numéro de téléphone',
+                confirm_withdraw: 'Confirmer le retrait',
+                fees: 'Frais : 1.5% · Délai : instantané',
+                collection_points: '📍 Points de collecte',
+                price_guide_title: '📊 Guide des prix',
+                price_guide_sub: 'Prix indicatifs du recyclage au Cameroun (FCFA/kg)',
+                price_guide: 'Guide des prix',
+                price_advice: '💡 Conseil : Les prix varient selon la qualité et la quantité. Ces prix sont indicatifs et peuvent être négociés.',
+                messages_title: '💬 Messages',
+                notif_title: '🔔 Notifications',
+                mark_all: 'Tout marquer comme lu',
+                notif_msg1: 'Nouveau message de Paul',
+                notif_msg2: 'Collecte confirmée',
+                notif_msg3: 'Offre Premium disponible',
+                notif_msg4: 'Nouvel avis reçu',
+                stats_title: '📊 Statistiques',
+                weekly: '📈 Collectes par semaine',
+                waste_distribution: '🧩 Répartition des déchets',
+                plastic_pct: 'Plastique 40%',
+                metal_pct: 'Métal 20%',
+                glass_pct: 'Verre 20%',
+                cardboard_pct: 'Carton 20%',
+                monthly_revenue: '💰 Revenus mensuels',
+                change_password: 'Changer le mot de passe',
+                notifications: 'Notifications',
+                active: 'Actives',
+                language: 'Langue',
+                dark_mode: 'Mode sombre',
+                enabled: 'Activé',
+                my_ads: 'Mes annonces',
+                my_premium: 'Mon abonnement Premium',
+                active_premium: 'Actif',
+                logout: 'Déconnexion',
+                home: 'Accueil',
+                notif: 'Notif.',
+                profile: 'Profil'
+            },
+            en: {
+                greeting: 'Hello',
+                greeting_sub: 'Ready to recycle today?',
+                map: 'Map',
+                messages: 'Messages',
+                stats: 'Stats',
+                marketplace: 'Marketplace',
+                balance: '💰 Mobile Money Balance',
+                withdraw: 'Withdraw',
+                sales: 'Sales',
+                recycled: 'Recycled',
+                rating: 'Rating',
+                recent: '⚡ Recent Activity',
+                pet: 'PET bottles collection',
+                aluminum: 'Aluminum cans',
+                cardboard: 'Recyclable cardboard',
+                marketplace_title: '🛒 Marketplace',
+                publish: 'Publish',
+                all: 'All',
+                plastic: 'Plastic',
+                metal: 'Metal',
+                cardboard_cat: 'Cardboard',
+                glass_cat: 'Glass',
+                oil: 'Oil',
+                electronic: 'Electronics',
+                back: '← Back',
+                available: 'Available',
+                contact: 'Contact',
+                rate_seller: '⭐ Rate this seller',
+                reviews: '📝 Reviews (12)',
+                days_ago_2: '2 days ago',
+                days_ago_5: '5 days ago',
+                new_ad: '➕ New ad',
+                category: 'Category',
+                title_label: 'Title',
+                quantity_label: 'Quantity',
+                price_label: 'Price (FCFA/kg)',
+                city_label: 'City',
+                publish_ad: 'Publish ad',
+                withdraw_momo: '💰 MoMo Withdrawal',
+                balance_label: 'Balance: 5,000 FCFA',
+                amount_label: 'Amount (FCFA)',
+                phone_label: 'Phone number',
+                confirm_withdraw: 'Confirm withdrawal',
+                fees: 'Fees: 1.5% · Instant delivery',
+                collection_points: '📍 Collection points',
+                price_guide_title: '📊 Price guide',
+                price_guide_sub: 'Indicative recycling prices in Cameroon (FCFA/kg)',
+                price_guide: 'Price guide',
+                price_advice: '💡 Tip: Prices vary by quality and quantity. These are indicative and negotiable.',
+                messages_title: '💬 Messages',
+                notif_title: '🔔 Notifications',
+                mark_all: 'Mark all as read',
+                notif_msg1: 'New message from Paul',
+                notif_msg2: 'Collection confirmed',
+                notif_msg3: 'Premium offer available',
+                notif_msg4: 'New review received',
+                stats_title: '📊 Statistics',
+                weekly: '📈 Weekly collections',
+                waste_distribution: '🧩 Waste distribution',
+                plastic_pct: 'Plastic 40%',
+                metal_pct: 'Metal 20%',
+                glass_pct: 'Glass 20%',
+                cardboard_pct: 'Cardboard 20%',
+                monthly_revenue: '💰 Monthly revenue',
+                change_password: 'Change password',
+                notifications: 'Notifications',
+                active: 'Active',
+                language: 'Language',
+                dark_mode: 'Dark mode',
+                enabled: 'Enabled',
+                my_ads: 'My ads',
+                my_premium: 'My Premium subscription',
+                active_premium: 'Active',
+                logout: 'Logout',
+                home: 'Home',
+                notif: 'Notif.',
+                profile: 'Profile'
+            }
+        };
+
+        function updateLanguage() {
+            const langCode = lang;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.dataset.i18n;
+                if (translations[langCode] && translations[langCode][key]) {
+                    el.textContent = translations[langCode][key];
+                }
+            });
+            document.getElementById('lang-toggle').textContent = lang === 'fr' ? '🇫🇷 FR' : '🇬🇧 EN';
         }
-    });
 
-    // ===== BILINGUISME =====
-    const translations = {
-        fr: { home: 'Accueil', marketplace: 'Marché', publish: 'Publier', notif: 'Notif.', profile: 'Profil',
-            map: 'Carte', messages: 'Messages', stats: 'Stats' },
-        en: { home: 'Home', marketplace: 'Marketplace', publish: 'Publish', notif: 'Notif.', profile: 'Profile',
-            map: 'Map', messages: 'Messages', stats: 'Stats' }
-    };
-
-    document.getElementById('lang-toggle').addEventListener('click', function() {
-        lang = lang === 'fr' ? 'en' : 'fr';
-        this.textContent = lang === 'fr' ? '🇫🇷 FR' : '🇬🇧 EN';
-        document.querySelectorAll('[data-i18n]').forEach(el => {
-            el.textContent = translations[lang][el.dataset.i18n] || el.dataset.i18n;
+        document.getElementById('lang-toggle').addEventListener('click', function() {
+            lang = lang === 'fr' ? 'en' : 'fr';
+            updateLanguage();
+            showToast(lang === 'fr' ? '🇫🇷 Langue changée' : '🇬🇧 Language changed', 'success');
         });
-        showToast(lang === 'fr' ? '🇫🇷 Langue changée' : '🇬🇧 Language changed', 'success');
-    });
 
-    // ===== BOTTOM NAV =====
-    document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            navigateTo(this.dataset.screen);
-        });
-    });
-
-    // ===== QUICK ACTIONS =====
-    document.querySelectorAll('.qa').forEach(el => {
-        el.addEventListener('click', function() {
-            navigateTo(this.dataset.target);
-        });
-    });
-
-    // ===== FEED =====
-    function renderFeed(filter) {
-        filter = filter || 'Tous';
-        const container = document.getElementById('feed-list');
-        const filtered = filter === 'Tous' ? feedProducts : feedProducts.filter(p => p.cat === filter);
-        if (filtered.length === 0) {
-            container.innerHTML = '<div style="padding:20px 0;color:#888;text-align:center">Aucune annonce</div>';
-            return;
-        }
-        container.innerHTML = filtered.map((p, i) =>
-            '<div class="product-card" data-index="' + i + '" style="display:flex;gap:12px;padding:12px;background:#222;border-radius:12px;border:1px solid #333;margin-bottom:8px;cursor:pointer;align-items:center">' +
-            '<span style="font-size:28px;width:40px;text-align:center">' + p.emoji + '</span>' +
-            '<div style="flex:1"><div style="font-weight:600">' + p.title + '</div><div style="font-size:12px;color:#888">' + p
-            .loc + '</div></div>' +
-            '<div style="text-align:right"><div style="color:#FFD700;font-weight:700">' + p.price + '</div><div style="font-size:11px;color:#888">' +
-            p.qty + '</div></div>' +
-            '</div>'
-        ).join('');
-        container.querySelectorAll('.product-card').forEach(el => {
-            el.addEventListener('click', function() {
-                showToast('📦 Détail du produit', 'success');
+        // ==========================================
+        // BOTTOM NAV
+        // ==========================================
+        document.querySelectorAll('.nav-item').forEach(btn => {
+            btn.addEventListener('click', function() {
+                navigateTo(this.dataset.screen);
             });
         });
-    }
 
-    document.querySelectorAll('.cat-chip').forEach(chip => {
-        chip.addEventListener('click', function() {
-            document.querySelectorAll('.cat-chip').forEach(c => { c.style.background = '#222';
-                c.style.color = '#888'; });
-            this.style.background = '#2D5016';
-            this.style.color = '#fff';
-            renderFeed(this.dataset.cat);
+        // ==========================================
+        // QUICK ACTIONS
+        // ==========================================
+        document.querySelectorAll('.qa-item').forEach(el => {
+            el.addEventListener('click', function() {
+                navigateTo(this.dataset.target);
+            });
         });
-    });
 
-    document.getElementById('goto-publish').addEventListener('click', function() { navigateTo('publish'); });
-    document.getElementById('goto-feed-from-publish').addEventListener('click', function() { navigateTo('feed'); });
-    document.getElementById('goto-withdrawal').addEventListener('click', function() { navigateTo('withdrawal'); });
-    document.getElementById('goto-priceguide').addEventListener('click', function() { navigateTo('priceguide'); });
+        // ==========================================
+        // FEED - FIRESTORE + FILTRE CORRIGÉ
+        // ==========================================
+        function renderFeed(productsData, filter) {
+            const container = document.getElementById('feed-list');
+            const filtered = filter === 'Tous' ? productsData : productsData.filter(p => p.cat === filter);
 
-    // ===== PUBLISH =====
-    document.getElementById('publish-submit').addEventListener('click', function() {
-        const title = document.getElementById('publish-title').value.trim();
-        const qty = document.getElementById('publish-qty').value.trim();
-        const price = document.getElementById('publish-price').value.trim();
-        const city = document.getElementById('publish-city').value.trim();
-        if (!title || !qty || !price || !city) {
-            showToast('Tous les champs sont requis', 'error');
-            return;
+            if (!filtered || filtered.length === 0) {
+                container.innerHTML =
+                '<div style="text-align:center;padding:40px 0;color:var(--text2);">Aucune annonce disponible</div>';
+                return;
+            }
+
+            container.innerHTML = filtered.map((p, i) => `
+                <div class="product-card" data-index="${i}">
+                    <div class="emoji">${p.emoji || '📦'}</div>
+                    <div class="info">
+                        <div class="title">${p.title || 'Annonce'}</div>
+                        <div class="location">${p.loc || p.city || 'Cameroun'}</div>
+                        <span class="status-badge available">${p.status || 'Disponible'}</span>
+                    </div>
+                    <div>
+                        <div class="price">${p.price || 'Prix non défini'}</div>
+                        <div class="qty">${p.qty || 'Quantité'}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            container.querySelectorAll('.product-card').forEach(el => {
+                el.addEventListener('click', function() {
+                    const idx = parseInt(this.dataset.index);
+                    const p = filtered[idx];
+                    openDetail(p);
+                });
+            });
         }
-        showToast('✅ Annonce publiée !', 'success');
-        document.getElementById('publish-title').value = '';
-        document.getElementById('publish-qty').value = '';
-        document.getElementById('publish-price').value = '';
-        document.getElementById('publish-city').value = '';
-        navigateTo('feed');
-    });
 
-    // ===== WITHDRAWAL =====
-    document.getElementById('withdrawal-submit').addEventListener('click', function() {
-        const amount = document.getElementById('withdrawal-amount').value;
-        const phone = document.getElementById('withdrawal-phone').value;
-        if (!amount || parseFloat(amount) <= 0) { showToast('Montant invalide', 'error'); return; }
-        if (!phone || phone.length < 8) { showToast('Numéro invalide', 'error'); return; }
-        showToast('✅ Retrait de ' + amount + ' FCFA demandé', 'success');
-    });
+        function listenToProducts() {
+            if (!db) {
+                // Mode hors ligne : utiliser les données statiques
+                products = staticProducts;
+                renderFeed(products, currentFilter);
+                return;
+            }
 
-    // ===== CHAT =====
-    document.querySelectorAll('#chat-list .product-card').forEach(el => {
-        el.addEventListener('click', function() {
-            const chatId = this.dataset.chat;
-            openChat(chatId);
+            if (productsUnsubscribe) {
+                productsUnsubscribe();
+                productsUnsubscribe = null;
+            }
+
+            productsUnsubscribe = db.collection('products')
+                .where('status', '==', 'available')
+                .orderBy('createdAt', 'desc')
+                .onSnapshot(function(snapshot) {
+                    if (snapshot.empty) {
+                        products = [];
+                        renderFeed(products, currentFilter);
+                        return;
+                    }
+
+                    products = [];
+                    snapshot.forEach(function(doc) {
+                        const data = doc.data();
+                        products.push({
+                            id: doc.id,
+                            emoji: data.emoji || '📦',
+                            title: data.title || 'Annonce',
+                            loc: data.loc || data.city || 'Cameroun',
+                            price: data.price || 'Prix non défini',
+                            qty: data.qty || 'Quantité',
+                            cat: data.category || 'Autre',
+                            status: data.status || 'Disponible'
+                        });
+                    });
+
+                    renderFeed(products, currentFilter);
+                }, function(error) {
+                    console.error('Erreur Firestore:', error);
+                    products = staticProducts;
+                    renderFeed(products, currentFilter);
+                });
+        }
+
+        // ==========================================
+        // FEED - CATÉGORIES
+        // ==========================================
+        document.querySelectorAll('.category-chip').forEach(chip => {
+            chip.addEventListener('click', function() {
+                document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+                currentFilter = this.dataset.cat;
+                renderFeed(products, currentFilter);
+            });
         });
-    });
 
-    document.getElementById('chat-back').addEventListener('click', function() {
-        document.getElementById('chat-conversation').style.display = 'none';
-        document.getElementById('chat-list').style.display = 'block';
-    });
+        // ==========================================
+        // DETAIL
+        // ==========================================
+        function openDetail(p) {
+            document.getElementById('detail-emoji').textContent = p.emoji || '📦';
+            document.getElementById('detail-title').textContent = p.title || 'Annonce';
+            document.getElementById('detail-location').textContent = p.loc || p.city || 'Cameroun';
+            document.getElementById('detail-price').textContent = p.price || 'Prix non défini';
+            document.getElementById('detail-status').textContent = p.status || 'Disponible';
+            navigateTo('detail');
+        }
 
-    function openChat(chatId) {
-        chatActive = chatId;
-        document.getElementById('chat-list').style.display = 'none';
-        document.getElementById('chat-conversation').style.display = 'flex';
-        renderChatMessages();
-    }
+        document.getElementById('detail-back').addEventListener('click', function() { navigateTo('feed'); });
 
-    function renderChatMessages() {
-        const container = document.getElementById('chat-messages');
-        const msgs = chatMessages[chatActive] || [];
-        container.innerHTML = msgs.map(m =>
-            '<div style="display:flex;' + (m.sent ? 'justify-content:flex-end' : '') + ';margin-bottom:6px">' +
-            '<div style="max-width:80%;padding:8px 12px;border-radius:12px;background:' + (m.sent ? '#2D5016' :
-                '#222') + ';border:1px solid #333">' +
-            '<div>' + m.text + '</div>' +
-            '<div style="font-size:9px;color:#888;margin-top:3px;text-align:right">' + m.time + '</div>' +
-            '</div></div>'
-        ).join('');
-        container.scrollTop = container.scrollHeight;
-    }
+        // ==========================================
+        // RATING
+        // ==========================================
+        document.querySelectorAll('#rating-stars .star').forEach(star => {
+            star.addEventListener('click', function() {
+                const val = parseInt(this.dataset.val);
+                document.querySelectorAll('#rating-stars .star').forEach(s => {
+                    const sv = parseInt(s.dataset.val);
+                    s.textContent = sv <= val ? '★' : '☆';
+                    s.classList.toggle('active', sv <= val);
+                });
+                showToast('⭐ Noté ' + val + '/5 ! Merci !', 'success');
+            });
+        });
 
-    document.getElementById('chat-send').addEventListener('click', sendMessage);
-    document.getElementById('chat-input').addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') sendMessage();
-    });
+        // ==========================================
+        // PUBLISH
+        // ==========================================
+        document.querySelectorAll('.photo-slot').forEach(slot => {
+            slot.addEventListener('click', function() {
+                this.classList.toggle('filled');
+                this.textContent = this.classList.contains('filled') ? '✅' : '📷';
+                if (this.classList.contains('filled')) showToast('📸 Photo ajoutée', 'success');
+            });
+        });
 
-    function sendMessage() {
-        const input = document.getElementById('chat-input');
-        const text = input.value.trim();
-        if (!text || !chatActive) return;
-        const now = new Date();
-        const time = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
-        if (!chatMessages[chatActive]) chatMessages[chatActive] = [];
-        chatMessages[chatActive].push({ text, sent: true, time });
-        input.value = '';
-        renderChatMessages();
-        setTimeout(() => {
-            const replies = ["Merci ! Je vous réponds bientôt.", "Parfait, confirmé.", "Très bien, disponible.",
-                "D'accord."
-            ];
-            const reply = replies[Math.floor(Math.random() * replies.length)];
-            chatMessages[chatActive].push({ text: reply, sent: false, time: 'Maintenant' });
+        document.getElementById('goto-publish').addEventListener('click', function() { navigateTo('publish'); });
+
+        document.getElementById('publish-submit').addEventListener('click', function() {
+            const title = document.getElementById('publish-title').value.trim();
+            const qty = document.getElementById('publish-qty').value.trim();
+            const price = document.getElementById('publish-price').value.trim();
+            const city = document.getElementById('publish-city').value.trim();
+            const category = document.getElementById('publish-cat').value;
+
+            if (!title || !qty || !price || !city) {
+                showToast('Veuillez remplir tous les champs', 'error');
+                return;
+            }
+
+            if (!db) {
+                showToast('✅ Annonce publiée (simulation)', 'success');
+                clearPublishForm();
+                navigateTo('feed');
+                return;
+            }
+
+            const user = firebase.auth().currentUser;
+            if (!user) {
+                showToast('❌ Connectez-vous d\'abord', 'error');
+                return;
+            }
+
+            const productData = {
+                title: title,
+                qty: qty,
+                price: price + ' FCFA/kg',
+                city: city,
+                category: category,
+                emoji: '📦',
+                loc: city,
+                userId: user.uid,
+                userPhone: user.phoneNumber,
+                status: 'available',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+
+            db.collection('products').add(productData)
+                .then(function() {
+                    showToast('✅ Annonce publiée !', 'success');
+                    clearPublishForm();
+                    navigateTo('feed');
+                })
+                .catch(function(error) {
+                    showToast('❌ Erreur: ' + error.message, 'error');
+                });
+        });
+
+        function clearPublishForm() {
+            document.getElementById('publish-title').value = '';
+            document.getElementById('publish-qty').value = '';
+            document.getElementById('publish-price').value = '';
+            document.getElementById('publish-city').value = '';
+            document.querySelectorAll('.photo-slot').forEach(s => { s.classList.remove('filled');
+                s.textContent = '📷'; });
+        }
+
+        // ==========================================
+        // CHAT
+        // ==========================================
+        function renderChatList() {
+            const container = document.getElementById('chat-list');
+            container.innerHTML = `
+                <div class="product-card" data-chat="paul" style="cursor:pointer;">
+                    <div class="emoji">👤</div>
+                    <div class="info">
+                        <div class="title">Paul N.</div>
+                        <div class="location">Dernier message : "Ok je suis dispo"</div>
+                    </div>
+                    <div style="text-align:right;">
+                        <div style="font-size:12px;color:var(--text2);">12:30</div>
+                        <div style="background:var(--danger);width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;margin-top:4px;margin-left:auto;color:#fff;">2</div>
+                    </div>
+                </div>
+                <div class="product-card" data-chat="marie" style="cursor:pointer;">
+                    <div class="emoji">👤</div>
+                    <div class="info">
+                        <div class="title">Marie K.</div>
+                        <div class="location">Dernier message : "Merci pour votre confiance"</div>
+                    </div>
+                    <div style="text-align:right;">
+                        <div style="font-size:12px;color:var(--text2);">Hier</div>
+                    </div>
+                </div>
+                <div class="product-card" data-chat="jean" style="cursor:pointer;">
+                    <div class="emoji">👤</div>
+                    <div class="info">
+                        <div class="title">Jean D.</div>
+                        <div class="location">Dernier message : "Quand pouvez-vous passer ?"</div>
+                    </div>
+                    <div style="text-align:right;">
+                        <div style="font-size:12px;color:var(--text2);">Hier</div>
+                    </div>
+                </div>
+            `;
+
+            container.querySelectorAll('.product-card').forEach(el => {
+                el.addEventListener('click', function() {
+                    openChat(this.dataset.chat);
+                });
+            });
+        }
+
+        document.getElementById('goto-chat-from-detail').addEventListener('click', function() { navigateTo('chat'); });
+        document.getElementById('chat-back').addEventListener('click', function() {
+            document.getElementById('chat-conversation').style.display = 'none';
+            document.getElementById('chat-list').style.display = 'block';
+        });
+
+        function openChat(chatId) {
+            chatActive = chatId;
+            document.getElementById('chat-list').style.display = 'none';
+            document.getElementById('chat-conversation').style.display = 'flex';
             renderChatMessages();
-            showToast('📩 Nouveau message', 'success');
-        }, 1500);
-    }
+        }
 
-    // ===== NOTIFICATIONS =====
-    document.getElementById('notif-list').innerHTML = notifs.map((n, i) =>
-        '<div class="notif-item" data-index="' + i + '" style="display:flex;gap:10px;padding:10px;background:#222;border-radius:12px;border:1px solid #333;margin-bottom:6px;cursor:pointer;align-items:flex-start">' +
-        '<span style="font-size:22px">' + n.icon + '</span>' +
-        '<div style="flex:1"><div style="font-weight:500">' + n.title + '</div><div style="font-size:12px;color:#888">' + n
-        .body + '</div><div style="font-size:10px;color:#888;margin-top:2px">' + n.time + '</div></div>' +
-        '<span class="dot" style="width:8px;height:8px;background:#2D5016;border-radius:50%;margin-top:4px;flex-shrink:0"></span>' +
-        '</div>'
-    ).join('');
+        function renderChatMessages() {
+            const container = document.getElementById('chat-messages');
+            const msgs = chatMessages[chatActive] || [];
+            container.innerHTML = msgs.map(m =>
+                `<div class="chat-message ${m.sent ? 'sent' : ''}">
+                    <div class="bubble">
+                        <div class="text">${m.text}</div>
+                        <div class="time">${m.time}</div>
+                    </div>
+                </div>`
+            ).join('');
+            container.scrollTop = container.scrollHeight;
+        }
 
-    document.querySelectorAll('.notif-item').forEach(el => {
-        el.addEventListener('click', function() {
-            const dot = this.querySelector('.dot');
-            if (dot) dot.style.background = 'transparent';
-            showToast('✅ Lu', 'success');
+        document.getElementById('chat-send-btn').addEventListener('click', sendMessage);
+        document.getElementById('chat-input-text').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        function sendMessage() {
+            const input = document.getElementById('chat-input-text');
+            const text = input.value.trim();
+            if (!text || !chatActive) return;
+            const now = new Date();
+            const time = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+            if (!chatMessages[chatActive]) chatMessages[chatActive] = [];
+            chatMessages[chatActive].push({ text, sent: true, time });
+            input.value = '';
+            renderChatMessages();
+            setTimeout(() => {
+                const replies = [
+                    "Merci pour votre message ! Je vous réponds dans la journée.",
+                    "Parfait, je confirme la collecte pour demain.",
+                    "Très bien, je suis disponible.",
+                    "D'accord, à bientôt !",
+                    "Je prends note de votre demande."
+                ];
+                const reply = replies[Math.floor(Math.random() * replies.length)];
+                chatMessages[chatActive].push({ text: reply, sent: false, time: 'Maintenant' });
+                renderChatMessages();
+                showToast('📩 Nouveau message reçu', 'success');
+            }, 1500);
+        }
+
+        renderChatList();
+
+        // ==========================================
+        // WITHDRAWAL
+        // ==========================================
+        document.getElementById('goto-withdrawal').addEventListener('click', function() { navigateTo('withdrawal'); });
+
+        document.querySelectorAll('.provider-item').forEach(el => {
+            el.addEventListener('click', function() {
+                document.querySelectorAll('.provider-item').forEach(p => p.classList.remove('selected'));
+                this.classList.add('selected');
+            });
+        });
+
+        document.getElementById('withdrawal-submit').addEventListener('click', function() {
+            const amount = document.getElementById('withdrawal-amount').value;
+            const phone = document.getElementById('withdrawal-phone').value;
+            if (!amount || parseFloat(amount) <= 0) { showToast('Veuillez entrer un montant valide', 'error'); return; }
+            if (!phone || phone.length < 8) { showToast('Veuillez entrer un numéro valide', 'error'); return; }
+            showToast('✅ Demande de retrait de ' + amount + ' FCFA envoyée !', 'success');
+            document.getElementById('withdrawal-amount').value = '';
+            document.getElementById('withdrawal-phone').value = '';
+        });
+
+        // ==========================================
+        // NOTIFICATIONS
+        // ==========================================
+        function renderNotifications() {
+            const container = document.getElementById('notif-list');
+            container.innerHTML = notifications.map((n, i) =>
+                `<div class="notif-item" data-index="${i}">
+                    <div class="icon">${n.icon}</div>
+                    <div class="info">
+                        <div class="title">${n.title}</div>
+                        <div class="body">${n.body}</div>
+                        <div class="time">${n.time}</div>
+                    </div>
+                    <div class="dot"></div>
+                </div>`
+            ).join('');
+
+            container.querySelectorAll('.notif-item').forEach(el => {
+                el.addEventListener('click', function() {
+                    const dot = this.querySelector('.dot');
+                    if (dot) dot.classList.add('read');
+                    showToast('✅ Notification marquée comme lue', 'success');
+                    updateBadge();
+                });
+            });
+        }
+
+        renderNotifications();
+
+        document.getElementById('notif-mark-all').addEventListener('click', function() {
+            document.querySelectorAll('.notif-item .dot').forEach(d => d.classList.add('read'));
+            showToast('✅ Toutes les notifications sont lues', 'success');
             updateBadge();
         });
-    });
 
-    // ===== MAP =====
-    function renderCities() {
-        const list = document.getElementById('city-list');
-        list.innerHTML = cityData.map(c =>
-            '<div class="city-item" style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:#222;border-radius:10px;border:1px solid #333;cursor:pointer">' +
-            '<span style="font-size:18px">📍</span>' +
-            '<div style="flex:1"><div style="font-weight:500">' + c.name + '</div><div style="font-size:11px;color:#888">' +
-            c.address + '</div></div>' +
-            '</div>'
-        ).join('');
-        list.querySelectorAll('.city-item').forEach(el => {
-            el.addEventListener('click', function() {
-                const name = this.querySelector('div div').textContent;
-                const address = this.querySelector('div div:last-child').textContent;
-                document.getElementById('map-city').textContent = name;
-                document.getElementById('map-address').textContent = address;
-                showToast('📍 ' + name, 'success');
+        // ==========================================
+        // MAP
+        // ==========================================
+        function renderCities() {
+            const list = document.getElementById('city-list');
+            list.innerHTML = cityData.map(c =>
+                `<button class="city-item" data-city="${c.city}">
+                    <div class="emoji">📍</div>
+                    <div class="info">
+                        <div class="name">${c.name}</div>
+                        <div class="address">${c.address}</div>
+                    </div>
+                </button>`
+            ).join('');
+
+            list.querySelectorAll('.city-item').forEach(el => {
+                el.addEventListener('click', function() {
+                    const name = this.querySelector('.name').textContent;
+                    const address = this.querySelector('.address').textContent;
+                    document.getElementById('map-current-city').textContent = name;
+                    document.getElementById('map-current-address').textContent = address;
+                    showToast('📍 ' + name + ' sélectionné', 'success');
+                });
             });
-        });
-    }
-    renderCities();
+        }
 
-    // ===== CHAT LIST =====
-    document.getElementById('chat-list').innerHTML =
-        '<div class="product-card" data-chat="paul" style="display:flex;gap:12px;padding:12px;background:#222;border-radius:12px;border:1px solid #333;margin-bottom:8px;cursor:pointer;align-items:center">' +
-        '<span style="font-size:28px;width:40px;text-align:center">👤</span>' +
-        '<div style="flex:1"><div style="font-weight:600">Paul N.</div><div style="font-size:12px;color:#888">Ok je suis dispo</div></div>' +
-        '<div style="text-align:right"><div style="font-size:11px;color:#888">12:30</div><div style="background:#EF4444;color:#fff;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;margin-top:2px;margin-left:auto">2</div></div>' +
-        '</div>' +
-        '<div class="product-card" data-chat="marie" style="display:flex;gap:12px;padding:12px;background:#222;border-radius:12px;border:1px solid #333;margin-bottom:8px;cursor:pointer;align-items:center">' +
-        '<span style="font-size:28px;width:40px;text-align:center">👤</span>' +
-        '<div style="flex:1"><div style="font-weight:600">Marie K.</div><div style="font-size:12px;color:#888">Merci pour votre confiance</div></div>' +
-        '<div style="text-align:right"><div style="font-size:11px;color:#888">Hier</div></div>' +
-        '</div>' +
-        '<div class="product-card" data-chat="jean" style="display:flex;gap:12px;padding:12px;background:#222;border-radius:12px;border:1px solid #333;margin-bottom:8px;cursor:pointer;align-items:center">' +
-        '<span style="font-size:28px;width:40px;text-align:center">👤</span>' +
-        '<div style="flex:1"><div style="font-weight:600">Jean D.</div><div style="font-size:12px;color:#888">Quand pouvez-vous passer ?</div></div>' +
-        '<div style="text-align:right"><div style="font-size:11px;color:#888">Hier</div></div>' +
-        '</div>';
+        renderCities();
 
-    document.querySelectorAll('#chat-list .product-card').forEach(el => {
-        el.addEventListener('click', function() {
-            openChat(this.dataset.chat);
-        });
-    });
+        // ==========================================
+        // PRICE GUIDE
+        // ==========================================
+        function renderPriceGuide() {
+            const grid = document.getElementById('price-guide-grid');
+            grid.innerHTML = priceGuideData.map(p =>
+                `<div class="price-guide-item">
+                    <div class="emoji">${p.emoji}</div>
+                    <div class="name">${p.name}</div>
+                    <div class="price">${p.price}</div>
+                    <div class="sub">${p.sub}</div>
+                </div>`
+            ).join('');
+        }
 
-    // ===== INIT =====
-    renderFeed();
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-        el.textContent = translations.fr[el.dataset.i18n] || el.dataset.i18n;
-    });
+        renderPriceGuide();
+        document.getElementById('goto-priceguide').addEventListener('click', function() { navigateTo('priceguide'); });
 
-    console.log('♻️ ReLife chargé !');
-    console.log('🔑 Code OTP : 123456');
-</script>
+        // ==========================================
+        // STATS
+        // ==========================================
+        function renderStats() {
+            // Chart bars
+            const chartData = [
+                { day: 'Lun', value: 40 },
+                { day: 'Mar', value: 60 },
+                { day: 'Mer', value: 30 },
+                { day: 'Jeu', value: 90 },
+                { day: 'Ven', value: 70 },
+                { day: 'Sam', value: 50 },
+                { day: 'Dim', value: 20 }
+            ];
+
+            const chartContainer = document.getElementById('chart-bars');
+            chartContainer.innerHTML = chartData.map(d =>
+                `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+                    <div class="chart-bar" style="height:${d.value}%;"></div>
+                    <div class="chart-label">${d.day}</div>
+                </div>`
+            ).join('');
+
+            // Revenue bars
+            const revenueContainer = document.getElementById('revenue-bars');
+            revenueContainer.innerHTML = revenueData.map(r =>
+                `<div>
+                    <div style="display:flex;justify-content:space-between;font-size:13px;">
+                        <span>${r.month}</span>
+                        <span>${r.amount.toLocaleString()} FCFA</span>
+                    </div>
+                    <div style="width:100%;height:6px;background:var(--surface);border-radius:4px;overflow:hidden;">
+                        <div style="width:${r.pct}%;height:100%;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:4px;transition:width 0.8s ease;"></div>
+                    </div>
+                </div>`
+            ).join('');
+        }
+
+        renderStats();
+
+        // ==========================================
+        // GEOLOCALISATION
+        // ==========================================
+        function getUserLocation() {
+            if ('geolocation' in navigator) {
+                navigator.geolocation.getCurrentPosition(
+                    function(pos) {
+                        showToast('📍 Position trouvée !', 'success');
+                    },
+                    function() { showToast('⚠️ Impossible de localiser', 'error'); }
+                );
+            }
+        }
+
+        setTimeout(getUserLocation, 3000);
+
+        // ==========================================
+        // DEEP LINKING
+        // ==========================================
+        function handleDeepLink() {
+            const params = new URLSearchParams(window.location.search);
+            const productId = params.get('product');
+            if (productId) {
+                setTimeout(() => {
+                    navigateTo('detail');
+                    showToast('📦 Produit chargé !', 'success');
+                }, 1000);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', handleDeepLink);
+        setTimeout(handleDeepLink, 500);
+
+        // ==========================================
+        // INIT
+        // ==========================================
+        // Lancer l'écoute Firestore
+        setTimeout(listenToProducts, 500);
+
+        // Mettre à jour le badge
+        updateBadge();
+
+        // Appliquer la langue par défaut
+        updateLanguage();
+
+        console.log('♻️ ReLife Cameroun v2.0 - Application chargée');
+        console.log('🔑 Code OTP : 123456 (test) ou vrai SMS');
+        console.log('📊 Prix réels du recyclage au Cameroun intégrés');
+    </script>
+
 </body>
 </html>
