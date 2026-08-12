@@ -3,828 +3,1537 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#12140D">
+    <meta name="theme-color" content="#0F0F0F">
     <title>ReLife Cameroun</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js">
+    </script>
     <style>
-        :root{
-            --bg:#12140D;
-            --surface:#1D2016;
-            --surface-2:#242819;
-            --border:#2B2E22;
-            --border-strong:#3A3E2C;
-            --ink:#F3EEDD;
-            --ink-muted:#9B9884;
-            --ink-faint:#6B6958;
-            --palm:#2E4A2A;
-            --palm-light:#4C7043;
-            --palm-deep:#182A16;
-            --gold:#D9A441;
-            --gold-bright:#F0C36B;
-            --gold-wash:rgba(217,164,65,0.12);
-            --clay:#C1573C;
-            --clay-wash:rgba(193,87,60,0.16);
-            --font-display:'Fraunces',serif;
-            --font-body:'Inter',sans-serif;
-            --font-mono:'IBM Plex Mono',monospace;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg: #0F0F0F;
+            --bg2: #1A1A1A;
+            --surface: rgba(255, 255, 255, 0.06);
+            --border: rgba(255, 255, 255, 0.08);
+            --text: #FFFFFF;
+            --text2: #A0A0A0;
+            --text3: #666666;
+            --primary: #2D5016;
+            --accent: #FFD700;
+            --success: #22C55E;
+            --danger: #EF4444;
+            --info: #3B82F6;
+            --radius: 20px;
+            --radius-sm: 12px;
+            --radius-full: 9999px;
+            --nav-height: 64px;
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
+            --space-sm: 8px;
+            --space-md: 12px;
+            --space-lg: 16px;
+            --space-xl: 20px;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            --shadow-glow: 0 0 25px rgba(255, 215, 0, 0.3);
+            --transition: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        html,
         body {
-            background: radial-gradient(circle at 20% -10%, #1a2214 0%, #12140D 45%), var(--bg);
-            color: var(--ink);
-            font-family: var(--font-body);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            height: 100%;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow: hidden;
+            touch-action: manipulation;
         }
-        h1, h2, h3 { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.01em; }
-        .container {
+        #app {
+            height: 100%;
             max-width: 430px;
-            width: 100%;
-            padding: 20px;
-            background: var(--surface);
-            border: 1px solid var(--border-strong);
-            border-radius: 28px;
-            min-height: 90vh;
+            margin: 0 auto;
             position: relative;
-            box-shadow: 0 30px 80px -20px rgba(0,0,0,0.6);
+            background: var(--bg);
+            display: flex;
+            flex-direction: column;
         }
-        .hidden { display: none !important; }
-        .emoji { font-size: 72px; display: block; text-align: center; margin-bottom: 12px; }
-        .logo { color: var(--gold); display: block; margin: 0 auto 12px; filter: drop-shadow(0 4px 16px rgba(217,164,65,0.25)); }
-        h1 { font-size: 36px; color: var(--gold-bright); text-align: center; }
-        .sub { color: var(--ink-faint); text-align: center; letter-spacing: 4px; font-size: 12px; margin-bottom: 24px; font-family: var(--font-mono); }
-        .btn {
-            background: var(--palm);
-            color: var(--ink);
-            border: 1px solid var(--border-strong);
-            padding: 14px 24px;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: 600;
-            width: 100%;
-            cursor: pointer;
+        .screen {
+            display: none;
+            flex: 1;
+            flex-direction: column;
+            overflow-y: auto;
+            padding: var(--space-xl) var(--space-lg) calc(var(--nav-height) + var(--safe-bottom) + var(--space-xl));
+            animation: fadeUp 0.4s ease;
+            scrollbar-width: none;
+        }
+        .screen::-webkit-scrollbar {
+            display: none;
+        }
+        .screen.active {
+            display: flex;
+        }
+        @keyframes fadeUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes pulse {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.08);
+            }
+        }
+        @keyframes float {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        #splash {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            background: linear-gradient(135deg, #0A0A0A, #1A2A1A);
+            padding: 0;
+            animation: none;
+        }
+        #splash .emoji {
+            font-size: 72px;
+            animation: pulse 1.2s ease-in-out infinite;
+        }
+        #splash h1 {
+            font-size: 36px;
             margin-top: 12px;
-            transition: 0.2s;
-            font-family: var(--font-body);
+            background: linear-gradient(135deg, var(--accent), #B8860B);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-        .btn:active { transform: scale(0.97); }
-        .btn-gold { background: var(--gold); color: #1A1502; border: none; }
-        .btn-sm { padding: 8px 16px; font-size: 13px; max-width: 120px; margin-top: 0; }
+        #splash .sub {
+            font-size: 14px;
+            color: var(--text3);
+            letter-spacing: 6px;
+            margin-top: 4px;
+            text-transform: uppercase;
+        }
+        .loader-bar {
+            width: 160px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-full);
+            margin-top: 40px;
+            overflow: hidden;
+        }
+        .loader-bar .fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: var(--radius-full);
+            transition: width 0.15s linear;
+        }
+
+        .onboarding-slide {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            text-align: center;
+            padding: var(--space-xl);
+            animation: fadeUp 0.5s ease;
+        }
+        .onboarding-slide.active {
+            display: flex;
+        }
+        .onboarding-slide .emoji {
+            font-size: 72px;
+            margin-bottom: var(--space-xl);
+            animation: float 3s ease-in-out infinite;
+        }
+        .onboarding-slide h2 {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: var(--space-md);
+        }
+        .onboarding-slide p {
+            color: var(--text2);
+            font-size: 16px;
+            line-height: 1.6;
+            max-width: 320px;
+        }
+        .dot-indicators {
+            display: flex;
+            gap: var(--space-sm);
+            justify-content: center;
+            margin: var(--space-xl) 0 var(--space-2xl);
+        }
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: var(--radius-full);
+            background: var(--text3);
+            border: none;
+            cursor: pointer;
+            transition: all var(--transition);
+            padding: 0;
+        }
+        .dot.active {
+            background: var(--accent);
+            width: 24px;
+            border-radius: var(--radius-sm);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-sm);
+            border: none;
+            border-radius: var(--radius-sm);
+            font-family: inherit;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition);
+            padding: var(--space-md) var(--space-xl);
+            font-size: 16px;
+            width: 100%;
+            max-width: 300px;
+            color: #fff;
+            background: var(--primary);
+            box-shadow: var(--shadow);
+        }
+        .btn:active {
+            transform: scale(0.96);
+        }
+        .btn-sm {
+            padding: var(--space-sm) var(--space-md);
+            font-size: 14px;
+            max-width: 120px;
+        }
+        .btn-ghost {
+            background: transparent;
+            color: var(--text2);
+            font-size: 14px;
+            padding: var(--space-sm);
+            max-width: none;
+            box-shadow: none;
+        }
+        .btn-lang {
+            background: var(--accent) !important;
+            color: black !important;
+            padding: var(--space-sm) var(--space-lg);
+            border-radius: var(--radius-full);
+            font-size: 14px;
+            font-weight: 700;
+            box-shadow: var(--shadow-glow);
+            max-width: none;
+            width: auto;
+        }
+
+        .card {
+            background: var(--surface);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: var(--space-md);
+            box-shadow: var(--shadow);
+        }
+        .card-glass {
+            background: var(--surface);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: var(--space-xl);
+            box-shadow: var(--shadow);
+        }
+
+        .form-group {
+            margin-bottom: var(--space-md);
+        }
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: var(--space-sm);
+        }
         .input {
             width: 100%;
-            padding: 14px;
-            border-radius: 12px;
-            border: 1px solid var(--border-strong);
-            background: var(--surface-2);
-            color: var(--ink);
-            font-size: 15px;
+            padding: var(--space-md) var(--space-lg);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+            font-family: inherit;
+            font-size: 16px;
             outline: none;
-            margin-top: 4px;
-            font-family: var(--font-body);
+            transition: all var(--transition);
         }
-        .input:focus { border-color: var(--gold); }
+        .input::placeholder {
+            color: var(--text3);
+        }
+        .input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(45, 80, 22, 0.2);
+        }
         .input-group {
             display: flex;
             align-items: center;
-            background: var(--surface-2);
-            border-radius: 12px;
-            border: 1px solid var(--border-strong);
-            padding: 0 4px;
-            margin-top: 4px;
+            background: var(--surface);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            padding: 0 var(--space-sm);
+            transition: all var(--transition);
         }
-        .input-group span { padding: 14px 8px; color: var(--ink-muted); font-weight: 600; font-family: var(--font-mono); }
-        .input-group .input { border: none; background: transparent; padding: 14px 8px; margin-top: 0; font-family: var(--font-mono); }
-        .form-group { margin-bottom: 12px; }
-        .form-group label {
-            font-size: 11px; font-weight: 600; color: var(--ink-faint); display: block; margin-bottom: 4px;
-            text-transform: uppercase; letter-spacing: 0.06em; font-family: var(--font-mono);
+        .input-group:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(45, 80, 22, 0.2);
         }
-        .otp-group { display: flex; gap: 8px; justify-content: center; margin: 16px 0; }
+        .input-group .prefix {
+            padding: var(--space-md) var(--space-sm);
+            color: var(--text3);
+            font-weight: 600;
+            font-size: 16px;
+            user-select: none;
+        }
+        .input-group .input {
+            border: none;
+            background: transparent;
+            padding: var(--space-md) var(--space-sm);
+            box-shadow: none;
+        }
+
+        .otp-container {
+            display: flex;
+            gap: var(--space-sm);
+            justify-content: center;
+            margin-bottom: var(--space-xl);
+        }
         .otp-input {
-            width: 44px; height: 52px; text-align: center; font-size: 21px; font-weight: 700;
-            border-radius: 10px; border: 1px solid var(--border-strong); background: var(--surface-2);
-            color: var(--ink); outline: none; transition: 0.2s; font-family: var(--font-mono);
+            width: 48px;
+            height: 56px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: 700;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+            outline: none;
+            transition: all var(--transition);
         }
-        .otp-input:focus { border-color: var(--gold); }
-        .link { background: none; border: none; color: var(--ink-muted); font-size: 13px; cursor: pointer; margin-top: 12px; display: block; text-align: center; width: 100%; text-decoration: underline; text-underline-offset: 3px; }
+        .otp-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2);
+            transform: scale(1.05);
+        }
+
+        #bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 430px;
+            background: rgba(15, 15, 15, 0.92);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-top: 1px solid var(--border);
+            padding: var(--space-sm) 0 var(--safe-bottom);
+            justify-content: space-around;
+            z-index: 100;
+        }
+        #bottom-nav.active {
+            display: flex;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            padding: var(--space-xs) var(--space-sm);
+            border: none;
+            background: none;
+            color: var(--text3);
+            font-size: 10px;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all var(--transition);
+            min-height: 44px;
+            min-width: 44px;
+            position: relative;
+            border-radius: var(--radius-sm);
+        }
+        .nav-item .icon {
+            font-size: 22px;
+            transition: transform var(--transition);
+        }
+        .nav-item .label {
+            font-size: 9px;
+            font-weight: 500;
+        }
+        .nav-item.active {
+            color: var(--accent);
+        }
+        .nav-item .badge {
+            position: absolute;
+            top: 0;
+            right: 4px;
+            background: var(--danger);
+            color: #fff;
+            font-size: 9px;
+            font-weight: 700;
+            min-width: 18px;
+            height: 18px;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+        }
+        .nav-item .badge.hidden {
+            display: none;
+        }
+
+        .greeting {
+            font-size: 22px;
+            font-weight: 700;
+        }
+        .greeting .highlight {
+            color: var(--accent);
+        }
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--space-sm);
+            margin: var(--space-lg) 0 var(--space-xl);
+        }
+        .qa-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-sm);
+            padding: var(--space-md) var(--space-xs);
+            background: var(--surface);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all var(--transition);
+            font-size: 12px;
+            color: var(--text2);
+            border: none;
+            font-family: inherit;
+        }
+        .qa-item:active {
+            transform: scale(0.93);
+        }
+        .qa-item .icon {
+            font-size: 28px;
+        }
+        .qa-item .label {
+            font-size: 10px;
+            font-weight: 500;
+        }
+
+        .balance-card {
+            background: linear-gradient(135deg, rgba(45, 80, 22, 0.3), rgba(255, 215, 0, 0.08));
+            border: 1px solid rgba(255, 215, 0, 0.15);
+            border-radius: var(--radius);
+            padding: var(--space-xl);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-xl);
+            position: relative;
+            overflow: hidden;
+        }
+        .balance-card .amount {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .balance-card .label {
+            font-size: 12px;
+            color: var(--text2);
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-sm);
+            margin-bottom: var(--space-xl);
+        }
+        .stat-item {
+            text-align: center;
+            padding: var(--space-md) var(--space-sm);
+            background: var(--surface);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            transition: transform var(--transition);
+        }
+        .stat-item .value {
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .stat-item .label {
+            font-size: 10px;
+            color: var(--text2);
+            margin-top: 2px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin: var(--space-lg) 0 var(--space-md);
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            padding: var(--space-md);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: var(--radius-md);
+            margin: 0 calc(-1 * var(--space-md));
+        }
+        .activity-item .emoji {
+            font-size: 28px;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--surface);
+            border-radius: var(--radius-md);
+            flex-shrink: 0;
+        }
+        .activity-item .info {
+            flex: 1;
+        }
+        .activity-item .info .title {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .activity-item .info .sub {
+            font-size: 12px;
+            color: var(--text2);
+        }
+        .activity-item .time {
+            font-size: 11px;
+            color: var(--text2);
+            flex-shrink: 0;
+        }
+
+        .feed-categories {
+            display: flex;
+            gap: var(--space-sm);
+            overflow-x: auto;
+            padding: var(--space-xs) 0 var(--space-lg);
+            scrollbar-width: none;
+        }
+        .feed-categories::-webkit-scrollbar {
+            display: none;
+        }
+        .category-chip {
+            padding: var(--space-sm) var(--space-lg);
+            border-radius: var(--radius-full);
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text2);
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all var(--transition);
+            border: none;
+            font-family: inherit;
+        }
+        .category-chip.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        .product-card {
+            display: flex;
+            gap: var(--space-md);
+            padding: var(--space-md);
+            background: var(--surface);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: var(--space-sm);
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+        .product-card:active {
+            transform: scale(0.97);
+        }
+        .product-card .emoji {
+            font-size: 36px;
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: var(--radius-lg);
+            flex-shrink: 0;
+        }
+        .product-card .info {
+            flex: 1;
+        }
+        .product-card .info .title {
+            font-weight: 600;
+            font-size: 15px;
+        }
+        .product-card .info .location {
+            font-size: 12px;
+            color: var(--text2);
+        }
+        .product-card .price {
+            font-weight: 700;
+            color: var(--accent);
+            font-size: 16px;
+            text-align: right;
+        }
+        .product-card .qty {
+            font-size: 11px;
+            color: var(--text2);
+            text-align: right;
+        }
+        .status-badge {
+            font-size: 10px;
+            font-weight: 600;
+            padding: 2px 10px;
+            border-radius: var(--radius-full);
+            display: inline-block;
+        }
+        .status-badge.available {
+            background: rgba(34, 197, 94, 0.15);
+            color: var(--success);
+        }
+
+        .detail-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #1A2A1A, #2A3A2A);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 64px;
+            margin-bottom: var(--space-lg);
+        }
+        .detail-price {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .rating-stars {
+            display: flex;
+            gap: var(--space-sm);
+            font-size: 24px;
+        }
+        .rating-stars .star {
+            color: var(--text3);
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 24px;
+            transition: all var(--transition);
+        }
+        .rating-stars .star.active {
+            color: var(--accent);
+        }
+
+        .map-container {
+            height: 300px;
+            background: linear-gradient(135deg, #1A2A1A, #2A3A2A);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-lg);
+            position: relative;
+            overflow: hidden;
+        }
+        .map-container .grid {
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background-image: radial-gradient(circle, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+            background-size: 40px 40px;
+            animation: scrollGrid 20s linear infinite;
+        }
+        @keyframes scrollGrid {
+            0% {
+                transform: translate(0, 0);
+            }
+            100% {
+                transform: translate(-40px, -40px);
+            }
+        }
+        .map-pin {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+        .map-pin .emoji {
+            font-size: 48px;
+            filter: drop-shadow(0 4px 16px rgba(255, 215, 0, 0.4));
+        }
+        .map-pin .city {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--accent);
+            margin-top: var(--space-xs);
+        }
+
+        .city-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            padding: var(--space-md);
+            background: var(--surface);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all var(--transition);
+            border: none;
+            font-family: inherit;
+            color: inherit;
+            text-align: left;
+            width: 100%;
+        }
+        .city-item:active {
+            transform: scale(0.97);
+        }
+        .city-item .emoji {
+            font-size: 24px;
+        }
+        .city-item .info {
+            flex: 1;
+        }
+        .city-item .info .name {
+            font-weight: 500;
+        }
+        .city-item .info .address {
+            font-size: 12px;
+            color: var(--text2);
+        }
+
+        .price-guide-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-sm);
+        }
+        .price-guide-item {
+            padding: var(--space-md);
+            background: var(--surface);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            text-align: center;
+        }
+        .price-guide-item .emoji {
+            font-size: 32px;
+        }
+        .price-guide-item .name {
+            font-size: 12px;
+            font-weight: 500;
+            margin: 4px 0 2px;
+        }
+        .price-guide-item .price {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .price-guide-item .sub {
+            font-size: 10px;
+            color: var(--text2);
+        }
+
+        .chat-message {
+            display: flex;
+            margin-bottom: var(--space-md);
+        }
+        .chat-message.sent {
+            justify-content: flex-end;
+        }
+        .chat-message .bubble {
+            max-width: 80%;
+            padding: var(--space-md) var(--space-lg);
+            border-radius: var(--radius-lg);
+            background: var(--surface);
+            border: 1px solid var(--border);
+        }
+        .chat-message.sent .bubble {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+        .chat-message .bubble .text {
+            font-size: 14px;
+        }
+        .chat-message .bubble .time {
+            font-size: 10px;
+            color: var(--text2);
+            margin-top: var(--space-xs);
+            text-align: right;
+        }
+        .chat-input {
+            display: flex;
+            gap: var(--space-sm);
+            padding: var(--space-md) 0;
+            border-top: 1px solid var(--border);
+        }
+        .chat-input input {
+            flex: 1;
+            padding: var(--space-md) var(--space-lg);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+            font-size: 14px;
+            outline: none;
+        }
+        .chat-input input::placeholder {
+            color: var(--text3);
+        }
+        .chat-input button {
+            background: var(--primary);
+            border: none;
+            color: #fff;
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-full);
+            font-size: 20px;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+        .chat-input button:active {
+            transform: scale(0.92);
+        }
+
+        .notif-item {
+            display: flex;
+            gap: var(--space-md);
+            padding: var(--space-md);
+            background: var(--surface);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: var(--space-sm);
+            cursor: pointer;
+            transition: all var(--transition);
+            border: none;
+            font-family: inherit;
+            color: inherit;
+            text-align: left;
+            width: 100%;
+        }
+        .notif-item .icon {
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+        .notif-item .info {
+            flex: 1;
+        }
+        .notif-item .info .title {
+            font-weight: 500;
+            font-size: 14px;
+        }
+        .notif-item .info .body {
+            font-size: 13px;
+            color: var(--text2);
+        }
+        .notif-item .info .time {
+            font-size: 11px;
+            color: var(--text2);
+            margin-top: var(--space-xs);
+        }
+        .notif-item .dot {
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: var(--radius-full);
+            flex-shrink: 0;
+            margin-top: 6px;
+            transition: background var(--transition);
+        }
+        .notif-item .dot.read {
+            background: transparent;
+        }
+
+        .chart-bars {
+            display: flex;
+            align-items: flex-end;
+            gap: var(--space-sm);
+            height: 120px;
+            padding: var(--space-sm) 0;
+        }
+        .chart-bar {
+            flex: 1;
+            border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+            min-height: 4px;
+            background: linear-gradient(180deg, var(--accent), var(--primary));
+            transition: height 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .chart-label {
+            text-align: center;
+            font-size: 10px;
+            color: var(--text2);
+            margin-top: var(--space-xs);
+        }
+        .donut-container {
+            display: flex;
+            justify-content: center;
+            padding: var(--space-md) 0;
+        }
+        .donut {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: conic-gradient(var(--primary) 0% 40%, var(--accent) 40% 60%, var(--info) 60% 80%, var(--danger) 80% 100%);
+        }
+        .donut-legend {
+            display: flex;
+            gap: var(--space-lg);
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: var(--space-md);
+        }
+
+        .profile-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: var(--space-xl) 0;
+        }
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: var(--radius-full);
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            margin-bottom: var(--space-md);
+            box-shadow: 0 4px 20px rgba(45, 80, 22, 0.3);
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+        .profile-avatar:active {
+            transform: scale(0.95);
+        }
+        .profile-name {
+            font-size: 20px;
+            font-weight: 700;
+            background: transparent;
+            border: none;
+            color: var(--text);
+            text-align: center;
+            outline: none;
+            width: 100%;
+            max-width: 250px;
+        }
+        .profile-name:focus {
+            border-bottom: 2px solid var(--accent);
+        }
+        .profile-username {
+            color: var(--text2);
+            font-size: 14px;
+            background: transparent;
+            border: none;
+            color: var(--text2);
+            text-align: center;
+            outline: none;
+            width: 100%;
+            max-width: 250px;
+        }
+        .profile-username:focus {
+            border-bottom: 2px solid var(--accent);
+        }
+        .profile-badge {
+            padding: var(--space-xs) var(--space-lg);
+            border-radius: var(--radius-full);
+            background: linear-gradient(135deg, var(--accent), #B8860B);
+            color: black;
+            font-size: 12px;
+            font-weight: 700;
+            margin-top: var(--space-sm);
+            display: inline-block;
+        }
+        .profile-menu {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-xs);
+            width: 100%;
+            margin-top: var(--space-sm);
+        }
+        .profile-menu .item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            padding: var(--space-md);
+            border-radius: var(--radius-lg);
+            background: var(--surface);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all var(--transition);
+            border: none;
+            font-family: inherit;
+            color: inherit;
+            text-align: left;
+            width: 100%;
+        }
+        .profile-menu .item:active {
+            transform: scale(0.97);
+        }
+        .profile-menu .item .icon {
+            font-size: 20px;
+        }
+        .profile-menu .item .label {
+            flex: 1;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .profile-menu .item .arrow {
+            color: var(--text2);
+        }
+        .profile-menu .item.danger .label {
+            color: var(--danger);
+        }
+        .profile-save-btn {
+            margin-top: var(--space-md);
+            max-width: 150px;
+        }
+
+        .publish-photos {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-sm);
+            margin-bottom: var(--space-lg);
+        }
+        .photo-slot {
+            aspect-ratio: 1;
+            background: var(--surface);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 2px dashed var(--border);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: var(--text3);
+            cursor: pointer;
+            transition: all var(--transition);
+            border: none;
+            font-family: inherit;
+        }
+        .photo-slot:active {
+            transform: scale(0.95);
+        }
+        .photo-slot.filled {
+            border-style: solid;
+            border-color: var(--primary);
+            background: rgba(45, 80, 22, 0.2);
+        }
+
+        .provider-select {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-md);
+            margin-bottom: var(--space-lg);
+        }
+        .provider-item {
+            padding: var(--space-xl);
+            text-align: center;
+            border-radius: var(--radius-lg);
+            border: 2px solid var(--border);
+            background: var(--surface);
+            cursor: pointer;
+            transition: all var(--transition);
+            border: none;
+            font-family: inherit;
+            color: inherit;
+        }
+        .provider-item:active {
+            transform: scale(0.95);
+        }
+        .provider-item.selected {
+            border-color: var(--accent);
+            background: rgba(255, 215, 0, 0.06);
+        }
+        .provider-item .emoji {
+            font-size: 32px;
+        }
+        .provider-item .name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: var(--space-xs);
+        }
+
         .toast {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            background: var(--surface-2); padding: 12px 24px; border-radius: 12px; border: 1px solid var(--border-strong);
-            color: var(--ink); font-size: 13px; opacity: 0; transition: 0.35s; z-index: 999; pointer-events: none;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+            position: fixed;
+            bottom: calc(var(--nav-height) + var(--safe-bottom) + var(--space-xl));
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: var(--space-md) var(--space-xl);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            color: #fff;
+            font-size: 14px;
+            font-weight: 500;
+            opacity: 0;
+            transition: all var(--transition);
+            z-index: 200;
+            max-width: 90%;
+            text-align: center;
+            pointer-events: none;
+            box-shadow: var(--shadow);
         }
-        .toast.show { opacity: 1; transform: translate(-50%,-4px); }
-        .toast.success { border-color: var(--palm-light); }
-        .toast.error { border-color: var(--clay); }
-        .loader-bar { width: 140px; height: 3px; background: var(--surface-2); border-radius: 4px; margin: 24px auto; overflow: hidden; }
-        .loader-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--palm-light), var(--gold)); transition: width 0.1s; }
-        .flex { display: flex; gap: 8px; }
-        .flex-between { display: flex; justify-content: space-between; align-items: center; }
-        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-        .card { background: var(--surface-2); border-radius: 12px; border: 1px solid var(--border); padding: 12px; margin-bottom: 8px; }
-        .card-glass {
-            background: rgba(255,255,255,0.04); backdrop-filter: blur(20px);
-            border: 1px solid var(--border-strong); border-radius: 18px; padding: 16px; position: relative; overflow: hidden;
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
         }
-        .card-glass .logo-watermark { position: absolute; right: -10px; top: -10px; opacity: 0.08; }
-        .gold { color: var(--gold-bright); }
-        .text-muted { color: var(--ink-faint); font-size: 12px; font-family: var(--font-mono); }
-        .text-center { text-align: center; }
-        .mt-8 { margin-top: 8px; } .mt-12 { margin-top: 12px; }
-        .mb-8 { margin-bottom: 8px; } .mb-12 { margin-bottom: 12px; } .mb-16 { margin-bottom: 16px; }
-        .w-full { width: 100%; }
-        .bottom-nav {
-            display: flex; justify-content: space-around; padding: 8px 0; border-top: 1px solid var(--border);
-            margin-top: 16px; background: var(--surface); position: sticky; bottom: 0;
+        .toast.success {
+            border-color: var(--success);
         }
-        .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 2px; background: none; border: none; color: var(--ink-faint); font-size: 9px; cursor: pointer; padding: 4px 6px; transition: 0.2s; font-family: var(--font-body); position: relative; }
-        .nav-btn .icon { font-size: 20px; }
-        .nav-btn.active { color: var(--gold); }
-        .badge { position: absolute; top: -6px; right: -8px; background: var(--clay); color: #fff; font-size: 8px; font-weight: 700; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); }
-        .badge.hidden { display: none; }
-        .qa-btn { background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 12px; cursor: pointer; color: var(--ink); text-align: center; font-family: var(--font-body); }
-        .qa-btn:active { transform: scale(0.95); }
-        .qa-btn .icon { font-size: 22px; display: block; }
-        .qa-btn .label { font-size: 10px; color: var(--ink-faint); margin-top: 4px; }
-        .chip { padding: 6px 16px; border-radius: 20px; background: var(--surface-2); color: var(--ink-muted); font-size: 13px; cursor: pointer; border: 1px solid var(--border); white-space: nowrap; font-family: var(--font-body); transition: 0.2s; }
-        .chip.active { background: var(--palm); color: var(--ink); border-color: var(--palm-light); }
-        .product-item { display: flex; gap: 12px; padding: 12px; background: var(--surface-2); border-radius: 12px; border: 1px solid var(--border); margin-bottom: 8px; cursor: pointer; align-items: center; transition: border-color .2s; }
-        .product-item:active { transform: scale(0.98); }
-        .product-item .emoji-sm { font-size: 26px; width: 40px; text-align: center; }
-        .product-item .thumb { width: 44px; height: 44px; border-radius: 10px; object-fit: cover; flex-shrink: 0; }
-        .product-item .info { flex: 1; min-width: 0; }
-        .product-item .info .title { font-weight: 600; font-size: 14px; }
-        .product-item .info .loc { font-size: 12px; color: var(--ink-faint); }
-        .product-item .price { color: var(--gold-bright); font-weight: 700; font-size: 14px; text-align: right; font-family: var(--font-mono); }
-        .product-item .qty { font-size: 11px; color: var(--ink-faint); text-align: right; font-family: var(--font-mono); }
-        .quality-tag { display: inline-block; font-size: 9px; font-family: var(--font-mono); padding: 1px 7px; border-radius: 20px; margin-top: 3px; }
-        .quality-tag.clean { background: rgba(76,112,67,0.22); color: #8FC17E; }
-        .quality-tag.mixed { background: var(--gold-wash); color: var(--gold-bright); }
-        .quality-tag.dirty { background: var(--clay-wash); color: #E08A73; }
-        .status-badge { font-size: 10px; font-weight: 600; padding: 2px 10px; border-radius: 100px; background: rgba(34,197,94,0.15); color: #22C55E; display: inline-block; }
-        .chat-message { display: flex; margin-bottom: 8px; }
-        .chat-message.sent { justify-content: flex-end; }
-        .chat-message .bubble { max-width: 80%; padding: 10px 14px; border-radius: 12px; background: var(--surface-2); border: 1px solid var(--border); }
-        .chat-message.sent .bubble { background: var(--palm); border-color: var(--palm-light); }
-        .chat-message .bubble .time { font-size: 9px; color: var(--ink-faint); margin-top: 4px; text-align: right; font-family: var(--font-mono); }
-        .chat-input { display: flex; gap: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
-        .chat-input input { flex: 1; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--border-strong); background: var(--surface-2); color: var(--ink); font-size: 14px; outline: none; }
-        .chat-input button { background: var(--palm); border: none; color: var(--ink); padding: 10px 16px; border-radius: 12px; cursor: pointer; }
-        .profile-avatar { width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(135deg, var(--palm), var(--gold)); display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 8px; }
-        .profile-name { font-size: 18px; font-weight: 700; text-align: center; font-family: var(--font-display); }
-        .profile-username { color: var(--ink-faint); font-size: 12px; text-align: center; font-family: var(--font-mono); }
-        .profile-badge { padding: 4px 16px; border-radius: 20px; background: linear-gradient(135deg, var(--gold-bright), var(--gold)); color: #1A1502; font-size: 11px; font-weight: 700; display: inline-block; margin: 8px auto 0; font-family: var(--font-mono); }
-        .menu-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; background: var(--surface-2); border: 1px solid var(--border); cursor: pointer; width: 100%; text-align: left; color: var(--ink); font-family: var(--font-body); font-size: 14px; margin-bottom: 4px; }
-        .menu-item:active { transform: scale(0.98); }
-        .menu-item .icon { font-size: 18px; }
-        .menu-item .arrow { color: var(--ink-faint); margin-left: auto; }
-        .menu-item.danger { color: var(--clay); }
-        .photo-dropzone {
-            border: 1.5px dashed var(--border-strong); border-radius: 14px; background: var(--surface-2);
-            min-height: 130px; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; transition: border-color .2s ease; overflow: hidden; position: relative; margin-top: 4px;
+        .toast.error {
+            border-color: var(--danger);
         }
-        .photo-dropzone:hover { border-color: var(--gold); }
-        .photo-dropzone.filled { border-style: solid; border-color: var(--palm-light); }
-        .photo-dropzone img { width: 100%; height: 150px; object-fit: cover; }
-        .quality-row { display: flex; gap: 8px; margin-top: 4px; }
-        .quality-opt { flex: 1; padding: 10px; border-radius: 12px; border: 1px solid var(--border-strong); background: var(--surface-2); text-align: center; font-size: 12px; font-weight: 600; cursor: pointer; color: var(--ink-muted); }
-        .quality-opt.selected { border-color: var(--gold); color: var(--gold-bright); background: var(--gold-wash); }
-        .provider-btn { padding: 16px; border-radius: 12px; border: 2px solid var(--border-strong); background: transparent; cursor: pointer; color: var(--ink); text-align: center; font-family: var(--font-body); transition: 0.2s; }
-        .provider-btn.selected { border-color: var(--gold); background: var(--gold-wash); }
-        .provider-btn .emoji { font-size: 28px; display: block; }
-        .provider-btn .name { font-weight: 600; margin-top: 4px; font-size: 14px; }
-        .price-guide-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .price-guide-item { padding: 12px; background: var(--surface-2); border-radius: 12px; border: 1px solid var(--border); text-align: center; }
-        .price-guide-item .emoji { font-size: 26px; display: block; }
-        .price-guide-item .name { font-size: 12px; font-weight: 500; }
-        .price-guide-item .price { font-size: 14px; font-weight: 700; color: var(--gold-bright); font-family: var(--font-mono); }
-        .price-guide-item .sub { font-size: 10px; color: var(--ink-faint); }
-        .chart-bar { width: 100%; border-radius: 4px 4px 0 0; min-height: 6px; background: linear-gradient(180deg, var(--gold-bright), var(--palm)); transition: height 0.8s ease; }
-        .donut { width: 100px; height: 100px; border-radius: 50%; margin: 0 auto; }
-        .progress-bar { width: 100%; height: 6px; background: var(--surface-2); border-radius: 4px; overflow: hidden; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--palm-light), var(--gold)); border-radius: 4px; transition: width 0.8s ease; }
-        @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-        @keyframes fadeUp { 0% { opacity: 0; transform: translateY(16px); } 100% { opacity: 1; transform: translateY(0); } }
-        .slide { animation: fadeUp 0.4s ease; }
-        .scroll-x { display: flex; gap: 8px; overflow-x: auto; padding: 4px 0 12px; scrollbar-width: none; }
-        .scroll-x::-webkit-scrollbar { display: none; }
-        #splash .logo { animation: pulse 1.2s ease-in-out infinite; }
-        .onboarding-slide { display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; min-height: 300px; animation: fadeUp 0.4s ease; }
-        .onboarding-slide.active { display: flex; }
-        .onboarding-slide p { color: var(--ink-muted); font-size: 15px; line-height: 1.5; }
-        .dot-indicator { display: flex; gap: 8px; justify-content: center; margin: 16px 0; }
-        .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border-strong); transition: 0.2s; border: none; cursor: pointer; padding: 0; }
-        .dot.active { background: var(--gold); width: 24px; border-radius: 4px; }
-        .screen { animation: fadeUp 0.4s ease; }
-        #lang-toggle { background: var(--gold); color: #1A1502; border: none; padding: 4px 14px; border-radius: 20px; font-weight: 700; font-size: 13px; cursor: pointer; font-family: var(--font-body); }
-        .note { font-size: 11px; color: var(--ink-faint); line-height: 1.5; margin-top: 6px; }
-        [data-i18n] { transition: opacity 0.2s; }
+
+        .hidden {
+            display: none !important;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .flex {
+            display: flex;
+        }
+        .items-center {
+            align-items: center;
+        }
+        .justify-between {
+            justify-content: space-between;
+        }
+        .gap-sm {
+            gap: var(--space-sm);
+        }
+        .gap-md {
+            gap: var(--space-md);
+        }
+        .mt-sm {
+            margin-top: var(--space-sm);
+        }
+        .mt-md {
+            margin-top: var(--space-md);
+        }
+        .mt-lg {
+            margin-top: var(--space-lg);
+        }
+        .mb-sm {
+            margin-bottom: var(--space-sm);
+        }
+        .mb-md {
+            margin-bottom: var(--space-md);
+        }
+        .mb-lg {
+            margin-bottom: var(--space-lg);
+        }
+        .w-full {
+            width: 100%;
+        }
     </style>
 </head>
 <body>
 
-    <svg width="0" height="0" style="position:absolute">
-      <symbol id="logo-mark" viewBox="0 0 48 48">
-        <circle cx="24" cy="24" r="20.5" fill="none" stroke="currentColor" stroke-width="1.6"/>
-        <path d="M24 9c6.5 4.2 9.6 10.4 9.6 16.4 0 4.3-2.2 7.6-5.4 8.7-1-5.3-2.1-9.6-4.2-13-2.1 3.4-3.2 7.7-4.2 13-3.2-1.1-5.4-4.4-5.4-8.7C14.4 19.4 17.5 13.2 24 9z" fill="currentColor"/>
-        <path d="M24 34.5v-9.7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
-      </symbol>
-    </svg>
-
     <div id="toast" class="toast"></div>
 
-    <div class="container" id="app">
+    <div id="app">
 
-        <!-- ===== SPLASH ===== -->
-        <div id="splash" class="screen">
-            <svg class="logo" width="64" height="64"><use href="#logo-mark"/></svg>
+        <!-- SPLASH -->
+        <div id="splash" class="screen active">
+            <div class="emoji">♻️</div>
             <h1>ReLife</h1>
             <div class="sub">CAMEROUN</div>
-            <div class="loader-bar"><div class="loader-fill" id="loader-fill"></div></div>
+            <div class="loader-bar"><div class="fill" id="loader-fill"></div></div>
         </div>
 
-        <!-- ===== ONBOARDING ===== -->
-        <div id="onboarding" class="screen hidden">
-            <div class="onboarding-slide active" data-slide="0">
-                <svg class="logo" width="48" height="48"><use href="#logo-mark"/></svg>
-                <h2 style="font-size:23px;margin-bottom:8px" data-i18n="onboarding.slide1.title">Valorisez vos déchets</h2>
-                <p data-i18n="onboarding.slide1.desc">Transformez vos déchets recyclables en une source de revenus</p>
+        <!-- ONBOARDING -->
+        <div id="onboarding" class="screen">
+            <div id="slide-0" class="onboarding-slide active">
+                <div class="emoji">♻️</div>
+                <h2>Valorisez vos déchets</h2>
+                <p>Transformez vos déchets recyclables en une source de revenus</p>
             </div>
-            <div class="onboarding-slide" data-slide="1">
-                <span class="emoji" style="font-size:44px">💰</span>
-                <h2 style="font-size:23px;margin-bottom:8px" data-i18n="onboarding.slide2.title">Gagnez de l'argent</h2>
-                <p data-i18n="onboarding.slide2.desc">Recevez un paiement immédiat pour chaque kilogramme collecté</p>
+            <div id="slide-1" class="onboarding-slide">
+                <div class="emoji">💰</div>
+                <h2>Gagnez de l'argent</h2>
+                <p>Recevez un paiement immédiat pour chaque kilogramme collecté</p>
             </div>
-            <div class="onboarding-slide" data-slide="2">
-                <span class="emoji" style="font-size:44px">🌍</span>
-                <h2 style="font-size:23px;margin-bottom:8px" data-i18n="onboarding.slide3.title">Protégez l'environnement</h2>
-                <p data-i18n="onboarding.slide3.desc">Contribuez à un Cameroun plus propre et plus vert</p>
+            <div id="slide-2" class="onboarding-slide">
+                <div class="emoji">🌍</div>
+                <h2>Protégez l'environnement</h2>
+                <p>Contribuez à un Cameroun plus propre et plus vert</p>
             </div>
-            <div class="onboarding-slide" data-slide="3">
-                <span class="emoji" style="font-size:44px">⭐</span>
-                <h2 style="font-size:23px;margin-bottom:8px" data-i18n="onboarding.slide4.title">Devenez Premium</h2>
-                <p data-i18n="onboarding.slide4.desc">Accédez à des tarifs préférentiels et des collectes prioritaires</p>
+            <div id="slide-3" class="onboarding-slide">
+                <div class="emoji">⭐</div>
+                <h2>Devenez Premium</h2>
+                <p>Accédez à des tarifs préférentiels et des collectes prioritaires</p>
             </div>
-            <div class="dot-indicator">
+            <div class="dot-indicators">
                 <button class="dot active" data-slide="0"></button>
                 <button class="dot" data-slide="1"></button>
                 <button class="dot" data-slide="2"></button>
                 <button class="dot" data-slide="3"></button>
             </div>
-            <button class="btn btn-gold" id="onboarding-btn" data-i18n="onboarding.next">Suivant</button>
+            <button class="btn" id="onboarding-btn">Suivant</button>
         </div>
 
-        <!-- ===== LOGIN ===== -->
-        <div id="login" class="screen hidden">
-            <div style="padding:20px 0;display:flex;flex-direction:column;justify-content:center;min-height:60vh;">
-                <svg class="logo" width="44" height="44"><use href="#logo-mark"/></svg>
-                <h2 style="font-size:22px;text-align:center;margin-bottom:4px" data-i18n="login.welcome">Bienvenue</h2>
-                <p style="color:var(--ink-muted);text-align:center;font-size:14px;margin-bottom:16px" data-i18n="login.enterPhone">Entrez votre numéro de téléphone</p>
+        <!-- LOGIN -->
+        <div id="login" class="screen">
+            <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:20px 0;">
+                <div class="text-center" style="margin-bottom:32px;">
+                    <div style="font-size:56px;margin-bottom:12px;">♻️</div>
+                    <h1 style="font-size:28px;font-weight:700;">Bienvenue</h1>
+                    <p style="color:var(--text2);font-size:14px;">Entrez votre numéro de téléphone</p>
+                </div>
                 <div class="form-group">
-                    <label data-i18n="login.phoneLabel">Numéro de téléphone</label>
+                    <label>Numéro de téléphone</label>
                     <div class="input-group">
-                        <span>+237</span>
-                        <input type="tel" id="phone-input" class="input" placeholder="6XXXXXXXX" maxlength="9">
+                        <span class="prefix">+237</span>
+                        <input type="tel" id="phone-input" class="input" placeholder="6XXXXXXXX" maxlength="9" inputmode="tel">
                     </div>
                 </div>
-                <button class="btn btn-gold" id="login-btn" data-i18n="login.connect">Se connecter</button>
-                <button class="link" id="login-skip" data-i18n="login.skip">Continuer sans compte (test)</button>
+                <button class="btn" id="login-btn" style="margin-top:12px;">Se connecter</button>
+                <button class="btn btn-ghost" id="login-skip">Continuer sans compte (test)</button>
             </div>
+            <div id="recaptcha-container"></div>
         </div>
 
-        <!-- ===== OTP ===== -->
-        <div id="otp" class="screen hidden">
-            <div style="padding:20px 0;display:flex;flex-direction:column;justify-content:center;min-height:60vh;">
-                <span style="font-size:44px;display:block;text-align:center;margin-bottom:8px">🔐</span>
-                <h2 style="font-size:22px;text-align:center;margin-bottom:4px" data-i18n="otp.verify">Vérification</h2>
-                <p style="color:var(--ink-muted);text-align:center;font-size:13px;margin-bottom:16px"><span data-i18n="otp.codeSent">Code envoyé au</span> <span id="otp-phone" style="font-family:var(--font-mono)">+237 6XXXXXXXX</span></p>
-                <div class="otp-group" id="otp-group">
-                    <input type="text" maxlength="1" class="otp-input" data-index="0" inputmode="numeric">
-                    <input type="text" maxlength="1" class="otp-input" data-index="1" inputmode="numeric">
-                    <input type="text" maxlength="1" class="otp-input" data-index="2" inputmode="numeric">
-                    <input type="text" maxlength="1" class="otp-input" data-index="3" inputmode="numeric">
-                    <input type="text" maxlength="1" class="otp-input" data-index="4" inputmode="numeric">
-                    <input type="text" maxlength="1" class="otp-input" data-index="5" inputmode="numeric">
+        <!-- OTP -->
+        <div id="otp" class="screen">
+            <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:20px 0;">
+                <div class="text-center" style="margin-bottom:32px;">
+                    <div style="font-size:48px;margin-bottom:12px;">🔐</div>
+                    <h2 style="font-size:24px;font-weight:700;">Vérification</h2>
+                    <p style="color:var(--text2);font-size:14px;">Code envoyé au <span id="otp-phone">+237 6XXXXXXXX</span></p>
                 </div>
-                <button class="btn btn-gold" id="otp-btn" data-i18n="otp.verifyBtn">Vérifier</button>
-                <button class="link" id="otp-resend" data-i18n="otp.resend">Renvoyer le code</button>
+                <div class="otp-container" id="otp-group">
+                    <input type="text" inputmode="numeric" maxlength="1" class="otp-input" data-index="0">
+                    <input type="text" inputmode="numeric" maxlength="1" class="otp-input" data-index="1">
+                    <input type="text" inputmode="numeric" maxlength="1" class="otp-input" data-index="2">
+                    <input type="text" inputmode="numeric" maxlength="1" class="otp-input" data-index="3">
+                    <input type="text" inputmode="numeric" maxlength="1" class="otp-input" data-index="4">
+                    <input type="text" inputmode="numeric" maxlength="1" class="otp-input" data-index="5">
+                </div>
+                <button class="btn" id="otp-btn">Vérifier</button>
+                <button class="btn btn-ghost" id="otp-resend">Renvoyer le code</button>
             </div>
         </div>
 
-        <!-- ===== DASHBOARD ===== -->
-        <div id="dashboard" class="screen hidden">
-            <div class="flex-between mb-8">
+        <!-- DASHBOARD -->
+        <div id="dashboard" class="screen">
+            <div class="flex justify-between items-center" style="margin-bottom:4px;">
                 <div>
-                    <h2 style="font-size:19px"><span data-i18n="dashboard.greeting">Bonjour</span> <span style="color:var(--gold)">👋</span></h2>
-                    <p style="color:var(--ink-faint);font-size:12px" data-i18n="dashboard.subtitle">Prêt à recycler aujourd'hui ?</p>
+                    <div class="greeting" id="greeting-text">Bonjour <span class="highlight">👋</span></div>
+                    <div style="color:var(--text2);font-size:13px;" id="greeting-sub">Prêt à recycler aujourd'hui ?</div>
                 </div>
-                <div class="flex" style="align-items:center">
-                    <button id="lang-toggle">🇫🇷 FR</button>
-                    <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--palm),var(--gold));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;margin-left:8px;font-family:var(--font-display)">R</div>
-                </div>
-            </div>
-
-            <div class="grid-4 mb-12">
-                <button class="qa-btn" data-target="map"><span class="icon">📍</span><span class="label" data-i18n="nav.map">Carte</span></button>
-                <button class="qa-btn" data-target="chat"><span class="icon">💬</span><span class="label" data-i18n="nav.messages">Messages</span></button>
-                <button class="qa-btn" data-target="stats"><span class="icon">📊</span><span class="label" data-i18n="nav.stats">Stats</span></button>
-                <button class="qa-btn" data-target="feed"><span class="icon">🛒</span><span class="label" data-i18n="nav.marketplace">Marché</span></button>
-            </div>
-
-            <div class="card-glass mb-12" style="background:linear-gradient(135deg,var(--palm-deep),rgba(217,164,65,0.06));border-color:rgba(217,164,65,0.18)">
-                <svg class="logo logo-watermark" width="80" height="80"><use href="#logo-mark"/></svg>
-                <div class="flex-between">
-                    <div>
-                        <div style="font-size:11px;color:var(--ink-muted);font-family:var(--font-mono);letter-spacing:.06em;text-transform:uppercase" data-i18n="dashboard.balanceLabel">💰 Solde Mobile Money</div>
-                        <div style="font-size:27px;font-weight:600;color:var(--gold-bright);font-family:var(--font-mono)" id="balance-amount">5 000 FCFA</div>
-                    </div>
-                    <button class="btn btn-gold btn-sm" id="goto-withdrawal" data-i18n="dashboard.withdraw">Retirer</button>
+                <div class="flex items-center gap-sm">
+                    <button id="lang-toggle" class="btn-lang">🇫🇷 FR</button>
+                    <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;">R</div>
                 </div>
             </div>
 
-            <div class="grid-3 mb-12">
-                <div class="card text-center"><div style="font-size:19px;font-weight:600;font-family:var(--font-mono)" id="stat-sales">12</div><div style="font-size:10px;color:var(--ink-faint);font-family:var(--font-mono)" data-i18n="stats.sales">VENTES</div></div>
-                <div class="card text-center"><div style="font-size:19px;font-weight:600;font-family:var(--font-mono)" id="stat-recycled">45 kg</div><div style="font-size:10px;color:var(--ink-faint);font-family:var(--font-mono)" data-i18n="stats.recycled">RECYCLÉS</div></div>
-                <div class="card text-center"><div style="font-size:19px;font-weight:600;font-family:var(--font-mono)">⭐ <span id="stat-rating">4.8</span></div><div style="font-size:10px;color:var(--ink-faint);font-family:var(--font-mono)" data-i18n="stats.rating">NOTE</div></div>
+            <div class="quick-actions">
+                <button class="qa-item" data-target="map"><span class="icon">📍</span><span class="label">Carte</span></button>
+                <button class="qa-item" data-target="chat"><span class="icon">💬</span><span class="label">Messages</span></button>
+                <button class="qa-item" data-target="stats"><span class="icon">📊</span><span class="label">Stats</span></button>
+                <button class="qa-item" data-target="feed"><span class="icon">🛒</span><span class="label">Marché</span></button>
             </div>
 
-            <div style="font-weight:600;margin-bottom:8px;font-size:14px" data-i18n="dashboard.recentActivity">⚡ Activité récente</div>
+            <div class="balance-card">
+                <div>
+                    <div class="label">💰 Solde Mobile Money</div>
+                    <div class="amount" id="balance-amount">5 000 FCFA</div>
+                </div>
+                <button class="btn btn-sm" id="goto-withdrawal">Retirer</button>
+            </div>
+
+            <div class="stats-row">
+                <div class="stat-item"><div class="value" id="stat-sales">12</div><div class="label">Ventes</div></div>
+                <div class="stat-item"><div class="value" id="stat-recycled">45 kg</div><div class="label">Recyclés</div></div>
+                <div class="stat-item"><div class="value">⭐ <span id="stat-rating">4.8</span></div><div class="label">Note</div></div>
+            </div>
+
+            <div class="section-title">⚡ Activité récente</div>
             <div id="activity-list">
-                <div class="flex" style="padding:8px 0;border-bottom:1px solid var(--border);align-items:center">
-                    <span style="font-size:22px;margin-right:12px">♻️</span>
-                    <div style="flex:1"><div style="font-size:14px" data-i18n="activity.pet">Collecte de bouteilles PET</div><div style="font-size:12px;color:var(--ink-faint);font-family:var(--font-mono)">15kg • 2 250 FCFA</div></div>
-                    <div style="font-size:11px;color:var(--ink-faint)">2h</div>
-                </div>
-                <div class="flex" style="padding:8px 0;border-bottom:1px solid var(--border);align-items:center">
-                    <span style="font-size:22px;margin-right:12px">🥫</span>
-                    <div style="flex:1"><div style="font-size:14px" data-i18n="activity.aluminum">Canettes aluminium</div><div style="font-size:12px;color:var(--ink-faint);font-family:var(--font-mono)">5kg • 1 000 FCFA</div></div>
-                    <div style="font-size:11px;color:var(--ink-faint)">Hier</div>
-                </div>
-                <div class="flex" style="padding:8px 0;align-items:center">
-                    <span style="font-size:22px;margin-right:12px">📦</span>
-                    <div style="flex:1"><div style="font-size:14px" data-i18n="activity.cardboard">Cartons recyclables</div><div style="font-size:12px;color:var(--ink-faint);font-family:var(--font-mono)">10kg • 500 FCFA</div></div>
-                    <div style="font-size:11px;color:var(--ink-faint)">Hier</div>
-                </div>
+                <div class="activity-item"><div class="emoji">♻️</div><div class="info"><div class="title">Collecte de bouteilles PET</div><div class="sub">15kg • 2 250 FCFA</div></div><div class="time">Il y a 2h</div></div>
+                <div class="activity-item"><div class="emoji">🥫</div><div class="info"><div class="title">Canettes aluminium</div><div class="sub">5kg • 1 000 FCFA</div></div><div class="time">Hier</div></div>
+                <div class="activity-item"><div class="emoji">📦</div><div class="info"><div class="title">Cartons recyclables</div><div class="sub">10kg • 500 FCFA</div></div><div class="time">Hier</div></div>
             </div>
         </div>
 
-        <!-- ===== FEED ===== -->
-        <div id="feed" class="screen hidden">
-            <div class="flex-between mb-8">
-                <h2 style="font-size:19px" data-i18n="feed.title">🛒 Marché</h2>
-                <button class="btn btn-gold btn-sm" id="goto-publish" data-i18n="feed.publish">+ Publier</button>
+        <!-- FEED -->
+        <div id="feed" class="screen">
+            <div class="flex justify-between items-center" style="margin-bottom:12px;">
+                <h2 style="font-size:20px;">🛒 Marché</h2>
+                <button class="btn btn-sm" id="goto-publish">+ Publier</button>
             </div>
-            <div class="scroll-x" id="feed-categories">
-                <button class="chip active" data-cat="Tous" data-i18n="feed.all">Tous</button>
-                <button class="chip" data-cat="Plastique" data-i18n="feed.plastic">Plastique</button>
-                <button class="chip" data-cat="Métal" data-i18n="feed.metal">Métal</button>
-                <button class="chip" data-cat="Carton" data-i18n="feed.cardboard">Carton</button>
-                <button class="chip" data-cat="Verre" data-i18n="feed.glass">Verre</button>
-                <button class="chip" data-cat="Huile" data-i18n="feed.oil">Huile</button>
-                <button class="chip" data-cat="Électronique" data-i18n="feed.electronic">Électronique</button>
+            <div class="feed-categories" id="feed-categories">
+                <button class="category-chip active" data-cat="Tous">Tous</button>
+                <button class="category-chip" data-cat="Plastique">Plastique</button>
+                <button class="category-chip" data-cat="Métal">Métal</button>
+                <button class="category-chip" data-cat="Carton">Carton</button>
+                <button class="category-chip" data-cat="Verre">Verre</button>
+                <button class="category-chip" data-cat="Huile">Huile</button>
+                <button class="category-chip" data-cat="Électronique">Électronique</button>
             </div>
             <div id="feed-list"></div>
         </div>
 
-        <!-- ===== PUBLISH ===== -->
-        <div id="publish" class="screen hidden">
-            <h2 style="font-size:19px;margin-bottom:12px" data-i18n="publish.title">➕ Nouvelle annonce</h2>
-
-            <div class="form-group">
-                <label data-i18n="publish.photoLabel">Photo du produit <span style="color:var(--gold);text-transform:none">· requise</span></label>
-                <input type="file" id="publish-photo-input" accept="image/*" capture="environment" style="display:none">
-                <div id="photo-dropzone" class="photo-dropzone">
-                    <span id="photo-dropzone-icon" style="font-size:26px">📷</span>
-                    <span id="photo-dropzone-text" style="font-size:12px;color:var(--ink-faint);margin-top:4px" data-i18n="publish.photoPlaceholder">Prendre une photo de la matière</span>
-                    <img id="photo-preview" class="hidden" alt="Aperçu">
-                </div>
-                <p class="note" data-i18n="publish.photoNote">Une photo réelle rassure l'acheteur et évite les annonces refusées sur place.</p>
+        <!-- DETAIL -->
+        <div id="detail" class="screen">
+            <button class="btn btn-ghost" id="detail-back" style="padding-left:0;margin-bottom:12px;">← Retour</button>
+            <div class="detail-image" id="detail-emoji">🥤</div>
+            <h2 id="detail-title" style="font-size:20px;">Bouteilles PET transparentes</h2>
+            <div style="color:var(--text2);font-size:14px;" id="detail-location">Douala, Bonapriso</div>
+            <div class="detail-price" id="detail-price">200 FCFA/kg</div>
+            <div style="display:flex;gap:8px;margin:8px 0 16px;">
+                <span class="status-badge available" id="detail-status">Disponible</span>
+                <span style="padding:2px 12px;border-radius:100px;background:rgba(59,130,246,0.15);color:#3B82F6;font-size:12px;font-weight:600;">15kg en stock</span>
             </div>
-
-            <div class="form-group">
-                <label data-i18n="publish.qualityLabel">État de la matière</label>
-                <div class="quality-row" id="quality-row">
-                    <div class="quality-opt selected" data-quality="Propre et trié" data-i18n="publish.qualityClean">Propre</div>
-                    <div class="quality-opt" data-quality="Mélangé" data-i18n="publish.qualityMixed">Mélangé</div>
-                    <div class="quality-opt" data-quality="Sale" data-i18n="publish.qualityDirty">Sale</div>
-                </div>
+            <div class="card" style="display:flex;align-items:center;gap:12px;padding:14px;margin-bottom:16px;">
+                <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;font-size:20px;">👤</div>
+                <div style="flex:1;"><div style="font-weight:600;">Marie K.</div><div style="font-size:12px;color:var(--text2);">⭐ 4.9 · 23 ventes</div></div>
+                <button class="btn btn-sm" id="goto-chat-from-detail">Contacter</button>
             </div>
+            <div class="section-title">⭐ Noter ce vendeur</div>
+            <div class="rating-stars" id="rating-stars">
+                <button class="star" data-val="1">☆</button>
+                <button class="star" data-val="2">☆</button>
+                <button class="star" data-val="3">☆</button>
+                <button class="star" data-val="4">☆</button>
+                <button class="star" data-val="5">☆</button>
+            </div>
+            <div class="section-title" style="margin-top:16px;">📝 Avis (12)</div>
+            <div class="card" style="margin-bottom:8px;"><div style="display:flex;justify-content:space-between;"><span style="font-weight:600;">Paul N.</span><span style="color:var(--text2);font-size:12px;">Il y a 2j</span></div><div style="font-size:13px;color:var(--text2);">⭐ 5/5 · Transaction rapide et fiable !</div></div>
+            <div class="card"><div style="display:flex;justify-content:space-between;"><span style="font-weight:600;">Aicha M.</span><span style="color:var(--text2);font-size:12px;">Il y a 5j</span></div><div style="font-size:13px;color:var(--text2);">⭐ 4/5 · Bon produit, livraison un peu lente</div></div>
+        </div>
 
+        <!-- PUBLISH -->
+        <div id="publish" class="screen">
+            <h2 style="font-size:20px;margin-bottom:16px;">➕ Nouvelle annonce</h2>
+            <div class="publish-photos">
+                <button class="photo-slot" data-photo="0">📷</button>
+                <button class="photo-slot" data-photo="1">📷</button>
+                <button class="photo-slot" data-photo="2">📷</button>
+            </div>
             <div class="form-group">
-                <label data-i18n="publish.categoryLabel">Catégorie</label>
+                <label>Catégorie</label>
                 <select id="publish-cat" class="input">
-                    <option data-i18n="feed.plastic">Plastique</option>
-                    <option data-i18n="feed.metal">Métal</option>
-                    <option data-i18n="feed.cardboard">Carton</option>
-                    <option data-i18n="feed.glass">Verre</option>
-                    <option data-i18n="feed.oil">Huile</option>
-                    <option data-i18n="feed.electronic">Électronique</option>
+                    <option>Plastique</option><option>Métal</option><option>Carton</option>
+                    <option>Verre</option><option>Huile</option><option>Électronique</option>
                 </select>
             </div>
             <div class="form-group">
-                <label data-i18n="publish.titleLabel">Titre</label>
-                <input type="text" id="publish-title" class="input" placeholder="Ex: Bouteilles PET transparentes" data-i18n-placeholder="publish.titlePlaceholder">
+                <label>Titre</label>
+                <input type="text" id="publish-title" class="input" placeholder="Ex: Bouteilles PET transparentes">
             </div>
             <div class="form-group">
-                <label data-i18n="publish.qtyLabel">Quantité</label>
-                <input type="text" id="publish-qty" class="input" placeholder="Ex: 15 kg" data-i18n-placeholder="publish.qtyPlaceholder">
+                <label>Quantité</label>
+                <input type="text" id="publish-qty" class="input" placeholder="Ex: 15 kg">
             </div>
             <div class="form-group">
-                <label data-i18n="publish.priceLabel">Prix (FCFA/kg)</label>
-                <input type="number" id="publish-price" class="input" placeholder="Ex: 200" data-i18n-placeholder="publish.pricePlaceholder">
+                <label>Prix (FCFA/kg)</label>
+                <input type="number" id="publish-price" class="input" placeholder="Ex: 200">
             </div>
             <div class="form-group">
-                <label data-i18n="publish.cityLabel">Ville</label>
-                <input type="text" id="publish-city" class="input" placeholder="Ex: Douala" data-i18n-placeholder="publish.cityPlaceholder">
+                <label>Ville</label>
+                <input type="text" id="publish-city" class="input" placeholder="Ex: Douala">
             </div>
-            <button class="btn btn-gold" id="publish-submit" data-i18n="publish.submit">Publier l'annonce</button>
-            <button class="link" id="goto-feed-from-publish" data-i18n="common.back">← Retour au marché</button>
+            <button class="btn" id="publish-submit">Publier l'annonce</button>
         </div>
 
-        <!-- ===== WITHDRAWAL ===== -->
-        <div id="withdrawal" class="screen hidden">
-            <h2 style="font-size:19px;margin-bottom:4px" data-i18n="withdrawal.title">💰 Retrait MoMo</h2>
-            <p style="color:var(--ink-faint);font-size:14px;margin-bottom:12px" id="withdrawal-balance-label"><span data-i18n="withdrawal.balance">Solde :</span> 5 000 FCFA</p>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
-                <button class="provider-btn selected" data-provider="MTN"><span class="emoji">📡</span><span class="name" data-i18n="withdrawal.mtn">MTN MoMo</span></button>
-                <button class="provider-btn" data-provider="Orange"><span class="emoji">📡</span><span class="name" data-i18n="withdrawal.orange">Orange Money</span></button>
+        <!-- WITHDRAWAL -->
+        <div id="withdrawal" class="screen">
+            <h2 style="font-size:20px;margin-bottom:4px;">💰 Retrait MoMo</h2>
+            <div style="color:var(--text2);font-size:14px;margin-bottom:16px;">Solde : 5 000 FCFA</div>
+            <div class="provider-select">
+                <button class="provider-item selected" data-provider="MTN"><div class="emoji">📡</div><div class="name">MTN</div></button>
+                <button class="provider-item" data-provider="Orange"><div class="emoji">📡</div><div class="name">Orange</div></button>
             </div>
             <div class="form-group">
-                <label data-i18n="withdrawal.amountLabel">Montant (FCFA)</label>
-                <input type="number" id="withdrawal-amount" class="input" placeholder="Ex: 1000" data-i18n-placeholder="withdrawal.amountPlaceholder">
+                <label>Montant (FCFA)</label>
+                <input type="number" id="withdrawal-amount" class="input" placeholder="Ex: 1000">
             </div>
             <div class="form-group">
-                <label data-i18n="withdrawal.phoneLabel">Numéro de téléphone</label>
-                <input type="tel" id="withdrawal-phone" class="input" placeholder="6XXXXXXXX" data-i18n-placeholder="withdrawal.phonePlaceholder">
+                <label>Numéro de téléphone</label>
+                <input type="tel" id="withdrawal-phone" class="input" placeholder="6XXXXXXXX">
             </div>
-            <button class="btn btn-gold" id="withdrawal-submit" data-i18n="withdrawal.confirm">Confirmer le retrait</button>
-            <p class="text-muted text-center mt-8" data-i18n="withdrawal.fees">Frais : 1.5% · Délai : instantané</p>
+            <button class="btn" id="withdrawal-submit">Confirmer le retrait</button>
+            <div style="text-align:center;font-size:12px;color:var(--text2);margin-top:12px;">Frais : 1.5% · Délai : instantané</div>
         </div>
 
-        <!-- ===== MAP ===== -->
-        <div id="map" class="screen hidden">
-            <h2 style="font-size:19px;margin-bottom:12px" data-i18n="map.title">📍 Points de collecte</h2>
-            <div style="height:150px;background:linear-gradient(135deg,var(--palm-deep),#20281a);border-radius:16px;display:flex;align-items:center;justify-content:center;flex-direction:column;margin-bottom:12px;border:1px solid var(--border)">
-                <span style="font-size:36px">📍</span>
-                <div style="font-size:14px;font-weight:600;color:var(--gold-bright);margin-top:4px" id="map-city">Douala</div>
-                <div style="font-size:12px;color:var(--ink-faint)" id="map-address">Bonaberi, en face du marché</div>
+        <!-- MAP -->
+        <div id="map" class="screen">
+            <h2 style="font-size:20px;margin-bottom:12px;">📍 Points de collecte</h2>
+            <div class="map-container">
+                <div class="grid"></div>
+                <div class="map-pin">
+                    <div class="emoji">📍</div>
+                    <div class="city" id="map-current-city">Douala</div>
+                    <div style="font-size:12px;color:var(--text2);" id="map-current-address">Bonaberi, en face du marché</div>
+                </div>
             </div>
             <div id="city-list"></div>
         </div>
 
-        <!-- ===== PRICE GUIDE ===== -->
-        <div id="priceguide" class="screen hidden">
-            <h2 style="font-size:19px;margin-bottom:8px" data-i18n="priceguide.title">📊 Guide des prix</h2>
-            <p style="color:var(--ink-faint);font-size:13px;margin-bottom:12px" data-i18n="priceguide.subtitle">Prix indicatifs du recyclage au Cameroun (FCFA/kg)</p>
+        <!-- PRICE GUIDE -->
+        <div id="priceguide" class="screen">
+            <h2 style="font-size:20px;margin-bottom:12px;">📊 Guide des prix</h2>
+            <p style="color:var(--text2);font-size:13px;margin-bottom:16px;">Prix indicatifs du recyclage au Cameroun (FCFA/kg)</p>
             <div class="price-guide-grid" id="price-guide-grid"></div>
-            <div class="card mt-8">
-                <p style="font-size:12px;color:var(--ink-faint)" data-i18n="priceguide.advice">💡 Conseil : Les prix varient selon la qualité et la quantité. Ces prix sont indicatifs et peuvent être négociés.</p>
+            <div class="card" style="margin-top:16px;padding:12px 16px;">
+                <p style="font-size:12px;color:var(--text2);">💡 <strong>Conseil :</strong> Les prix varient selon la qualité et la quantité. Ces prix sont indicatifs et peuvent être négociés.</p>
             </div>
         </div>
 
-        <!-- ===== CHAT ===== -->
-        <div id="chat" class="screen hidden">
-            <h2 style="font-size:19px;margin-bottom:8px" data-i18n="chat.title">💬 Messages</h2>
+        <!-- CHAT (CORRIGÉ) -->
+        <div id="chat" class="screen">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                <h2 style="font-size:20px;">💬 Messages</h2>
+                <span style="font-size:12px;color:var(--text2);">3 discussions</span>
+            </div>
             <div id="chat-list"></div>
-            <div id="chat-conversation" style="display:none;flex-direction:column;gap:8px">
-                <button class="link" id="chat-back" style="text-align:left;padding:0;margin:0" data-i18n="common.back">← Retour</button>
-                <div id="chat-messages" style="display:flex;flex-direction:column;gap:8px;max-height:280px;overflow-y:auto;padding-bottom:8px"></div>
+            <div id="chat-conversation" style="display:none;flex:1;flex-direction:column;gap:8px;padding-bottom:8px;">
+                <button class="btn btn-ghost" id="chat-back" style="padding-left:0;margin-bottom:8px;">← Retour</button>
+                <div id="chat-messages" style="flex:1;display:flex;flex-direction:column;gap:8px;overflow-y:auto;padding-bottom:12px;"></div>
                 <div class="chat-input">
-                    <input type="text" id="chat-input-text" placeholder="Écrire un message..." data-i18n-placeholder="chat.placeholder">
+                    <input type="text" id="chat-input-text" placeholder="Écrire un message...">
                     <button id="chat-send-btn">📤</button>
                 </div>
             </div>
         </div>
 
-        <!-- ===== NOTIFICATIONS ===== -->
-        <div id="notifications" class="screen hidden">
-            <div class="flex-between mb-8">
-                <h2 style="font-size:19px" data-i18n="notif.title">🔔 Notifications</h2>
-                <button class="link" id="notif-mark-all" style="margin:0;font-size:12px" data-i18n="notif.markAll">Tout marquer comme lu</button>
+        <!-- NOTIFICATIONS -->
+        <div id="notifications" class="screen">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+                <h2 style="font-size:20px;">🔔 Notifications</h2>
+                <button class="btn btn-ghost" id="notif-mark-all" style="font-size:12px;">Tout marquer comme lu</button>
             </div>
             <div id="notif-list"></div>
         </div>
 
-        <!-- ===== STATS ===== -->
-        <div id="stats" class="screen hidden">
-            <h2 style="font-size:19px;margin-bottom:8px" data-i18n="stats.title">📊 Statistiques</h2>
-            <div class="grid-3 mb-12">
-                <div class="card text-center"><div style="font-size:19px;font-weight:600;font-family:var(--font-mono)">12</div><div style="font-size:10px;color:var(--ink-faint);font-family:var(--font-mono)" data-i18n="stats.sales">VENTES</div></div>
-                <div class="card text-center"><div style="font-size:19px;font-weight:600;font-family:var(--font-mono)">45 kg</div><div style="font-size:10px;color:var(--ink-faint);font-family:var(--font-mono)" data-i18n="stats.recycled">RECYCLÉS</div></div>
-                <div class="card text-center"><div style="font-size:19px;font-weight:600;font-family:var(--font-mono)">⭐ 4.8</div><div style="font-size:10px;color:var(--ink-faint);font-family:var(--font-mono)" data-i18n="stats.rating">NOTE</div></div>
+        <!-- STATS -->
+        <div id="stats" class="screen">
+            <h2 style="font-size:20px;margin-bottom:12px;">📊 Statistiques</h2>
+            <div class="stats-row">
+                <div class="stat-item"><div class="value">12</div><div class="label">Ventes</div></div>
+                <div class="stat-item"><div class="value">45 kg</div><div class="label">Recyclés</div></div>
+                <div class="stat-item"><div class="value">⭐ 4.8</div><div class="label">Note</div></div>
             </div>
-            <div style="font-weight:600;margin-bottom:8px;font-size:14px" data-i18n="stats.weekly">📈 Collectes par semaine</div>
-            <div class="flex" style="align-items:flex-end;height:100px;padding:8px 0;gap:6px;margin-bottom:12px">
-                <div style="flex:1;display:flex;flex-direction:column;align-items:center"><div class="chart-bar" style="height:40%"></div><div style="font-size:9px;color:var(--ink-faint);margin-top:4px;font-family:var(--font-mono)">Lun</div></div>
-                <div style="flex:1;display:flex;flex-direction:column;align-items:center"><div class="chart-bar" style="height:60%"></div><div style="font-size:9px;color:var(--ink-faint);margin-top:4px;font-family:var(--font-mono)">Mar</div></div>
-                <div style="flex:1;display:flex;flex-direction:column;align-items:center"><div class="chart-bar" style="height:30%"></div><div style="font-size:9px;color:var(--ink-faint);margin-top:4px;font-family:var(--font-mono)">Mer</div></div>
-                <div style="flex:1;display:flex;flex-direction:column;align-items:center"><div class="chart-bar" style="height:90%"></div><div style="font-size:9px;color:var(--ink-faint);margin-top:4px;font-family:var(--font-mono)">Jeu</div></div>
-                <div style="flex:1;display:flex;flex-direction:column;align-items:center"><div class="chart-bar" style="height:70%"></div><div style="font-size:9px;color:var(--ink-faint);margin-top:4px;font-family:var(--font-mono)">Ven</div></div>
-                <div style="flex:1;display:flex;flex-direction:column;align-items:center"><div class="chart-bar" style="height:50%"></div><div style="font-size:9px;color:var(--ink-faint);margin-top:4px;font-family:var(--font-mono)">Sam</div></div>
-                <div style="flex:1;display:flex;flex-direction:column;align-items:center"><div class="chart-bar" style="height:20%"></div><div style="font-size:9px;color:var(--ink-faint);margin-top:4px;font-family:var(--font-mono)">Dim</div></div>
+            <div class="section-title">📈 Collectes par semaine</div>
+            <div class="chart-bars" id="chart-bars"></div>
+            <div class="section-title" style="margin-top:16px;">🧩 Répartition des déchets</div>
+            <div class="donut-container"><div class="donut"></div></div>
+            <div class="donut-legend">
+                <span><span class="color" style="background:var(--primary);"></span>Plastique 40%</span>
+                <span><span class="color" style="background:var(--accent);"></span>Métal 20%</span>
+                <span><span class="color" style="background:var(--info);"></span>Verre 20%</span>
+                <span><span class="color" style="background:var(--danger);"></span>Carton 20%</span>
             </div>
-            <div style="font-weight:600;margin-bottom:8px;font-size:14px" data-i18n="stats.distribution">🧩 Répartition des déchets</div>
-            <div style="display:flex;justify-content:center;margin-bottom:8px">
-                <div class="donut" style="background:conic-gradient(var(--palm-light) 0% 40%, var(--gold) 40% 60%, #6B8FA8 60% 80%, var(--clay) 80% 100%)"></div>
-            </div>
-            <div class="flex" style="justify-content:center;gap:12px;flex-wrap:wrap;font-size:12px">
-                <span><span style="display:inline-block;width:11px;height:11px;border-radius:4px;background:var(--palm-light);vertical-align:middle;margin-right:4px"></span><span data-i18n="stats.plasticPct">Plastique 40%</span></span>
-                <span><span style="display:inline-block;width:11px;height:11px;border-radius:4px;background:var(--gold);vertical-align:middle;margin-right:4px"></span><span data-i18n="stats.metalPct">Métal 20%</span></span>
-                <span><span style="display:inline-block;width:11px;height:11px;border-radius:4px;background:#6B8FA8;vertical-align:middle;margin-right:4px"></span><span data-i18n="stats.glassPct">Verre 20%</span></span>
-                <span><span style="display:inline-block;width:11px;height:11px;border-radius:4px;background:var(--clay);vertical-align:middle;margin-right:4px"></span><span data-i18n="stats.cardboardPct">Carton 20%</span></span>
-            </div>
-            <div style="font-weight:600;margin-top:12px;margin-bottom:8px;font-size:14px" data-i18n="stats.revenue">💰 Revenus mensuels</div>
-            <div id="revenue-bars"></div>
+            <div class="section-title" style="margin-top:16px;">💰 Revenus mensuels</div>
+            <div id="revenue-bars" style="display:flex;flex-direction:column;gap:6px;"></div>
         </div>
 
-        <!-- ===== PROFILE ===== -->
-        <div id="profile" class="screen hidden">
-            <div style="display:flex;flex-direction:column;align-items:center;padding:12px 0">
-                <div class="profile-avatar">👤</div>
-                <div class="profile-name" data-i18n="profile.name">Jean Dupont</div>
-                <div class="profile-username">@jean_dupont_237</div>
-                <div class="profile-badge" data-i18n="profile.badge">⭐ PREMIUM</div>
+        <!-- PROFILE (MODIFIABLE) -->
+        <div id="profile" class="screen">
+            <div class="profile-header">
+                <div class="profile-avatar" id="profile-avatar">👤</div>
+                <input type="text" id="profile-name" class="profile-name" value="Jean Dupont" placeholder="Votre nom">
+                <input type="text" id="profile-username" class="profile-username" value="@jean_dupont_237" placeholder="@utilisateur">
+                <div class="profile-badge">⭐ PREMIUM</div>
+                <button class="btn btn-sm profile-save-btn" id="save-profile">💾 Enregistrer</button>
             </div>
-            <div class="grid-3 mb-12">
-                <div class="card text-center"><div style="font-size:15px;font-weight:600;font-family:var(--font-mono)">12</div><div style="font-size:10px;color:var(--ink-faint);font-family:var(--font-mono)" data-i18n="stats.sales">VENTES</div></div>
-                <div class="card text-center"><div style="font-size:15px;font-weight:600;font-family:var(--font-mono)">45kg</div><div style="font-size:10px;color:var(--ink-faint);font-family:var(--font-mono)" data-i18n="stats.recycled">RECYCLÉS</div></div>
-                <div class="card text-center"><div style="font-size:15px;font-weight:600;font-family:var(--font-mono)">⭐ 4.8</div><div style="font-size:10px;color:var(--ink-faint);font-family:var(--font-mono)" data-i18n="stats.rating">NOTE</div></div>
+            <div class="stats-row">
+                <div class="stat-item"><div class="value">12</div><div class="label">Ventes</div></div>
+                <div class="stat-item"><div class="value">45kg</div><div class="label">Recyclés</div></div>
+                <div class="stat-item"><div class="value">⭐ 4.8</div><div class="label">Note</div></div>
             </div>
-            <div id="profile-menu">
-                <button class="menu-item" id="goto-priceguide"><span class="icon">📊</span><span class="label" data-i18n="profile.priceGuide">Guide des prix</span><span class="arrow">›</span></button>
-                <button class="menu-item"><span class="icon">📍</span><span class="label" data-i18n="profile.location">Douala, Cameroun</span><span class="arrow">›</span></button>
-                <button class="menu-item"><span class="icon">📞</span><span class="label">+237 677 123 456</span><span class="arrow">›</span></button>
-                <button class="menu-item"><span class="icon">🔒</span><span class="label" data-i18n="profile.changePassword">Changer le mot de passe</span><span class="arrow">›</span></button>
-                <button class="menu-item"><span class="icon">🔔</span><span class="label" data-i18n="profile.notifications">Notifications</span><span style="color:#22C55E;font-size:12px;font-weight:600;margin-left:auto" data-i18n="profile.active">Actives</span></button>
-                <button class="menu-item"><span class="icon">🌐</span><span class="label" data-i18n="profile.language">Langue</span><span class="arrow">Français ›</span></button>
-                <button class="menu-item"><span class="icon">📋</span><span class="label" data-i18n="profile.myAds">Mes annonces</span><span class="arrow">3 ›</span></button>
-                <button class="menu-item"><span class="icon">⭐</span><span class="label" data-i18n="profile.myPremium">Mon abonnement Premium</span><span style="color:var(--gold-bright);font-size:12px;font-weight:600;margin-left:auto" data-i18n="profile.activePremium">Actif</span></button>
-                <button class="menu-item danger"><span class="icon">🚪</span><span class="label" style="color:var(--clay)" data-i18n="profile.logout">Déconnexion</span><span class="arrow">›</span></button>
+            <div class="profile-menu">
+                <button class="item" id="goto-priceguide"><span class="icon">📊</span><span class="label">Guide des prix</span><span class="arrow">›</span></button>
+                <button class="item"><span class="icon">📍</span><span class="label">Douala, Cameroun</span><span class="arrow">›</span></button>
+                <button class="item"><span class="icon">📞</span><span class="label">+237 677 123 456</span><span class="arrow">›</span></button>
+                <button class="item"><span class="icon">🔒</span><span class="label">Changer le mot de passe</span><span class="arrow">›</span></button>
+                <button class="item"><span class="icon">🔔</span><span class="label">Notifications</span><span style="color:#22C55E;font-size:12px;font-weight:600;">Actives</span></button>
+                <button class="item"><span class="icon">🌐</span><span class="label">Langue</span><span class="arrow">Français ›</span></button>
+                <button class="item"><span class="icon">🌙</span><span class="label">Mode sombre</span><span style="color:#22C55E;font-size:12px;font-weight:600;">Activé</span></button>
+                <button class="item"><span class="icon">📋</span><span class="label">Mes annonces</span><span class="arrow">3 ›</span></button>
+                <button class="item"><span class="icon">⭐</span><span class="label">Mon abonnement Premium</span><span style="color:var(--accent);font-size:12px;font-weight:600;">Actif</span></button>
+                <button class="item danger"><span class="icon">🚪</span><span class="label" style="color:#EF4444;">Déconnexion</span><span class="arrow">›</span></button>
             </div>
         </div>
 
-        <!-- ===== BOTTOM NAV ===== -->
-        <div class="bottom-nav" id="bottom-nav">
-            <button class="nav-btn active" data-screen="dashboard"><span class="icon">🏠</span><span class="label" data-i18n="nav.home">Accueil</span></button>
-            <button class="nav-btn" data-screen="feed"><span class="icon">🛒</span><span class="label" data-i18n="nav.marketplace">Marché</span></button>
-            <button class="nav-btn" data-screen="publish"><span class="icon">➕</span><span class="label" data-i18n="nav.publish">Publier</span></button>
-            <button class="nav-btn" data-screen="notifications"><span class="icon">🔔</span><span class="label" data-i18n="nav.notif">Notif.</span><span class="badge" id="notif-badge">4</span></button>
-            <button class="nav-btn" data-screen="profile"><span class="icon">👤</span><span class="label" data-i18n="nav.profile">Profil</span></button>
+        <!-- BOTTOM NAV -->
+        <div id="bottom-nav">
+            <button class="nav-item active" data-screen="dashboard"><span class="icon">🏠</span><span class="label">Accueil</span></button>
+            <button class="nav-item" data-screen="feed"><span class="icon">🛒</span><span class="label">Marché</span></button>
+            <button class="nav-item" data-screen="publish"><span class="icon">➕</span><span class="label">Publier</span></button>
+            <button class="nav-item" data-screen="notifications"><span class="icon">🔔</span><span class="label">Notif.</span><span class="badge" id="notif-badge">4</span></button>
+            <button class="nav-item" data-screen="profile"><span class="icon">👤</span><span class="label">Profil</span></button>
         </div>
 
     </div>
 
     <script>
         // ==========================================
-        // BILINGUISME
+        // DONNÉES
         // ==========================================
-        let lang = 'fr';
-        const translations = {
-            fr: {
-                'onboarding.slide1.title': 'Valorisez vos déchets',
-                'onboarding.slide1.desc': 'Transformez vos déchets recyclables en une source de revenus',
-                'onboarding.slide2.title': 'Gagnez de l\'argent',
-                'onboarding.slide2.desc': 'Recevez un paiement immédiat pour chaque kilogramme collecté',
-                'onboarding.slide3.title': 'Protégez l\'environnement',
-                'onboarding.slide3.desc': 'Contribuez à un Cameroun plus propre et plus vert',
-                'onboarding.slide4.title': 'Devenez Premium',
-                'onboarding.slide4.desc': 'Accédez à des tarifs préférentiels et des collectes prioritaires',
-                'onboarding.next': 'Suivant',
-                'login.welcome': 'Bienvenue',
-                'login.enterPhone': 'Entrez votre numéro de téléphone',
-                'login.phoneLabel': 'Numéro de téléphone',
-                'login.connect': 'Se connecter',
-                'login.skip': 'Continuer sans compte (test)',
-                'otp.verify': 'Vérification',
-                'otp.codeSent': 'Code envoyé au',
-                'otp.verifyBtn': 'Vérifier',
-                'otp.resend': 'Renvoyer le code',
-                'dashboard.greeting': 'Bonjour',
-                'dashboard.subtitle': 'Prêt à recycler aujourd\'hui ?',
-                'dashboard.balanceLabel': '💰 Solde Mobile Money',
-                'dashboard.withdraw': 'Retirer',
-                'dashboard.recentActivity': '⚡ Activité récente',
-                'nav.map': 'Carte',
-                'nav.messages': 'Messages',
-                'nav.stats': 'Stats',
-                'nav.marketplace': 'Marché',
-                'nav.home': 'Accueil',
-                'nav.publish': 'Publier',
-                'nav.notif': 'Notif.',
-                'nav.profile': 'Profil',
-                'stats.sales': 'VENTES',
-                'stats.recycled': 'RECYCLÉS',
-                'stats.rating': 'NOTE',
-                'stats.weekly': '📈 Collectes par semaine',
-                'stats.distribution': '🧩 Répartition des déchets',
-                'stats.plasticPct': 'Plastique 40%',
-                'stats.metalPct': 'Métal 20%',
-                'stats.glassPct': 'Verre 20%',
-                'stats.cardboardPct': 'Carton 20%',
-                'stats.revenue': '💰 Revenus mensuels',
-                'activity.pet': 'Collecte de bouteilles PET',
-                'activity.aluminum': 'Canettes aluminium',
-                'activity.cardboard': 'Cartons recyclables',
-                'feed.title': '🛒 Marché',
-                'feed.publish': '+ Publier',
-                'feed.all': 'Tous',
-                'feed.plastic': 'Plastique',
-                'feed.metal': 'Métal',
-                'feed.cardboard': 'Carton',
-                'feed.glass': 'Verre',
-                'feed.oil': 'Huile',
-                'feed.electronic': 'Électronique',
-                'publish.title': '➕ Nouvelle annonce',
-                'publish.photoLabel': 'Photo du produit',
-                'publish.photoPlaceholder': 'Prendre une photo de la matière',
-                'publish.photoNote': 'Une photo réelle rassure l\'acheteur et évite les annonces refusées sur place.',
-                'publish.qualityLabel': 'État de la matière',
-                'publish.qualityClean': 'Propre',
-                'publish.qualityMixed': 'Mélangé',
-                'publish.qualityDirty': 'Sale',
-                'publish.categoryLabel': 'Catégorie',
-                'publish.titleLabel': 'Titre',
-                'publish.titlePlaceholder': 'Ex: Bouteilles PET transparentes',
-                'publish.qtyLabel': 'Quantité',
-                'publish.qtyPlaceholder': 'Ex: 15 kg',
-                'publish.priceLabel': 'Prix (FCFA/kg)',
-                'publish.pricePlaceholder': 'Ex: 200',
-                'publish.cityLabel': 'Ville',
-                'publish.cityPlaceholder': 'Ex: Douala',
-                'publish.submit': 'Publier l\'annonce',
-                'withdrawal.title': '💰 Retrait MoMo',
-                'withdrawal.balance': 'Solde :',
-                'withdrawal.mtn': 'MTN MoMo',
-                'withdrawal.orange': 'Orange Money',
-                'withdrawal.amountLabel': 'Montant (FCFA)',
-                'withdrawal.amountPlaceholder': 'Ex: 1000',
-                'withdrawal.phoneLabel': 'Numéro de téléphone',
-                'withdrawal.phonePlaceholder': '6XXXXXXXX',
-                'withdrawal.confirm': 'Confirmer le retrait',
-                'withdrawal.fees': 'Frais : 1.5% · Délai : instantané',
-                'map.title': '📍 Points de collecte',
-                'priceguide.title': '📊 Guide des prix',
-                'priceguide.subtitle': 'Prix indicatifs du recyclage au Cameroun (FCFA/kg)',
-                'priceguide.advice': '💡 Conseil : Les prix varient selon la qualité et la quantité. Ces prix sont indicatifs et peuvent être négociés.',
-                'chat.title': '💬 Messages',
-                'chat.placeholder': 'Écrire un message...',
-                'notif.title': '🔔 Notifications',
-                'notif.markAll': 'Tout marquer comme lu',
-                'profile.name': 'Jean Dupont',
-                'profile.badge': '⭐ PREMIUM',
-                'profile.priceGuide': 'Guide des prix',
-                'profile.location': 'Douala, Cameroun',
-                'profile.changePassword': 'Changer le mot de passe',
-                'profile.notifications': 'Notifications',
-                'profile.active': 'Actives',
-                'profile.language': 'Langue',
-                'profile.myAds': 'Mes annonces',
-                'profile.myPremium': 'Mon abonnement Premium',
-                'profile.activePremium': 'Actif',
-                'profile.logout': 'Déconnexion',
-                'common.back': '← Retour'
-            },
-            en: {
-                'onboarding.slide1.title': 'Value your waste',
-                'onboarding.slide1.desc': 'Turn your recyclable waste into a source of income',
-                'onboarding.slide2.title': 'Earn money',
-                'onboarding.slide2.desc': 'Get instant payment for every kilogram collected',
-                'onboarding.slide3.title': 'Protect the environment',
-                'onboarding.slide3.desc': 'Contribute to a cleaner, greener Cameroon',
-                'onboarding.slide4.title': 'Go Premium',
-                'onboarding.slide4.desc': 'Access preferential rates and priority collections',
-                'onboarding.next': 'Next',
-                'login.welcome': 'Welcome',
-                'login.enterPhone': 'Enter your phone number',
-                'login.phoneLabel': 'Phone number',
-                'login.connect': 'Connect',
-                'login.skip': 'Continue without account (test)',
-                'otp.verify': 'Verification',
-                'otp.codeSent': 'Code sent to',
-                'otp.verifyBtn': 'Verify',
-                'otp.resend': 'Resend code',
-                'dashboard.greeting': 'Hello',
-                'dashboard.subtitle': 'Ready to recycle today?',
-                'dashboard.balanceLabel': '💰 Mobile Money Balance',
-                'dashboard.withdraw': 'Withdraw',
-                'dashboard.recentActivity': '⚡ Recent Activity',
-                'nav.map': 'Map',
-                'nav.messages': 'Messages',
-                'nav.stats': 'Stats',
-                'nav.marketplace': 'Market',
-                'nav.home': 'Home',
-                'nav.publish': 'Publish',
-                'nav.notif': 'Notif.',
-                'nav.profile': 'Profile',
-                'stats.sales': 'SALES',
-                'stats.recycled': 'RECYCLED',
-                'stats.rating': 'RATING',
-                'stats.weekly': '📈 Weekly collections',
-                'stats.distribution': '🧩 Waste distribution',
-                'stats.plasticPct': 'Plastic 40%',
-                'stats.metalPct': 'Metal 20%',
-                'stats.glassPct': 'Glass 20%',
-                'stats.cardboardPct': 'Cardboard 20%',
-                'stats.revenue': '💰 Monthly revenue',
-                'activity.pet': 'PET bottles collection',
-                'activity.aluminum': 'Aluminum cans',
-                'activity.cardboard': 'Recyclable cardboard',
-                'feed.title': '🛒 Marketplace',
-                'feed.publish': '+ Publish',
-                'feed.all': 'All',
-                'feed.plastic': 'Plastic',
-                'feed.metal': 'Metal',
-                'feed.cardboard': 'Cardboard',
-                'feed.glass': 'Glass',
-                'feed.oil': 'Oil',
-                'feed.electronic': 'Electronics',
-                'publish.title': '➕ New ad',
-                'publish.photoLabel': 'Product photo',
-                'publish.photoPlaceholder': 'Take a photo of the material',
-                'publish.photoNote': 'A real photo reassures the buyer and prevents rejected ads on site.',
-                'publish.qualityLabel': 'Material condition',
-                'publish.qualityClean': 'Clean',
-                'publish.qualityMixed': 'Mixed',
-                'publish.qualityDirty': 'Dirty',
-                'publish.categoryLabel': 'Category',
-                'publish.titleLabel': 'Title',
-                'publish.titlePlaceholder': 'Ex: Clear PET bottles',
-                'publish.qtyLabel': 'Quantity',
-                'publish.qtyPlaceholder': 'Ex: 15 kg',
-                'publish.priceLabel': 'Price (FCFA/kg)',
-                'publish.pricePlaceholder': 'Ex: 200',
-                'publish.cityLabel': 'City',
-                'publish.cityPlaceholder': 'Ex: Douala',
-                'publish.submit': 'Publish ad',
-                'withdrawal.title': '💰 MoMo Withdrawal',
-                'withdrawal.balance': 'Balance:',
-                'withdrawal.mtn': 'MTN MoMo',
-                'withdrawal.orange': 'Orange Money',
-                'withdrawal.amountLabel': 'Amount (FCFA)',
-                'withdrawal.amountPlaceholder': 'Ex: 1000',
-                'withdrawal.phoneLabel': 'Phone number',
-                'withdrawal.phonePlaceholder': '6XXXXXXXX',
-                'withdrawal.confirm': 'Confirm withdrawal',
-                'withdrawal.fees': 'Fees: 1.5% · Instant delivery',
-                'map.title': '📍 Collection points',
-                'priceguide.title': '📊 Price guide',
-                'priceguide.subtitle': 'Indicative recycling prices in Cameroon (FCFA/kg)',
-                'priceguide.advice': '💡 Tip: Prices vary by quality and quantity. These are indicative and negotiable.',
-                'chat.title': '💬 Messages',
-                'chat.placeholder': 'Write a message...',
-                'notif.title': '🔔 Notifications',
-                'notif.markAll': 'Mark all as read',
-                'profile.name': 'Jean Dupont',
-                'profile.badge': '⭐ PREMIUM',
-                'profile.priceGuide': 'Price guide',
-                'profile.location': 'Douala, Cameroon',
-                'profile.changePassword': 'Change password',
-                'profile.notifications': 'Notifications',
-                'profile.active': 'Active',
-                'profile.language': 'Language',
-                'profile.myAds': 'My ads',
-                'profile.myPremium': 'My Premium subscription',
-                'profile.activePremium': 'Active',
-                'profile.logout': 'Logout',
-                'common.back': '← Back'
-            }
-        };
-
-        function updateLanguage() {
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.dataset.i18n;
-                if (translations[lang][key] !== undefined) {
-                    el.textContent = translations[lang][key];
-                }
-            });
-            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-                const key = el.dataset.i18nPlaceholder;
-                if (translations[lang][key] !== undefined) {
-                    el.placeholder = translations[lang][key];
-                }
-            });
-            document.getElementById('lang-toggle').textContent = lang === 'fr' ? '🇫🇷 FR' : '🇬🇧 EN';
-        }
-
-        document.getElementById('lang-toggle').addEventListener('click', function() {
-            lang = lang === 'fr' ? 'en' : 'fr';
-            updateLanguage();
-            showToast(lang === 'fr' ? '🇫🇷 Langue changée' : '🇬🇧 Language changed', 'success');
-        });
-
-        // ==========================================
-        // DONNÉES STATIQUES
-        // ==========================================
-        const feedProducts = [
+        const staticProducts = [
             { emoji: '🥤', title: 'Bouteilles PET transparentes', loc: 'Douala, Bonapriso', price: '200 FCFA/kg',
                 qty: '15kg', cat: 'Plastique' },
             { emoji: '🥤', title: 'Bouteilles PET colorées', loc: 'Yaoundé, Bastos', price: '100 FCFA/kg', qty: '10kg',
@@ -833,18 +1542,10 @@
                 cat: 'Métal' },
             { emoji: '🔩', title: 'Cuivre dénudé', loc: 'Douala, Akwa', price: '2 200 FCFA/kg', qty: '5kg',
                 cat: 'Métal' },
-            { emoji: '🔩', title: 'Fer lourd', loc: 'Yaoundé, Mvog-Mbi', price: '150 FCFA/kg', qty: '50kg',
-                cat: 'Métal' },
             { emoji: '📦', title: 'Carton ondulé propre', loc: 'Bamenda', price: '75 FCFA/kg', qty: '20kg',
                 cat: 'Carton' },
-            { emoji: '📄', title: 'Papier blanc de bureau', loc: 'Douala, Bonapriso', price: '100 FCFA/kg',
-                qty: '12kg', cat: 'Carton' },
             { emoji: '🍾', title: 'Verre transparent', loc: 'Garoua', price: '50 FCFA/kg', qty: '25kg', cat: 'Verre' },
-            { emoji: '🍾', title: 'Verre coloré (brun/vert)', loc: 'Bafoussam', price: '30 FCFA/kg', qty: '18kg',
-                cat: 'Verre' },
             { emoji: '🛢️', title: 'Huile de friture usagée', loc: 'Douala, Akwa', price: '300 FCFA/L', qty: '10L',
-                cat: 'Huile' },
-            { emoji: '🛢️', title: 'Huile moteur usagée', loc: 'Yaoundé, Bastos', price: '150 FCFA/L', qty: '20L',
                 cat: 'Huile' },
             { emoji: '💻', title: 'Ordinateurs complets', loc: 'Douala, Bonapriso', price: '400 FCFA/kg', qty: '30kg',
                 cat: 'Électronique' }
@@ -854,23 +1555,19 @@
             { name: 'Douala - Bonaberi', address: 'En face du marché central', city: 'Douala' },
             { name: 'Douala - Akwa', address: 'Rue des palmiers, immeuble ReLife', city: 'Douala' },
             { name: 'Yaoundé - Bastos', address: 'Carrefour de la poste', city: 'Yaoundé' },
-            { name: 'Yaoundé - Mvog-Mbi', address: "En face de l'hôpital", city: 'Yaoundé' },
+            { name: 'Yaoundé - Mvog-Mbi', address: 'En face de l\'hôpital', city: 'Yaoundé' },
             { name: 'Bafoussam', address: 'Marché A, côté station Total', city: 'Bafoussam' },
             { name: 'Garoua', address: 'Rue du commerce, chez Marie', city: 'Garoua' }
         ];
 
         const priceGuideData = [
-            { emoji: '🥤', name: 'PET transparent', price: '150-200', sub: "Bouteilles d'eau" },
+            { emoji: '🥤', name: 'PET transparent', price: '150-200', sub: 'Bouteilles d\'eau' },
             { emoji: '🥤', name: 'PET coloré', price: '75-100', sub: 'Bouteilles colorées' },
             { emoji: '🥫', name: 'Aluminium', price: '500-800', sub: 'Canettes, casseroles' },
             { emoji: '🔩', name: 'Cuivre dénudé', price: '2 000-2 500', sub: 'Haute valeur' },
-            { emoji: '🔩', name: 'Fer/Acier', price: '100-150', sub: 'Lourd, bonne qualité' },
             { emoji: '📦', name: 'Carton ondulé', price: '50-75', sub: 'Propre, sec' },
-            { emoji: '📄', name: 'Papier blanc', price: '75-100', sub: 'Bureau, impression' },
             { emoji: '🍾', name: 'Verre transparent', price: '25-50', sub: 'Bouteilles, bocaux' },
-            { emoji: '🍾', name: 'Verre coloré', price: '20-40', sub: 'Brun, vert' },
             { emoji: '🛢️', name: 'Huile de friture', price: '200-300', sub: 'Par litre' },
-            { emoji: '🛢️', name: 'Huile moteur', price: '100-200', sub: 'Par litre' },
             { emoji: '💻', name: 'Ordinateurs', price: '200-500', sub: 'Complets' }
         ];
 
@@ -881,17 +1578,21 @@
             { month: 'Avr', amount: 30500, pct: 61 }
         ];
 
+        // Données du chat (sans messages automatiques)
         const chatMessages = {
             paul: [
                 { text: "Bonjour, je suis intéressé par vos bouteilles PET", sent: false, time: "12:20" },
                 { text: "Bonjour ! Oui je les ai encore", sent: true, time: "12:22" },
-                { text: "Ok je suis dispo", sent: false, time: "12:30" }
             ],
-            marie: [{ text: "Merci pour votre confiance", sent: false, time: "Hier" }],
-            jean: [{ text: "Quand pouvez-vous passer ?", sent: false, time: "Hier" }]
+            marie: [
+                { text: "Merci pour votre confiance", sent: false, time: "Hier" }
+            ],
+            jean: [
+                { text: "Quand pouvez-vous passer ?", sent: false, time: "Hier" }
+            ]
         };
 
-        const notifs = [
+        const notifications = [
             { icon: '💬', title: 'Nouveau message de Paul', body: '"Ok je suis dispo pour la collecte"', time: 'Il y a 10 min' },
             { icon: '♻️', title: 'Collecte confirmée', body: 'Votre collecte de 15kg est planifiée demain',
                 time: 'Il y a 2h' },
@@ -910,10 +1611,8 @@
         let confirmationResult = null;
         let recaptchaVerifier = null;
         let currentFilter = 'Tous';
-        let liveProducts = null;
-        let publishPhotoData = null;
-        let publishQuality = 'Propre et trié';
-        let balance = 5000;
+        let products = [];
+        let lang = 'fr';
         let productsUnsubscribe = null;
 
         // ==========================================
@@ -932,6 +1631,7 @@
             firebase.initializeApp(firebaseConfig);
             console.log('🔥 Firebase connecté');
         }
+
         const db = firebase.firestore ? firebase.firestore() : null;
 
         // ==========================================
@@ -945,23 +1645,24 @@
             t._timeout = setTimeout(() => t.className = 'toast', 2500);
         }
 
-        function formatFCFA(n) { return Number(n).toLocaleString('fr-FR') + ' FCFA'; }
-
         // ==========================================
         // NAVIGATION
         // ==========================================
         function navigateTo(screen) {
-            document.querySelectorAll('.screen').forEach(el => el.classList.add('hidden'));
+            if (screen === currentScreen && screen !== 'splash') return;
+            document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
             const target = document.getElementById(screen);
-            if (target) target.classList.remove('hidden');
-            currentScreen = screen;
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            document.querySelector(`.nav-btn[data-screen="${screen}"]`)?.classList.add('active');
-            updateBadge();
-            if (screen === 'notifications') {
-                document.querySelectorAll('.notif-item .dot').forEach(d => d.classList.add('read'));
-                updateBadge();
+            if (target) {
+                target.classList.add('active');
+                target.style.animation = 'none';
+                requestAnimationFrame(() => {
+                    target.style.animation = 'fadeUp 0.4s ease';
+                });
             }
+            currentScreen = screen;
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.querySelector(`.nav-item[data-screen="${screen}"]`)?.classList.add('active');
+            updateBadge();
         }
 
         function updateBadge() {
@@ -982,43 +1683,56 @@
             if (progress >= 100) { progress = 100;
                 clearInterval(loaderInterval); }
             document.getElementById('loader-fill').style.width = progress + '%';
-            if (progress >= 100) setTimeout(() => navigateTo('onboarding'), 500);
+            if (progress >= 100) {
+                setTimeout(() => navigateTo('onboarding'), 500);
+            }
         }, 30);
 
         // ==========================================
         // ONBOARDING
         // ==========================================
         function updateOnboarding() {
-            document.querySelectorAll('.onboarding-slide').forEach((el, i) => el.classList.toggle('active', i ===
-            onboardingSlide));
-            document.querySelectorAll('.dot').forEach((el, i) => el.classList.toggle('active', i === onboardingSlide));
+            document.querySelectorAll('.onboarding-slide').forEach((el, i) => {
+                el.classList.toggle('active', i === onboardingSlide);
+            });
+            document.querySelectorAll('.dot').forEach((el, i) => {
+                el.classList.toggle('active', i === onboardingSlide);
+            });
             document.getElementById('onboarding-btn').textContent = onboardingSlide === 3 ? '🚀 Démarrer' : 'Suivant';
         }
+
         document.getElementById('onboarding-btn').addEventListener('click', function() {
             if (onboardingSlide < 3) { onboardingSlide++;
                 updateOnboarding(); } else { navigateTo('login'); }
         });
+
         document.querySelectorAll('.dot').forEach(d => {
-            d.addEventListener('click', function() { onboardingSlide = parseInt(this.dataset.slide);
-                updateOnboarding(); });
+            d.addEventListener('click', function() {
+                onboardingSlide = parseInt(this.dataset.slide);
+                updateOnboarding();
+            });
         });
 
         // ==========================================
         // AUTHENTIFICATION
         // ==========================================
         function getRecaptchaVerifier() {
-            if (!recaptchaVerifier) recaptchaVerifier = new firebase.auth.RecaptchaVerifier('login-btn', { size: 'invisible' });
+            if (!recaptchaVerifier) {
+                recaptchaVerifier = new firebase.auth.RecaptchaVerifier('login-btn', { size: 'invisible' });
+            }
             return recaptchaVerifier;
         }
 
         document.querySelectorAll('.otp-input').forEach((input, idx) => {
             input.addEventListener('input', function() {
-                this.value = this.value.replace(/[^0-9]/g, '');
-                if (this.value.length === 1 && idx < 5) document.querySelectorAll('.otp-input')[idx + 1].focus();
+                if (this.value.length === 1 && idx < 5) {
+                    document.querySelectorAll('.otp-input')[idx + 1].focus();
+                }
             });
             input.addEventListener('keydown', function(e) {
-                if (e.key === 'Backspace' && this.value.length === 0 && idx > 0) document.querySelectorAll(
-                    '.otp-input')[idx - 1].focus();
+                if (e.key === 'Backspace' && this.value.length === 0 && idx > 0) {
+                    document.querySelectorAll('.otp-input')[idx - 1].focus();
+                }
             });
         });
 
@@ -1027,6 +1741,7 @@
             if (phone.length < 8) { showToast('Numéro invalide. Format: 6XXXXXXXX', 'error'); return; }
             const fullPhone = '+237' + phone;
             const appVerifier = getRecaptchaVerifier();
+
             firebase.auth().signInWithPhoneNumber(fullPhone, appVerifier)
                 .then(function(result) {
                     confirmationResult = result;
@@ -1034,11 +1749,14 @@
                     navigateTo('otp');
                     showToast('📱 Code SMS envoyé !', 'success');
                 })
-                .catch(function(error) { showToast('❌ ' + error.message, 'error'); });
+                .catch(function(error) {
+                    showToast('❌ ' + error.message, 'error');
+                });
         });
 
         document.getElementById('login-skip').addEventListener('click', function() {
             isLoggedIn = true;
+            document.getElementById('bottom-nav').classList.add('active');
             navigateTo('dashboard');
             showToast('🔓 Mode test (sans SMS)', 'success');
         });
@@ -1047,176 +1765,376 @@
             let code = '';
             document.querySelectorAll('.otp-input').forEach(inp => code += inp.value);
             if (code.length < 6) { showToast('Entrez les 6 chiffres du code', 'error'); return; }
-            if (code === '123456') { isLoggedIn = true;
+
+            // Mode test 123456
+            if (code === '123456') {
+                isLoggedIn = true;
+                document.getElementById('bottom-nav').classList.add('active');
                 navigateTo('dashboard');
-                showToast('✅ Mode test (123456)', 'success'); return; }
-            if (!confirmationResult) { showToast('❌ Aucun code envoyé. Recommencez.', 'error'); return; }
+                showToast('✅ Mode test (123456)', 'success');
+                return;
+            }
+
+            if (!confirmationResult) {
+                showToast('❌ Aucun code envoyé. Recommencez.', 'error');
+                return;
+            }
+
             confirmationResult.confirm(code)
-                .then(function() { isLoggedIn = true;
+                .then(function() {
+                    isLoggedIn = true;
+                    document.getElementById('bottom-nav').classList.add('active');
                     navigateTo('dashboard');
-                    showToast('✅ Connexion réussie !', 'success'); })
-                .catch(function() { showToast('❌ Code incorrect. Réessayez.', 'error'); });
+                    showToast('✅ Connexion réussie !', 'success');
+                })
+                .catch(function() {
+                    showToast('❌ Code incorrect. Réessayez.', 'error');
+                });
         });
 
         document.getElementById('otp-resend').addEventListener('click', function() {
             const phone = document.getElementById('phone-input').value.trim();
-            if (phone.length < 8) { showToast("Entrez d'abord un numéro", 'error'); return; }
+            if (phone.length < 8) { showToast('Entrez d\'abord un numéro', 'error'); return; }
             const fullPhone = '+237' + phone;
             const appVerifier = getRecaptchaVerifier();
             firebase.auth().signInWithPhoneNumber(fullPhone, appVerifier)
-                .then(function(result) { confirmationResult = result;
-                    showToast('📱 Nouveau code envoyé !', 'success'); })
-                .catch(function(error) { showToast('❌ ' + error.message, 'error'); });
+                .then(function(result) {
+                    confirmationResult = result;
+                    showToast('📱 Nouveau code envoyé !', 'success');
+                })
+                .catch(function(error) {
+                    showToast('❌ ' + error.message, 'error');
+                });
         });
 
         // ==========================================
-        // BOTTOM NAV / QUICK ACTIONS
+        // BILINGUISME
         // ==========================================
-        document.querySelectorAll('.nav-btn').forEach(btn => btn.addEventListener('click', function() { navigateTo(this
-                .dataset.screen); }));
-        document.querySelectorAll('.qa-btn').forEach(el => el.addEventListener('click', function() { navigateTo(this
-                .dataset.target); }));
-        document.getElementById('goto-withdrawal').addEventListener('click', () => {
-            navigateTo('withdrawal');
-            document.getElementById('withdrawal-balance-label').textContent = 'Solde : ' + formatFCFA(balance);
-        });
-        document.getElementById('goto-publish').addEventListener('click', () => navigateTo('publish'));
-        document.getElementById('goto-feed-from-publish').addEventListener('click', () => navigateTo('feed'));
-        document.getElementById('goto-priceguide').addEventListener('click', () => navigateTo('priceguide'));
+        const translations = {
+            fr: {
+                greeting: 'Bonjour',
+                greeting_sub: 'Prêt à recycler aujourd\'hui ?',
+                map: 'Carte',
+                messages: 'Messages',
+                stats: 'Stats',
+                marketplace: 'Marché',
+                balance: '💰 Solde Mobile Money',
+                withdraw: 'Retirer',
+                sales: 'Ventes',
+                recycled: 'Recyclés',
+                rating: 'Note',
+                recent: '⚡ Activité récente',
+                pet: 'Collecte de bouteilles PET',
+                aluminum: 'Canettes aluminium',
+                cardboard: 'Cartons recyclables',
+                marketplace_title: '🛒 Marché',
+                publish: 'Publier',
+                all: 'Tous',
+                plastic: 'Plastique',
+                metal: 'Métal',
+                cardboard_cat: 'Carton',
+                glass_cat: 'Verre',
+                oil: 'Huile',
+                electronic: 'Électronique',
+                back: '← Retour',
+                available: 'Disponible',
+                contact: 'Contacter',
+                rate_seller: '⭐ Noter ce vendeur',
+                reviews: '📝 Avis (12)',
+                days_ago_2: 'Il y a 2j',
+                days_ago_5: 'Il y a 5j',
+                new_ad: '➕ Nouvelle annonce',
+                category: 'Catégorie',
+                title_label: 'Titre',
+                quantity_label: 'Quantité',
+                price_label: 'Prix (FCFA/kg)',
+                city_label: 'Ville',
+                publish_ad: 'Publier l\'annonce',
+                withdraw_momo: '💰 Retrait MoMo',
+                balance_label: 'Solde : 5 000 FCFA',
+                amount_label: 'Montant (FCFA)',
+                phone_label: 'Numéro de téléphone',
+                confirm_withdraw: 'Confirmer le retrait',
+                fees: 'Frais : 1.5% · Délai : instantané',
+                collection_points: '📍 Points de collecte',
+                price_guide_title: '📊 Guide des prix',
+                price_guide_sub: 'Prix indicatifs du recyclage au Cameroun (FCFA/kg)',
+                price_guide: 'Guide des prix',
+                price_advice: '💡 Conseil : Les prix varient selon la qualité et la quantité. Ces prix sont indicatifs et peuvent être négociés.',
+                messages_title: '💬 Messages',
+                notif_title: '🔔 Notifications',
+                mark_all: 'Tout marquer comme lu',
+                notif_msg1: 'Nouveau message de Paul',
+                notif_msg2: 'Collecte confirmée',
+                notif_msg3: 'Offre Premium disponible',
+                notif_msg4: 'Nouvel avis reçu',
+                stats_title: '📊 Statistiques',
+                weekly: '📈 Collectes par semaine',
+                waste_distribution: '🧩 Répartition des déchets',
+                plastic_pct: 'Plastique 40%',
+                metal_pct: 'Métal 20%',
+                glass_pct: 'Verre 20%',
+                cardboard_pct: 'Carton 20%',
+                monthly_revenue: '💰 Revenus mensuels',
+                change_password: 'Changer le mot de passe',
+                notifications: 'Notifications',
+                active: 'Actives',
+                language: 'Langue',
+                dark_mode: 'Mode sombre',
+                enabled: 'Activé',
+                my_ads: 'Mes annonces',
+                my_premium: 'Mon abonnement Premium',
+                active_premium: 'Actif',
+                logout: 'Déconnexion',
+                home: 'Accueil',
+                notif: 'Notif.',
+                profile: 'Profil'
+            },
+            en: {
+                greeting: 'Hello',
+                greeting_sub: 'Ready to recycle today?',
+                map: 'Map',
+                messages: 'Messages',
+                stats: 'Stats',
+                marketplace: 'Marketplace',
+                balance: '💰 Mobile Money Balance',
+                withdraw: 'Withdraw',
+                sales: 'Sales',
+                recycled: 'Recycled',
+                rating: 'Rating',
+                recent: '⚡ Recent Activity',
+                pet: 'PET bottles collection',
+                aluminum: 'Aluminum cans',
+                cardboard: 'Recyclable cardboard',
+                marketplace_title: '🛒 Marketplace',
+                publish: 'Publish',
+                all: 'All',
+                plastic: 'Plastic',
+                metal: 'Metal',
+                cardboard_cat: 'Cardboard',
+                glass_cat: 'Glass',
+                oil: 'Oil',
+                electronic: 'Electronics',
+                back: '← Back',
+                available: 'Available',
+                contact: 'Contact',
+                rate_seller: '⭐ Rate this seller',
+                reviews: '📝 Reviews (12)',
+                days_ago_2: '2 days ago',
+                days_ago_5: '5 days ago',
+                new_ad: '➕ New ad',
+                category: 'Category',
+                title_label: 'Title',
+                quantity_label: 'Quantity',
+                price_label: 'Price (FCFA/kg)',
+                city_label: 'City',
+                publish_ad: 'Publish ad',
+                withdraw_momo: '💰 MoMo Withdrawal',
+                balance_label: 'Balance: 5,000 FCFA',
+                amount_label: 'Amount (FCFA)',
+                phone_label: 'Phone number',
+                confirm_withdraw: 'Confirm withdrawal',
+                fees: 'Fees: 1.5% · Instant delivery',
+                collection_points: '📍 Collection points',
+                price_guide_title: '📊 Price guide',
+                price_guide_sub: 'Indicative recycling prices in Cameroon (FCFA/kg)',
+                price_guide: 'Price guide',
+                price_advice: '💡 Tip: Prices vary by quality and quantity. These are indicative and negotiable.',
+                messages_title: '💬 Messages',
+                notif_title: '🔔 Notifications',
+                mark_all: 'Mark all as read',
+                notif_msg1: 'New message from Paul',
+                notif_msg2: 'Collection confirmed',
+                notif_msg3: 'Premium offer available',
+                notif_msg4: 'New review received',
+                stats_title: '📊 Statistics',
+                weekly: '📈 Weekly collections',
+                waste_distribution: '🧩 Waste distribution',
+                plastic_pct: 'Plastic 40%',
+                metal_pct: 'Metal 20%',
+                glass_pct: 'Glass 20%',
+                cardboard_pct: 'Cardboard 20%',
+                monthly_revenue: '💰 Monthly revenue',
+                change_password: 'Change password',
+                notifications: 'Notifications',
+                active: 'Active',
+                language: 'Language',
+                dark_mode: 'Dark mode',
+                enabled: 'Enabled',
+                my_ads: 'My ads',
+                my_premium: 'My Premium subscription',
+                active_premium: 'Active',
+                logout: 'Logout',
+                home: 'Home',
+                notif: 'Notif.',
+                profile: 'Profile'
+            }
+        };
 
-        // ==========================================
-        // MARCHÉ
-        // ==========================================
-        function qualityClass(q) {
-            if (q === 'Propre et trié') return 'clean';
-            if (q === 'Mélangé') return 'mixed';
-            return 'dirty';
+        function updateLanguage() {
+            const langCode = lang;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.dataset.i18n;
+                if (translations[langCode] && translations[langCode][key]) {
+                    el.textContent = translations[langCode][key];
+                }
+            });
+            document.getElementById('lang-toggle').textContent = lang === 'fr' ? '🇫🇷 FR' : '🇬🇧 EN';
         }
 
-        function renderFeed(filter) {
-            currentFilter = filter || currentFilter || 'Tous';
-            const source = liveProducts || feedProducts;
+        document.getElementById('lang-toggle').addEventListener('click', function() {
+            lang = lang === 'fr' ? 'en' : 'fr';
+            updateLanguage();
+            showToast(lang === 'fr' ? '🇫🇷 Langue changée' : '🇬🇧 Language changed', 'success');
+        });
+
+        // ==========================================
+        // BOTTOM NAV
+        // ==========================================
+        document.querySelectorAll('.nav-item').forEach(btn => {
+            btn.addEventListener('click', function() {
+                navigateTo(this.dataset.screen);
+            });
+        });
+
+        // ==========================================
+        // QUICK ACTIONS
+        // ==========================================
+        document.querySelectorAll('.qa-item').forEach(el => {
+            el.addEventListener('click', function() {
+                navigateTo(this.dataset.target);
+            });
+        });
+
+        // ==========================================
+        // FEED - FIRESTORE
+        // ==========================================
+        function renderFeed(productsData, filter) {
             const container = document.getElementById('feed-list');
-            const filtered = currentFilter === 'Tous' ? source : source.filter(p => (p.cat || p.category) === currentFilter);
-            if (filtered.length === 0) {
+            const filtered = filter === 'Tous' ? productsData : productsData.filter(p => p.cat === filter);
+
+            if (!filtered || filtered.length === 0) {
                 container.innerHTML =
-                    '<div style="padding:20px;color:var(--ink-faint);text-align:center;font-size:13px">Aucune annonce dans cette catégorie</div>';
+                    '<div style="text-align:center;padding:40px 0;color:var(--text2);">Aucune annonce disponible</div>';
                 return;
             }
+
             container.innerHTML = filtered.map((p, i) => `
-                <div class="product-item" data-index="${i}">
-                    ${p.photo ? `<img class="thumb" src="${p.photo}" alt="${p.title}">` : `<span class="emoji-sm">${p.emoji || '📦'}</span>`}
+                <div class="product-card" data-index="${i}">
+                    <div class="emoji">${p.emoji || '📦'}</div>
                     <div class="info">
                         <div class="title">${p.title || 'Annonce'}</div>
-                        <div class="loc">${p.loc || p.city || 'Cameroun'}</div>
-                        ${p.quality ? `<span class="quality-tag ${qualityClass(p.quality)}">${p.quality}</span>` : ''}
+                        <div class="location">${p.loc || p.city || 'Cameroun'}</div>
+                        <span class="status-badge available">${p.status || 'Disponible'}</span>
                     </div>
                     <div>
-                        <div class="price">${p.price || ''}</div>
-                        <div class="qty">${p.qty || ''}</div>
+                        <div class="price">${p.price || 'Prix non défini'}</div>
+                        <div class="qty">${p.qty || 'Quantité'}</div>
                     </div>
-                </div>`
-            ).join('');
-            container.querySelectorAll('.product-item').forEach(el => {
-                el.addEventListener('click', function() { showToast('📦 Détail du produit', 'success'); });
+                </div>
+            `).join('');
+
+            container.querySelectorAll('.product-card').forEach(el => {
+                el.addEventListener('click', function() {
+                    const idx = parseInt(this.dataset.index);
+                    const p = filtered[idx];
+                    openDetail(p);
+                });
             });
         }
 
-        document.querySelectorAll('.chip').forEach(chip => {
-            chip.addEventListener('click', function() {
-                document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-                this.classList.add('active');
-                renderFeed(this.dataset.cat);
-            });
-        });
-
-        // ==========================================
-        // FIRESTORE
-        // ==========================================
         function listenToProducts() {
             if (!db) {
-                liveProducts = feedProducts;
-                renderFeed(currentFilter);
+                products = staticProducts;
+                renderFeed(products, currentFilter);
                 return;
             }
-            if (productsUnsubscribe) { productsUnsubscribe();
-                productsUnsubscribe = null; }
+
+            if (productsUnsubscribe) {
+                productsUnsubscribe();
+                productsUnsubscribe = null;
+            }
+
             productsUnsubscribe = db.collection('products')
                 .where('status', '==', 'available')
                 .orderBy('createdAt', 'desc')
                 .onSnapshot(function(snapshot) {
-                    liveProducts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                    renderFeed(currentFilter);
-                }, function(error) { console.error('Erreur Firestore:', error); });
-        }
-        setTimeout(listenToProducts, 500);
+                    if (snapshot.empty) {
+                        products = [];
+                        renderFeed(products, currentFilter);
+                        return;
+                    }
 
-        // ==========================================
-        // PUBLICATION
-        // ==========================================
-        const photoDropzone = document.getElementById('photo-dropzone');
-        const photoInput = document.getElementById('publish-photo-input');
-        const photoPreview = document.getElementById('photo-preview');
+                    products = [];
+                    snapshot.forEach(function(doc) {
+                        const data = doc.data();
+                        products.push({
+                            id: doc.id,
+                            emoji: data.emoji || '📦',
+                            title: data.title || 'Annonce',
+                            loc: data.loc || data.city || 'Cameroun',
+                            price: data.price || 'Prix non défini',
+                            qty: data.qty || 'Quantité',
+                            cat: data.category || 'Autre',
+                            status: data.status || 'Disponible'
+                        });
+                    });
 
-        function compressImage(file, maxWidth, quality) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = e => {
-                    const img = new Image();
-                    img.onload = () => {
-                        const scale = Math.min(1, maxWidth / img.width);
-                        const canvas = document.createElement('canvas');
-                        canvas.width = Math.round(img.width * scale);
-                        canvas.height = Math.round(img.height * scale);
-                        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-                        resolve(canvas.toDataURL('image/jpeg', quality));
-                    };
-                    img.onerror = reject;
-                    img.src = e.target.result;
-                };
-                reader.onerror = reject;
-                reader.readAsDataURL(file);
-            });
+                    renderFeed(products, currentFilter);
+                }, function(error) {
+                    console.error('Erreur Firestore:', error);
+                    products = staticProducts;
+                    renderFeed(products, currentFilter);
+                });
         }
 
-        photoDropzone.addEventListener('click', () => photoInput.click());
-        photoInput.addEventListener('change', async function() {
-            const file = this.files[0];
-            if (!file) return;
-            try {
-                publishPhotoData = await compressImage(file, 640, 0.7);
-                photoPreview.src = publishPhotoData;
-                photoPreview.classList.remove('hidden');
-                document.getElementById('photo-dropzone-icon').classList.add('hidden');
-                document.getElementById('photo-dropzone-text').textContent = 'Photo ajoutée · toucher pour changer';
-                photoDropzone.classList.add('filled');
-            } catch (err) {
-                showToast('❌ Erreur de lecture de la photo', 'error');
-            }
-        });
-
-        document.querySelectorAll('#quality-row .quality-opt').forEach(el => {
-            el.addEventListener('click', function() {
-                document.querySelectorAll('#quality-row .quality-opt').forEach(m => m.classList.remove(
-                'selected'));
-                this.classList.add('selected');
-                publishQuality = this.dataset.quality;
+        document.querySelectorAll('.category-chip').forEach(chip => {
+            chip.addEventListener('click', function() {
+                document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+                currentFilter = this.dataset.cat;
+                renderFeed(products, currentFilter);
             });
         });
 
-        function resetPublishForm() {
-            document.getElementById('publish-title').value = '';
-            document.getElementById('publish-qty').value = '';
-            document.getElementById('publish-price').value = '';
-            document.getElementById('publish-city').value = '';
-            publishPhotoData = null;
-            photoPreview.classList.add('hidden');
-            photoPreview.src = '';
-            document.getElementById('photo-dropzone-icon').classList.remove('hidden');
-            document.getElementById('photo-dropzone-text').textContent = 'Prendre une photo de la matière';
-            photoDropzone.classList.remove('filled');
-            photoInput.value = '';
+        // ==========================================
+        // DETAIL
+        // ==========================================
+        function openDetail(p) {
+            document.getElementById('detail-emoji').textContent = p.emoji || '📦';
+            document.getElementById('detail-title').textContent = p.title || 'Annonce';
+            document.getElementById('detail-location').textContent = p.loc || p.city || 'Cameroun';
+            document.getElementById('detail-price').textContent = p.price || 'Prix non défini';
+            document.getElementById('detail-status').textContent = p.status || 'Disponible';
+            navigateTo('detail');
         }
+
+        document.getElementById('detail-back').addEventListener('click', function() { navigateTo('feed'); });
+
+        document.querySelectorAll('#rating-stars .star').forEach(star => {
+            star.addEventListener('click', function() {
+                const val = parseInt(this.dataset.val);
+                document.querySelectorAll('#rating-stars .star').forEach(s => {
+                    const sv = parseInt(s.dataset.val);
+                    s.textContent = sv <= val ? '★' : '☆';
+                    s.classList.toggle('active', sv <= val);
+                });
+                showToast('⭐ Noté ' + val + '/5 ! Merci !', 'success');
+            });
+        });
+
+        // ==========================================
+        // PUBLISH
+        // ==========================================
+        document.querySelectorAll('.photo-slot').forEach(slot => {
+            slot.addEventListener('click', function() {
+                this.classList.toggle('filled');
+                this.textContent = this.classList.contains('filled') ? '✅' : '📷';
+                if (this.classList.contains('filled')) showToast('📸 Photo ajoutée', 'success');
+            });
+        });
+
+        document.getElementById('goto-publish').addEventListener('click', function() { navigateTo('publish'); });
 
         document.getElementById('publish-submit').addEventListener('click', function() {
             const title = document.getElementById('publish-title').value.trim();
@@ -1225,29 +2143,32 @@
             const city = document.getElementById('publish-city').value.trim();
             const category = document.getElementById('publish-cat').value;
 
-            if (!publishPhotoData) { showToast('Ajoutez une photo de la matière', 'error'); return; }
-            if (!title || !qty || !price || !city) { showToast('Veuillez remplir tous les champs', 'error'); return; }
-
-            const user = firebase.auth().currentUser;
-            if (!user) { showToast("❌ Connectez-vous d'abord", 'error'); return; }
+            if (!title || !qty || !price || !city) {
+                showToast('Veuillez remplir tous les champs', 'error');
+                return;
+            }
 
             if (!db) {
                 showToast('✅ Annonce publiée (simulation)', 'success');
-                resetPublishForm();
+                clearPublishForm();
                 navigateTo('feed');
                 return;
             }
 
+            const user = firebase.auth().currentUser;
+            if (!user) {
+                showToast('❌ Connectez-vous d\'abord', 'error');
+                return;
+            }
+
             const productData = {
-                title,
-                qty,
-                city,
-                category,
-                cat: category,
+                title: title,
+                qty: qty,
                 price: price + ' FCFA/kg',
+                city: city,
+                category: category,
+                emoji: '📦',
                 loc: city,
-                photo: publishPhotoData,
-                quality: publishQuality,
                 userId: user.uid,
                 userPhone: user.phoneNumber,
                 status: 'available',
@@ -1256,149 +2177,71 @@
 
             db.collection('products').add(productData)
                 .then(function() {
-                    showToast('✅ Annonce publiée avec photo !', 'success');
-                    resetPublishForm();
+                    showToast('✅ Annonce publiée !', 'success');
+                    clearPublishForm();
                     navigateTo('feed');
                 })
-                .catch(function(error) { showToast('❌ Erreur: ' + error.message, 'error'); });
-        });
-
-        // ==========================================
-        // RETRAIT
-        // ==========================================
-        document.querySelectorAll('.provider-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('.provider-btn').forEach(b => b.classList.remove('selected'));
-                this.classList.add('selected');
-            });
-        });
-
-        document.getElementById('withdrawal-submit').addEventListener('click', function() {
-            const amount = parseFloat(document.getElementById('withdrawal-amount').value);
-            const phone = document.getElementById('withdrawal-phone').value.trim();
-            if (!amount || amount <= 0) { showToast('Montant invalide', 'error'); return; }
-            if (amount > balance) { showToast('Solde insuffisant', 'error'); return; }
-            if (!phone || phone.length < 8) { showToast('Numéro invalide', 'error'); return; }
-            balance -= amount;
-            document.getElementById('balance-amount').textContent = formatFCFA(balance);
-            document.getElementById('withdrawal-amount').value = '';
-            document.getElementById('withdrawal-phone').value = '';
-            showToast('✅ Demande de retrait de ' + formatFCFA(amount) + ' envoyée !', 'success');
-        });
-
-        // ==========================================
-        // MAP
-        // ==========================================
-        function renderCities(list) {
-            const container = document.getElementById('city-list');
-            container.innerHTML = list.map(c => `
-                <div class="product-item city-item" style="cursor:pointer">
-                    <span class="emoji-sm">📍</span>
-                    <div class="info"><div class="title">${c.name}</div><div class="loc">${c.address}</div></div>
-                </div>`
-            ).join('');
-            container.querySelectorAll('.city-item').forEach(el => {
-                el.addEventListener('click', function() {
-                    const name = this.querySelector('.title').textContent;
-                    const address = this.querySelector('.loc').textContent;
-                    document.getElementById('map-city').textContent = name;
-                    document.getElementById('map-address').textContent = address;
-                    showToast('📍 ' + name + ' sélectionné', 'success');
+                .catch(function(error) {
+                    showToast('❌ Erreur: ' + error.message, 'error');
                 });
-            });
-        }
-        renderCities(cityData);
-
-        // ==========================================
-        // PRICE GUIDE
-        // ==========================================
-        function renderPriceGuide() {
-            document.getElementById('price-guide-grid').innerHTML = priceGuideData.map(p => `
-                <div class="price-guide-item">
-                    <span class="emoji">${p.emoji}</span>
-                    <div class="name">${p.name}</div>
-                    <div class="price">${p.price}</div>
-                    <div class="sub">${p.sub}</div>
-                </div>`
-            ).join('');
-        }
-        renderPriceGuide();
-
-        // ==========================================
-        // STATS
-        // ==========================================
-        function renderRevenue() {
-            document.getElementById('revenue-bars').innerHTML = revenueData.map(r => `
-                <div>
-                    <div style="display:flex;justify-content:space-between;font-size:13px">
-                        <span>${r.month}</span><span style="font-family:var(--font-mono)">${r.amount.toLocaleString('fr-FR')} FCFA</span>
-                    </div>
-                    <div class="progress-bar"><div class="progress-fill" style="width:${r.pct}%"></div></div>
-                </div>`
-            ).join('');
-        }
-        renderRevenue();
-
-        // ==========================================
-        // NOTIFICATIONS
-        // ==========================================
-        function renderNotifications() {
-            document.getElementById('notif-list').innerHTML = notifs.map((n, i) => `
-                <div class="notif-item" data-index="${i}" style="display:flex;gap:12px;padding:12px;background:var(--surface-2);border-radius:12px;border:1px solid var(--border);margin-bottom:6px;cursor:pointer;align-items:flex-start">
-                    <span style="font-size:21px">${n.icon}</span>
-                    <div style="flex:1">
-                        <div style="font-weight:500;font-size:14px">${n.title}</div>
-                        <div style="font-size:12px;color:var(--ink-faint)">${n.body}</div>
-                        <div style="font-size:10px;color:var(--ink-faint);margin-top:2px;font-family:var(--font-mono)">${n.time}</div>
-                    </div>
-                    <span class="dot" style="width:7px;height:7px;background:var(--gold);border-radius:50%;margin-top:4px;flex-shrink:0"></span>
-                </div>`
-            ).join('');
-            document.querySelectorAll('.notif-item').forEach(el => {
-                el.addEventListener('click', function() {
-                    const dot = this.querySelector('.dot');
-                    if (dot) dot.classList.add('read');
-                    showToast('✅ Notification marquée comme lue', 'success');
-                    updateBadge();
-                });
-            });
-        }
-        renderNotifications();
-        document.getElementById('notif-mark-all').addEventListener('click', function() {
-            document.querySelectorAll('.notif-item .dot').forEach(d => d.classList.add('read'));
-            showToast('✅ Toutes les notifications sont lues', 'success');
-            updateBadge();
         });
 
+        function clearPublishForm() {
+            document.getElementById('publish-title').value = '';
+            document.getElementById('publish-qty').value = '';
+            document.getElementById('publish-price').value = '';
+            document.getElementById('publish-city').value = '';
+            document.querySelectorAll('.photo-slot').forEach(s => { s.classList.remove('filled');
+                s.textContent = '📷'; });
+        }
+
         // ==========================================
-        // CHAT
+        // CHAT (CORRIGÉ - SANS RÉPONSES AUTO)
         // ==========================================
         function renderChatList() {
-            document.getElementById('chat-list').innerHTML = `
-                <div class="product-item" data-chat="paul" style="cursor:pointer">
-                    <span class="emoji-sm">👤</span>
-                    <div class="info"><div class="title">Paul N.</div><div class="loc">Dernier message : "Ok je suis dispo"</div></div>
-                    <div style="text-align:right">
-                        <div style="font-size:11px;color:var(--ink-faint)">12:30</div>
-                        <div style="background:var(--clay);color:#fff;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;margin-top:4px;margin-left:auto">2</div>
+            const container = document.getElementById('chat-list');
+            container.innerHTML = `
+                <div class="product-card" data-chat="paul" style="cursor:pointer;">
+                    <div class="emoji">👤</div>
+                    <div class="info">
+                        <div class="title">Paul N.</div>
+                        <div class="location">Dernier message : "Bonjour ! Oui je les ai encore"</div>
+                    </div>
+                    <div style="text-align:right;">
+                        <div style="font-size:12px;color:var(--text2);">12:22</div>
+                        <div style="background:var(--danger);width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;margin-top:4px;margin-left:auto;color:#fff;">1</div>
                     </div>
                 </div>
-                <div class="product-item" data-chat="marie" style="cursor:pointer">
-                    <span class="emoji-sm">👤</span>
-                    <div class="info"><div class="title">Marie K.</div><div class="loc">Dernier message : "Merci pour votre confiance"</div></div>
-                    <div style="text-align:right"><div style="font-size:11px;color:var(--ink-faint)">Hier</div></div>
+                <div class="product-card" data-chat="marie" style="cursor:pointer;">
+                    <div class="emoji">👤</div>
+                    <div class="info">
+                        <div class="title">Marie K.</div>
+                        <div class="location">Dernier message : "Merci pour votre confiance"</div>
+                    </div>
+                    <div style="text-align:right;">
+                        <div style="font-size:12px;color:var(--text2);">Hier</div>
+                    </div>
                 </div>
-                <div class="product-item" data-chat="jean" style="cursor:pointer">
-                    <span class="emoji-sm">👤</span>
-                    <div class="info"><div class="title">Jean D.</div><div class="loc">Dernier message : "Quand pouvez-vous passer ?"</div></div>
-                    <div style="text-align:right"><div style="font-size:11px;color:var(--ink-faint)">Hier</div></div>
-                </div>`;
-            document.querySelectorAll('#chat-list .product-item').forEach(el => {
-                el.addEventListener('click', function() { openChat(this.dataset.chat); });
+                <div class="product-card" data-chat="jean" style="cursor:pointer;">
+                    <div class="emoji">👤</div>
+                    <div class="info">
+                        <div class="title">Jean D.</div>
+                        <div class="location">Dernier message : "Quand pouvez-vous passer ?"</div>
+                    </div>
+                    <div style="text-align:right;">
+                        <div style="font-size:12px;color:var(--text2);">Hier</div>
+                    </div>
+                </div>
+            `;
+
+            container.querySelectorAll('.product-card').forEach(el => {
+                el.addEventListener('click', function() {
+                    openChat(this.dataset.chat);
+                });
             });
         }
-        renderChatList();
 
+        document.getElementById('goto-chat-from-detail').addEventListener('click', function() { navigateTo('chat'); });
         document.getElementById('chat-back').addEventListener('click', function() {
             document.getElementById('chat-conversation').style.display = 'none';
             document.getElementById('chat-list').style.display = 'block';
@@ -1414,39 +2257,210 @@
         function renderChatMessages() {
             const container = document.getElementById('chat-messages');
             const msgs = chatMessages[chatActive] || [];
-            container.innerHTML = msgs.map(m => `
-                <div class="chat-message ${m.sent ? 'sent' : ''}">
-                    <div class="bubble"><div>${m.text}</div><div class="time">${m.time}</div></div>
+            container.innerHTML = msgs.map(m =>
+                `<div class="chat-message ${m.sent ? 'sent' : ''}">
+                    <div class="bubble">
+                        <div class="text">${m.text}</div>
+                        <div class="time">${m.time}</div>
+                    </div>
                 </div>`
             ).join('');
             container.scrollTop = container.scrollHeight;
         }
 
         document.getElementById('chat-send-btn').addEventListener('click', sendMessage);
-        document.getElementById('chat-input-text').addEventListener('keydown', function(e) { if (e.key === 'Enter')
-                sendMessage(); });
+        document.getElementById('chat-input-text').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') sendMessage();
+        });
 
+        // ===== CHAT CORRIGÉ : PLUS DE RÉPONSES AUTOMATIQUES =====
         function sendMessage() {
             const input = document.getElementById('chat-input-text');
             const text = input.value.trim();
             if (!text || !chatActive) return;
+
             const now = new Date();
             const time = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+
             if (!chatMessages[chatActive]) chatMessages[chatActive] = [];
             chatMessages[chatActive].push({ text, sent: true, time });
             input.value = '';
             renderChatMessages();
-            setTimeout(() => {
-                const replies = ["Merci pour votre message ! Je vous réponds dans la journée.",
-                    "Parfait, je confirme la collecte pour demain.", "Très bien, je suis disponible.",
-                    "D'accord, à bientôt !", "Je prends note de votre demande."
-                ];
-                const reply = replies[Math.floor(Math.random() * replies.length)];
-                chatMessages[chatActive].push({ text: reply, sent: false, time: 'Maintenant' });
-                renderChatMessages();
-                showToast('📩 Nouveau message reçu', 'success');
-            }, 1500);
+
+            // ✅ PLUS DE RÉPONSE AUTOMATIQUE — l'utilisateur attend une vraie réponse
+            showToast('💬 Message envoyé', 'success');
         }
+
+        // ==========================================
+        // WITHDRAWAL
+        // ==========================================
+        document.getElementById('goto-withdrawal').addEventListener('click', function() { navigateTo('withdrawal'); });
+
+        document.querySelectorAll('.provider-item').forEach(el => {
+            el.addEventListener('click', function() {
+                document.querySelectorAll('.provider-item').forEach(p => p.classList.remove('selected'));
+                this.classList.add('selected');
+            });
+        });
+
+        document.getElementById('withdrawal-submit').addEventListener('click', function() {
+            const amount = document.getElementById('withdrawal-amount').value;
+            const phone = document.getElementById('withdrawal-phone').value;
+            if (!amount || parseFloat(amount) <= 0) { showToast('Veuillez entrer un montant valide', 'error'); return; }
+            if (!phone || phone.length < 8) { showToast('Veuillez entrer un numéro valide', 'error'); return; }
+            showToast('✅ Demande de retrait de ' + amount + ' FCFA envoyée !', 'success');
+            document.getElementById('withdrawal-amount').value = '';
+            document.getElementById('withdrawal-phone').value = '';
+        });
+
+        // ==========================================
+        // NOTIFICATIONS
+        // ==========================================
+        function renderNotifications() {
+            const container = document.getElementById('notif-list');
+            container.innerHTML = notifications.map((n, i) =>
+                `<div class="notif-item" data-index="${i}">
+                    <div class="icon">${n.icon}</div>
+                    <div class="info">
+                        <div class="title">${n.title}</div>
+                        <div class="body">${n.body}</div>
+                        <div class="time">${n.time}</div>
+                    </div>
+                    <div class="dot"></div>
+                </div>`
+            ).join('');
+
+            container.querySelectorAll('.notif-item').forEach(el => {
+                el.addEventListener('click', function() {
+                    const dot = this.querySelector('.dot');
+                    if (dot) dot.classList.add('read');
+                    showToast('✅ Notification marquée comme lue', 'success');
+                    updateBadge();
+                });
+            });
+        }
+
+        renderNotifications();
+
+        document.getElementById('notif-mark-all').addEventListener('click', function() {
+            document.querySelectorAll('.notif-item .dot').forEach(d => d.classList.add('read'));
+            showToast('✅ Toutes les notifications sont lues', 'success');
+            updateBadge();
+        });
+
+        // ==========================================
+        // MAP
+        // ==========================================
+        function renderCities() {
+            const list = document.getElementById('city-list');
+            list.innerHTML = cityData.map(c =>
+                `<button class="city-item" data-city="${c.city}">
+                    <div class="emoji">📍</div>
+                    <div class="info">
+                        <div class="name">${c.name}</div>
+                        <div class="address">${c.address}</div>
+                    </div>
+                </button>`
+            ).join('');
+
+            list.querySelectorAll('.city-item').forEach(el => {
+                el.addEventListener('click', function() {
+                    const name = this.querySelector('.name').textContent;
+                    const address = this.querySelector('.address').textContent;
+                    document.getElementById('map-current-city').textContent = name;
+                    document.getElementById('map-current-address').textContent = address;
+                    showToast('📍 ' + name + ' sélectionné', 'success');
+                });
+            });
+        }
+
+        renderCities();
+
+        // ==========================================
+        // PRICE GUIDE
+        // ==========================================
+        function renderPriceGuide() {
+            const grid = document.getElementById('price-guide-grid');
+            grid.innerHTML = priceGuideData.map(p =>
+                `<div class="price-guide-item">
+                    <div class="emoji">${p.emoji}</div>
+                    <div class="name">${p.name}</div>
+                    <div class="price">${p.price}</div>
+                    <div class="sub">${p.sub}</div>
+                </div>`
+            ).join('');
+        }
+
+        renderPriceGuide();
+        document.getElementById('goto-priceguide').addEventListener('click', function() { navigateTo('priceguide'); });
+
+        // ==========================================
+        // STATS
+        // ==========================================
+        function renderStats() {
+            const chartData = [
+                { day: 'Lun', value: 40 },
+                { day: 'Mar', value: 60 },
+                { day: 'Mer', value: 30 },
+                { day: 'Jeu', value: 90 },
+                { day: 'Ven', value: 70 },
+                { day: 'Sam', value: 50 },
+                { day: 'Dim', value: 20 }
+            ];
+
+            const chartContainer = document.getElementById('chart-bars');
+            chartContainer.innerHTML = chartData.map(d =>
+                `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+                    <div class="chart-bar" style="height:${d.value}%;"></div>
+                    <div class="chart-label">${d.day}</div>
+                </div>`
+            ).join('');
+
+            const revenueContainer = document.getElementById('revenue-bars');
+            revenueContainer.innerHTML = revenueData.map(r =>
+                `<div>
+                    <div style="display:flex;justify-content:space-between;font-size:13px;">
+                        <span>${r.month}</span>
+                        <span>${r.amount.toLocaleString()} FCFA</span>
+                    </div>
+                    <div style="width:100%;height:6px;background:var(--surface);border-radius:4px;overflow:hidden;">
+                        <div style="width:${r.pct}%;height:100%;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:4px;"></div>
+                    </div>
+                </div>`
+            ).join('');
+        }
+
+        renderStats();
+
+        // ==========================================
+        // PROFIL MODIFIABLE
+        // ==========================================
+        document.getElementById('save-profile').addEventListener('click', function() {
+            const name = document.getElementById('profile-name').value.trim();
+            const username = document.getElementById('profile-username').value.trim();
+
+            if (!name) {
+                showToast('Veuillez entrer un nom', 'error');
+                return;
+            }
+
+            // Sauvegarder les données (simulé ou Firebase)
+            showToast('✅ Profil mis à jour !', 'success');
+        });
+
+        // ==========================================
+        // GEOLOCALISATION
+        // ==========================================
+        function getUserLocation() {
+            if ('geolocation' in navigator) {
+                navigator.geolocation.getCurrentPosition(
+                    function() { showToast('📍 Position trouvée !', 'success'); },
+                    function() { showToast('⚠️ Impossible de localiser', 'error'); }
+                );
+            }
+        }
+
+        setTimeout(getUserLocation, 3000);
 
         // ==========================================
         // DEEP LINKING
@@ -1454,55 +2468,29 @@
         function handleDeepLink() {
             const params = new URLSearchParams(window.location.search);
             const productId = params.get('product');
-            if (productId) setTimeout(() => showToast('📦 Produit ' + productId + ' chargé !', 'success'), 1000);
+            if (productId) {
+                setTimeout(() => {
+                    navigateTo('detail');
+                    showToast('📦 Produit chargé !', 'success');
+                }, 1000);
+            }
         }
+
         document.addEventListener('DOMContentLoaded', handleDeepLink);
         setTimeout(handleDeepLink, 500);
 
         // ==========================================
-        // GÉOLOCALISATION
-        // ==========================================
-        function calculateDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371;
-            const dLat = (lat2 - lat1) * Math.PI / 180;
-            const dLon = (lon2 - lon1) * Math.PI / 180;
-            const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(
-                dLon / 2) ** 2;
-            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        }
-
-        function getUserLocation() {
-            if (!('geolocation' in navigator)) return;
-            navigator.geolocation.getCurrentPosition(
-                function(pos) {
-                    const { latitude: lat, longitude: lng } = pos.coords;
-                    showToast('📍 Position trouvée !', 'success');
-                    const points = [
-                        { name: 'Douala - Bonaberi', address: 'En face du marché central', lat: 4.04, lng: 9.69 },
-                        { name: 'Douala - Akwa', address: 'Rue des palmiers', lat: 4.05, lng: 9.70 },
-                        { name: 'Yaoundé - Bastos', address: 'Carrefour de la poste', lat: 3.87, lng: 11.52 },
-                        { name: 'Yaoundé - Mvog-Mbi', address: "En face de l'hôpital", lat: 3.86, lng: 11.51 },
-                        { name: 'Bafoussam', address: 'Marché A', lat: 5.48, lng: 10.42 },
-                        { name: 'Garoua', address: 'Rue du commerce', lat: 9.30, lng: 13.40 }
-                    ].map(p => ({ ...p,
-                        address: `À ${calculateDistance(lat, lng, p.lat, p.lng).toFixed(1)} km de vous` }))
-                    .sort((a, b) => parseFloat(a.address) - parseFloat(b.address));
-                    renderCities(points);
-                },
-                function() { /* silencieux */ }
-            );
-        }
-        setTimeout(getUserLocation, 3000);
-
-        // ==========================================
         // INIT
         // ==========================================
-        renderFeed('Tous');
+        setTimeout(listenToProducts, 500);
         updateBadge();
         updateLanguage();
+        renderChatList();
 
-        console.log('♻️ ReLife Cameroun v2.1 - Application chargée');
+        console.log('♻️ ReLife Cameroun v2.0 - Application chargée');
         console.log('🔑 Code OTP : 123456 (test) ou vrai SMS');
+        console.log('📊 Chat corrigé - plus de réponses automatiques');
+        console.log('👤 Profil modifiable');
     </script>
 
 </body>
