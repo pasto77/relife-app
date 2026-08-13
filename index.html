@@ -2,1227 +2,313 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#0F0F0F">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#12140D">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <title>ReLife Cameroun</title>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
-    </script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
-    </script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js">
-    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --bg: #0F0F0F;
-            --bg2: #1A1A1A;
-            --surface: rgba(255, 255, 255, 0.06);
-            --border: rgba(255, 255, 255, 0.08);
-            --text: #FFFFFF;
-            --text2: #A0A0A0;
-            --text3: #666666;
-            --primary: #2D5016;
-            --accent: #FFD700;
-            --success: #22C55E;
-            --danger: #EF4444;
-            --info: #3B82F6;
+            --bg: #12140D;
+            --bg2: #1D2016;
+            --surface: rgba(243, 238, 221, 0.05);
+            --border: rgba(243, 238, 221, 0.10);
+            --text: #F3EEDD;
+            --text2: #9B9884;
+            --text3: #6B6958;
+            --primary: #2E4A2A;
+            --primary-light: #4C7043;
+            --accent: #D9A441;
+            --accent-bright: #F0C36B;
+            --accent-dark: #A67C2E;
+            --success: #6FA841;
+            --danger: #C1573C;
             --radius: 20px;
-            --radius-sm: 12px;
-            --radius-full: 9999px;
             --nav-height: 64px;
             --safe-bottom: env(safe-area-inset-bottom, 0px);
-            --space-sm: 8px;
-            --space-md: 12px;
-            --space-lg: 16px;
-            --space-xl: 20px;
-            --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-            --shadow-glow: 0 0 25px rgba(255, 215, 0, 0.3);
-            --transition: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+            --space-sm: 8px; --space-md: 12px; --space-lg: 16px; --space-xl: 20px; --space-2xl: 24px;
+            --font-display: 'Fraunces', serif;
+            --font-body: 'Inter', sans-serif;
+            --font-mono: 'IBM Plex Mono', monospace;
         }
-        html,
-        body {
-            height: 100%;
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            overflow: hidden;
-            touch-action: manipulation;
-        }
+        html, body { height: 100%; font-family: var(--font-body); background: var(--bg); color: var(--text); overflow: hidden; }
+        h1, h2, h3 { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.01em; }
         #app {
-            height: 100%;
-            max-width: 430px;
-            margin: 0 auto;
-            position: relative;
-            background: var(--bg);
-            display: flex;
-            flex-direction: column;
+            height: 100%; max-width: 430px; margin: 0 auto; position: relative;
+            background: radial-gradient(circle at 20% -10%, #1a2214 0%, var(--bg) 45%);
+            display: flex; flex-direction: column;
+            border-left: 1px solid var(--border); border-right: 1px solid var(--border);
         }
         .screen {
-            display: none;
-            flex: 1;
-            flex-direction: column;
-            overflow-y: auto;
+            display: none; flex: 1; flex-direction: column; overflow-y: auto;
             padding: var(--space-xl) var(--space-lg) calc(var(--nav-height) + var(--safe-bottom) + var(--space-xl));
-            animation: fadeUp 0.4s ease;
-            scrollbar-width: none;
+            animation: fadeUp 0.4s ease; scrollbar-width: none;
         }
-        .screen::-webkit-scrollbar {
-            display: none;
-        }
-        .screen.active {
-            display: flex;
-        }
-        @keyframes fadeUp {
-            0% {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        @keyframes pulse {
-            0%,
-            100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.08);
-            }
-        }
-        @keyframes float {
-            0%,
-            100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-10px);
-            }
-        }
+        .screen::-webkit-scrollbar { display: none; }
+        .screen.active { display: flex; }
+        @keyframes fadeUp { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
-        #splash {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            background: linear-gradient(135deg, #0A0A0A, #1A2A1A);
-            padding: 0;
-            animation: none;
-        }
-        #splash .emoji {
-            font-size: 72px;
-            animation: pulse 1.2s ease-in-out infinite;
-        }
-        #splash h1 {
-            font-size: 36px;
-            margin-top: 12px;
-            background: linear-gradient(135deg, var(--accent), #B8860B);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        #splash .sub {
-            font-size: 14px;
-            color: var(--text3);
-            letter-spacing: 6px;
-            margin-top: 4px;
-            text-transform: uppercase;
-        }
-        .loader-bar {
-            width: 160px;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: var(--radius-full);
-            margin-top: 40px;
-            overflow: hidden;
-        }
-        .loader-bar .fill {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, var(--primary), var(--accent));
-            border-radius: var(--radius-full);
-            transition: width 0.15s linear;
-        }
+        .logo { color: var(--accent); display: block; filter: drop-shadow(0 4px 16px rgba(217,164,65,0.25)); }
 
-        .onboarding-slide {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            flex: 1;
-            text-align: center;
-            padding: var(--space-xl);
-            animation: fadeUp 0.5s ease;
-        }
-        .onboarding-slide.active {
-            display: flex;
-        }
-        .onboarding-slide .emoji {
-            font-size: 72px;
-            margin-bottom: var(--space-xl);
-            animation: float 3s ease-in-out infinite;
-        }
-        .onboarding-slide h2 {
-            font-size: 26px;
-            font-weight: 700;
-            margin-bottom: var(--space-md);
-        }
-        .onboarding-slide p {
-            color: var(--text2);
-            font-size: 16px;
-            line-height: 1.6;
-            max-width: 320px;
-        }
-        .dot-indicators {
-            display: flex;
-            gap: var(--space-sm);
-            justify-content: center;
-            margin: var(--space-xl) 0 var(--space-2xl);
-        }
-        .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: var(--radius-full);
-            background: var(--text3);
-            border: none;
-            cursor: pointer;
-            transition: all var(--transition);
-            padding: 0;
-        }
-        .dot.active {
-            background: var(--accent);
-            width: 24px;
-            border-radius: var(--radius-sm);
-        }
+        /* ===== SPLASH ===== */
+        #splash { display: flex; align-items: center; justify-content: center; flex-direction: column; padding: 0; animation: none; }
+        #splash .logo { animation: pulse 1.3s ease-in-out infinite; }
+        #splash h1 { font-size: 36px; margin-top: 14px; background: linear-gradient(135deg, var(--accent-bright), var(--accent-dark)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        #splash .sub { font-size: 12px; color: var(--text3); letter-spacing: 6px; margin-top: 4px; text-transform: uppercase; font-family: var(--font-mono); }
+        .loader-bar { width: 150px; height: 3px; background: rgba(255,255,255,0.08); border-radius: 4px; margin-top: 40px; overflow: hidden; }
+        .loader-bar .fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--primary-light), var(--accent)); border-radius: 4px; transition: width 0.1s; }
 
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: var(--space-sm);
-            border: none;
-            border-radius: var(--radius-sm);
-            font-family: inherit;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all var(--transition);
-            padding: var(--space-md) var(--space-xl);
-            font-size: 16px;
-            width: 100%;
-            max-width: 300px;
-            color: #fff;
-            background: var(--primary);
-            box-shadow: var(--shadow);
-        }
-        .btn:active {
-            transform: scale(0.96);
-        }
-        .btn-sm {
-            padding: var(--space-sm) var(--space-md);
-            font-size: 14px;
-            max-width: 120px;
-        }
-        .btn-ghost {
-            background: transparent;
-            color: var(--text2);
-            font-size: 14px;
-            padding: var(--space-sm);
-            max-width: none;
-            box-shadow: none;
-        }
-        .btn-lang {
-            background: var(--accent) !important;
-            color: black !important;
-            padding: var(--space-sm) var(--space-lg);
-            border-radius: var(--radius-full);
-            font-size: 14px;
-            font-weight: 700;
-            box-shadow: var(--shadow-glow);
-            max-width: none;
-            width: auto;
-        }
+        /* ===== ONBOARDING ===== */
+        .onboarding-slide { display: none; flex-direction: column; align-items: center; justify-content: center; flex: 1; text-align: center; padding: var(--space-xl); }
+        .onboarding-slide.active { display: flex; }
+        .onboarding-slide .emoji { font-size: 64px; margin-bottom: var(--space-xl); animation: float 3s ease-in-out infinite; }
+        .onboarding-slide .logo { margin-bottom: var(--space-xl); }
+        .onboarding-slide h2 { font-size: 24px; margin-bottom: var(--space-md); }
+        .onboarding-slide p { color: var(--text2); font-size: 15px; max-width: 320px; line-height: 1.5; }
+        .dot-indicators { display: flex; gap: var(--space-sm); justify-content: center; margin: var(--space-xl) 0 var(--space-2xl); }
+        .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border); border: none; cursor: pointer; transition: 0.25s; padding: 0; }
+        .dot.active { background: var(--accent); width: 22px; border-radius: 4px; }
 
-        .card {
-            background: var(--surface);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: var(--space-md);
-            box-shadow: var(--shadow);
-        }
-        .card-glass {
-            background: var(--surface);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: var(--space-xl);
-            box-shadow: var(--shadow);
-        }
+        /* ===== BUTTONS ===== */
+        .btn { background: var(--primary); color: var(--text); border: 1px solid var(--border); padding: 14px 24px; border-radius: 12px; font-size: 15px; font-weight: 600; width: 100%; max-width: 300px; cursor: pointer; transition: 0.2s; font-family: var(--font-body); }
+        .btn:active { transform: scale(0.97); }
+        .btn-gold { background: var(--accent); color: #1A1502; border: none; }
+        .btn-sm { padding: 8px 16px; font-size: 13px; max-width: 120px; }
+        .btn-ghost { background: transparent; color: var(--text2); font-size: 13px; padding: var(--space-sm); max-width: none; border: none; cursor: pointer; margin-top: 12px; text-decoration: underline; text-underline-offset: 3px; }
+        .btn-lang { background: var(--accent) !important; color: #1A1502 !important; padding: 4px 14px; border-radius: 20px; font-size: 13px; font-weight: 700; border: none; cursor: pointer; max-width: none; width: auto; font-family: var(--font-body); }
 
-        .form-group {
-            margin-bottom: var(--space-md);
-        }
-        .form-group label {
-            display: block;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text3);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: var(--space-sm);
-        }
-        .input {
-            width: 100%;
-            padding: var(--space-md) var(--space-lg);
-            border-radius: var(--radius-sm);
-            border: 1px solid var(--border);
-            background: var(--surface);
-            color: var(--text);
-            font-family: inherit;
-            font-size: 16px;
-            outline: none;
-            transition: all var(--transition);
-        }
-        .input::placeholder {
-            color: var(--text3);
-        }
-        .input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(45, 80, 22, 0.2);
-        }
-        .input-group {
-            display: flex;
-            align-items: center;
-            background: var(--surface);
-            border-radius: var(--radius-sm);
-            border: 1px solid var(--border);
-            padding: 0 var(--space-sm);
-            transition: all var(--transition);
-        }
-        .input-group:focus-within {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(45, 80, 22, 0.2);
-        }
-        .input-group .prefix {
-            padding: var(--space-md) var(--space-sm);
-            color: var(--text3);
-            font-weight: 600;
-            font-size: 16px;
-            user-select: none;
-        }
-        .input-group .input {
-            border: none;
-            background: transparent;
-            padding: var(--space-md) var(--space-sm);
-            box-shadow: none;
-        }
+        /* ===== FORM ===== */
+        .form-group { margin-bottom: var(--space-md); }
+        .form-group label { display: block; font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: var(--space-sm); font-family: var(--font-mono); }
+        .input { width: 100%; padding: 14px 16px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-family: inherit; font-size: 15px; outline: none; transition: 0.2s; }
+        .input:focus { border-color: var(--accent); }
+        .input-group { display: flex; align-items: center; background: var(--surface); border-radius: 12px; border: 1px solid var(--border); padding: 0 4px; transition: 0.2s; }
+        .input-group:focus-within { border-color: var(--accent); }
+        .input-group .prefix { padding: 14px 8px; color: var(--text3); font-weight: 600; font-size: 15px; font-family: var(--font-mono); }
+        .input-group .input { border: none; background: transparent; padding: 14px 8px; font-family: var(--font-mono); }
 
-        .otp-container {
-            display: flex;
-            gap: var(--space-sm);
-            justify-content: center;
-            margin-bottom: var(--space-xl);
-        }
-        .otp-input {
-            width: 48px;
-            height: 56px;
-            text-align: center;
-            font-size: 22px;
-            font-weight: 700;
-            border-radius: var(--radius-sm);
-            border: 1px solid var(--border);
-            background: var(--surface);
-            color: var(--text);
-            outline: none;
-            transition: all var(--transition);
-        }
-        .otp-input:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2);
-            transform: scale(1.05);
-        }
+        /* ===== OTP ===== */
+        .otp-container { display: flex; gap: var(--space-sm); justify-content: center; margin-bottom: var(--space-xl); }
+        .otp-input { width: 44px; height: 54px; text-align: center; font-size: 21px; font-weight: 700; border-radius: 12px; border: 1px solid var(--border); background: var(--surface); color: var(--text); outline: none; transition: 0.2s; font-family: var(--font-mono); }
+        .otp-input:focus { border-color: var(--accent); }
 
-        #bottom-nav {
-            display: none;
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 430px;
-            background: rgba(15, 15, 15, 0.92);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border-top: 1px solid var(--border);
-            padding: var(--space-sm) 0 var(--safe-bottom);
-            justify-content: space-around;
-            z-index: 100;
-        }
-        #bottom-nav.active {
-            display: flex;
-        }
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2px;
-            padding: var(--space-xs) var(--space-sm);
-            border: none;
-            background: none;
-            color: var(--text3);
-            font-size: 10px;
-            font-family: inherit;
-            cursor: pointer;
-            transition: all var(--transition);
-            min-height: 44px;
-            min-width: 44px;
-            position: relative;
-            border-radius: var(--radius-sm);
-        }
-        .nav-item .icon {
-            font-size: 22px;
-            transition: transform var(--transition);
-        }
-        .nav-item .label {
-            font-size: 9px;
-            font-weight: 500;
-        }
-        .nav-item.active {
-            color: var(--accent);
-        }
-        .nav-item .badge {
-            position: absolute;
-            top: 0;
-            right: 4px;
-            background: var(--danger);
-            color: #fff;
-            font-size: 9px;
-            font-weight: 700;
-            min-width: 18px;
-            height: 18px;
-            border-radius: var(--radius-full);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0 4px;
-        }
-        .nav-item .badge.hidden {
-            display: none;
-        }
+        /* ===== BOTTOM NAV ===== */
+        #bottom-nav { display: none; position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 430px; background: rgba(18,20,13,0.92); backdrop-filter: blur(20px); border-top: 1px solid var(--border); padding: var(--space-sm) 0 var(--safe-bottom); justify-content: space-around; z-index: 100; }
+        #bottom-nav.active { display: flex; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 4px 8px; border: none; background: none; color: var(--text3); font-size: 10px; cursor: pointer; min-height: 44px; min-width: 44px; position: relative; font-family: var(--font-body); }
+        .nav-item .icon { font-size: 21px; }
+        .nav-item .label { font-size: 9px; font-weight: 500; }
+        .nav-item.active { color: var(--accent); }
+        .nav-item .badge { position: absolute; top: 0; right: 4px; background: var(--danger); color: #fff; font-size: 9px; font-weight: 700; min-width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 0 4px; font-family: var(--font-mono); }
+        .nav-item .badge.hidden { display: none; }
 
-        .greeting {
-            font-size: 22px;
-            font-weight: 700;
-        }
-        .greeting .highlight {
-            color: var(--accent);
-        }
-        .quick-actions {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: var(--space-sm);
-            margin: var(--space-lg) 0 var(--space-xl);
-        }
-        .qa-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: var(--space-sm);
-            padding: var(--space-md) var(--space-xs);
-            background: var(--surface);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            cursor: pointer;
-            transition: all var(--transition);
-            font-size: 12px;
-            color: var(--text2);
-            border: none;
-            font-family: inherit;
-        }
-        .qa-item:active {
-            transform: scale(0.93);
-        }
-        .qa-item .icon {
-            font-size: 28px;
-        }
-        .qa-item .label {
-            font-size: 10px;
-            font-weight: 500;
-        }
+        /* ===== DASHBOARD ===== */
+        .greeting { font-size: 20px; font-weight: 600; font-family: var(--font-display); }
+        .greeting .highlight { color: var(--accent); }
+        .quick-actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-sm); margin: var(--space-lg) 0 var(--space-xl); }
+        .qa-item { display: flex; flex-direction: column; align-items: center; gap: var(--space-sm); padding: var(--space-md) var(--space-sm); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer; transition: 0.2s; font-size: 12px; color: var(--text2); font-family: var(--font-body); }
+        .qa-item:active { transform: scale(0.93); }
+        .qa-item .icon { font-size: 22px; }
+        .qa-item .label { font-size: 10px; font-weight: 500; }
 
-        .balance-card {
-            background: linear-gradient(135deg, rgba(45, 80, 22, 0.3), rgba(255, 215, 0, 0.08));
-            border: 1px solid rgba(255, 215, 0, 0.15);
-            border-radius: var(--radius);
-            padding: var(--space-xl);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: var(--space-xl);
-            position: relative;
-            overflow: hidden;
-        }
-        .balance-card .amount {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--accent);
-        }
-        .balance-card .label {
-            font-size: 12px;
-            color: var(--text2);
-        }
+        .balance-card { background: linear-gradient(135deg, rgba(46,74,42,0.35), rgba(217,164,65,0.07)); border: 1px solid rgba(217,164,65,0.18); border-radius: var(--radius); padding: var(--space-xl); display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-xl); position: relative; overflow: hidden; }
+        .balance-card .watermark { position: absolute; right: -8px; top: -8px; opacity: 0.08; }
+        .balance-card .amount { font-size: 27px; font-weight: 600; color: var(--accent-bright); font-family: var(--font-mono); }
+        .balance-card .label { font-size: 11px; color: var(--text2); font-family: var(--font-mono); letter-spacing: 0.04em; text-transform: uppercase; }
 
-        .stats-row {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: var(--space-sm);
-            margin-bottom: var(--space-xl);
-        }
-        .stat-item {
-            text-align: center;
-            padding: var(--space-md) var(--space-sm);
-            background: var(--surface);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            transition: transform var(--transition);
-        }
-        .stat-item .value {
-            font-size: 20px;
-            font-weight: 700;
-        }
-        .stat-item .label {
-            font-size: 10px;
-            color: var(--text2);
-            margin-top: 2px;
-        }
+        .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-sm); margin-bottom: var(--space-xl); }
+        .stat-item { text-align: center; padding: var(--space-md) var(--space-sm); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+        .stat-item .value { font-size: 19px; font-weight: 600; font-family: var(--font-mono); }
+        .stat-item .label { font-size: 10px; color: var(--text2); font-family: var(--font-mono); letter-spacing: 0.03em; }
 
-        .section-title {
-            font-size: 16px;
-            font-weight: 600;
-            margin: var(--space-lg) 0 var(--space-md);
-        }
+        .section-title { font-size: 14px; font-weight: 600; margin: var(--space-lg) 0 var(--space-md); }
 
-        .activity-item {
-            display: flex;
-            align-items: center;
-            gap: var(--space-md);
-            padding: var(--space-md);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-            border-radius: var(--radius-md);
-            margin: 0 calc(-1 * var(--space-md));
-        }
-        .activity-item .emoji {
-            font-size: 28px;
-            width: 44px;
-            height: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--surface);
-            border-radius: var(--radius-md);
-            flex-shrink: 0;
-        }
-        .activity-item .info {
-            flex: 1;
-        }
-        .activity-item .info .title {
-            font-size: 14px;
-            font-weight: 500;
-        }
-        .activity-item .info .sub {
-            font-size: 12px;
-            color: var(--text2);
-        }
-        .activity-item .time {
-            font-size: 11px;
-            color: var(--text2);
-            flex-shrink: 0;
-        }
+        .activity-item { display: flex; align-items: center; gap: var(--space-md); padding: var(--space-md); border-bottom: 1px solid var(--border); }
+        .activity-item .emoji { font-size: 22px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: var(--surface); border-radius: 12px; }
+        .activity-item .info { flex: 1; }
+        .activity-item .info .title { font-size: 14px; font-weight: 500; }
+        .activity-item .info .sub { font-size: 12px; color: var(--text2); font-family: var(--font-mono); }
+        .activity-item .time { font-size: 11px; color: var(--text2); }
 
-        .feed-categories {
-            display: flex;
-            gap: var(--space-sm);
-            overflow-x: auto;
-            padding: var(--space-xs) 0 var(--space-lg);
-            scrollbar-width: none;
-        }
-        .feed-categories::-webkit-scrollbar {
-            display: none;
-        }
-        .category-chip {
-            padding: var(--space-sm) var(--space-lg);
-            border-radius: var(--radius-full);
-            border: 1px solid var(--border);
-            background: var(--surface);
-            color: var(--text2);
-            font-size: 13px;
-            font-weight: 500;
-            white-space: nowrap;
-            cursor: pointer;
-            transition: all var(--transition);
-            border: none;
-            font-family: inherit;
-        }
-        .category-chip.active {
-            background: var(--primary);
-            color: #fff;
-            border-color: var(--primary);
-        }
+        /* ===== FEED ===== */
+        .feed-categories { display: flex; gap: var(--space-sm); overflow-x: auto; padding: 4px 0 var(--space-lg); scrollbar-width: none; }
+        .feed-categories::-webkit-scrollbar { display: none; }
+        .category-chip { padding: var(--space-sm) var(--space-lg); border-radius: 20px; border: 1px solid var(--border); background: var(--surface); color: var(--text2); font-size: 13px; font-weight: 500; white-space: nowrap; cursor: pointer; transition: 0.2s; font-family: var(--font-body); }
+        .category-chip.active { background: var(--primary); color: var(--text); border-color: var(--primary-light); }
 
-        .product-card {
-            display: flex;
-            gap: var(--space-md);
-            padding: var(--space-md);
-            background: var(--surface);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            margin-bottom: var(--space-sm);
-            cursor: pointer;
-            transition: all var(--transition);
-        }
-        .product-card:active {
-            transform: scale(0.97);
-        }
-        .product-card .emoji {
-            font-size: 36px;
-            width: 56px;
-            height: 56px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255, 255, 255, 0.04);
-            border-radius: var(--radius-lg);
-            flex-shrink: 0;
-        }
-        .product-card .info {
-            flex: 1;
-        }
-        .product-card .info .title {
-            font-weight: 600;
-            font-size: 15px;
-        }
-        .product-card .info .location {
-            font-size: 12px;
-            color: var(--text2);
-        }
-        .product-card .price {
-            font-weight: 700;
-            color: var(--accent);
-            font-size: 16px;
-            text-align: right;
-        }
-        .product-card .qty {
-            font-size: 11px;
-            color: var(--text2);
-            text-align: right;
-        }
-        .status-badge {
-            font-size: 10px;
-            font-weight: 600;
-            padding: 2px 10px;
-            border-radius: var(--radius-full);
-            display: inline-block;
-        }
-        .status-badge.available {
-            background: rgba(34, 197, 94, 0.15);
-            color: var(--success);
-        }
+        .product-card { display: flex; gap: var(--space-md); padding: var(--space-md); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: var(--space-sm); cursor: pointer; transition: 0.2s; }
+        .product-card:active { transform: scale(0.97); }
+        .product-card .emoji { font-size: 32px; width: 52px; height: 52px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.03); border-radius: 14px; flex-shrink: 0; overflow: hidden; }
+        .product-card .emoji img { width: 100%; height: 100%; object-fit: cover; }
+        .product-card .info { flex: 1; min-width: 0; }
+        .product-card .info .title { font-weight: 600; font-size: 14px; }
+        .product-card .info .location { font-size: 12px; color: var(--text2); }
+        .product-card .price { font-weight: 700; color: var(--accent-bright); font-size: 15px; text-align: right; font-family: var(--font-mono); }
+        .product-card .qty { font-size: 11px; color: var(--text2); text-align: right; font-family: var(--font-mono); }
+        .quality-tag { display: inline-block; font-size: 9px; font-family: var(--font-mono); padding: 1px 7px; border-radius: 20px; margin-top: 3px; }
+        .quality-tag.clean { background: rgba(76,112,67,0.22); color: #8FC17E; }
+        .quality-tag.mixed { background: rgba(217,164,65,0.12); color: var(--accent-bright); }
+        .quality-tag.dirty { background: rgba(193,87,60,0.16); color: #E08A73; }
 
-        .detail-image {
-            width: 100%;
-            height: 200px;
-            background: linear-gradient(135deg, #1A2A1A, #2A3A2A);
-            border-radius: var(--radius);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 64px;
-            margin-bottom: var(--space-lg);
-        }
-        .detail-price {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--accent);
-        }
-        .rating-stars {
-            display: flex;
-            gap: var(--space-sm);
-            font-size: 24px;
-        }
-        .rating-stars .star {
-            color: var(--text3);
-            cursor: pointer;
-            background: none;
-            border: none;
-            font-size: 24px;
-            transition: all var(--transition);
-        }
-        .rating-stars .star.active {
-            color: var(--accent);
-        }
+        /* ===== DETAIL ===== */
+        .detail-image { width: 100%; height: 200px; background: linear-gradient(135deg, var(--bg2), #20281a); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; font-size: 64px; margin-bottom: var(--space-lg); overflow: hidden; border: 1px solid var(--border); }
+        .detail-image img { width: 100%; height: 100%; object-fit: cover; }
+        .detail-price { font-size: 23px; font-weight: 600; color: var(--accent-bright); font-family: var(--font-mono); }
+        .rating-stars { display: flex; gap: var(--space-sm); font-size: 24px; }
+        .rating-stars .star { color: var(--text3); cursor: pointer; background: none; border: none; font-size: 24px; transition: 0.2s; }
+        .rating-stars .star.active { color: var(--accent); }
 
-        .map-container {
-            height: 300px;
-            background: linear-gradient(135deg, #1A2A1A, #2A3A2A);
-            border-radius: var(--radius);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            gap: var(--space-sm);
-            margin-bottom: var(--space-lg);
-            position: relative;
-            overflow: hidden;
-        }
-        .map-container .grid {
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            background-image: radial-gradient(circle, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-            background-size: 40px 40px;
-            animation: scrollGrid 20s linear infinite;
-        }
-        @keyframes scrollGrid {
-            0% {
-                transform: translate(0, 0);
-            }
-            100% {
-                transform: translate(-40px, -40px);
-            }
-        }
-        .map-pin {
-            position: relative;
-            z-index: 2;
-            text-align: center;
-        }
-        .map-pin .emoji {
-            font-size: 48px;
-            filter: drop-shadow(0 4px 16px rgba(255, 215, 0, 0.4));
-        }
-        .map-pin .city {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--accent);
-            margin-top: var(--space-xs);
-        }
+        /* ===== MAP ===== */
+        .map-container { height: 150px; background: linear-gradient(135deg, var(--bg2), #20281a); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; flex-direction: column; gap: var(--space-sm); margin-bottom: var(--space-lg); position: relative; overflow: hidden; border: 1px solid var(--border); }
+        .map-pin { position: relative; z-index: 2; text-align: center; }
+        .map-pin .emoji { font-size: 36px; }
+        .map-pin .city { font-size: 14px; font-weight: 600; color: var(--accent-bright); }
 
-        .city-item {
-            display: flex;
-            align-items: center;
-            gap: var(--space-md);
-            padding: var(--space-md);
-            background: var(--surface);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            cursor: pointer;
-            transition: all var(--transition);
-            border: none;
-            font-family: inherit;
-            color: inherit;
-            text-align: left;
-            width: 100%;
-        }
-        .city-item:active {
-            transform: scale(0.97);
-        }
-        .city-item .emoji {
-            font-size: 24px;
-        }
-        .city-item .info {
-            flex: 1;
-        }
-        .city-item .info .name {
-            font-weight: 500;
-        }
-        .city-item .info .address {
-            font-size: 12px;
-            color: var(--text2);
-        }
+        .city-item { display: flex; align-items: center; gap: var(--space-md); padding: var(--space-md); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer; transition: 0.2s; font-family: inherit; color: inherit; text-align: left; width: 100%; }
+        .city-item:active { transform: scale(0.97); }
+        .city-item .emoji { font-size: 18px; }
+        .city-item .info { flex: 1; }
+        .city-item .info .name { font-weight: 500; font-size: 14px; }
+        .city-item .info .address { font-size: 12px; color: var(--text2); }
 
-        .price-guide-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: var(--space-sm);
-        }
-        .price-guide-item {
-            padding: var(--space-md);
-            background: var(--surface);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            text-align: center;
-        }
-        .price-guide-item .emoji {
-            font-size: 32px;
-        }
-        .price-guide-item .name {
-            font-size: 12px;
-            font-weight: 500;
-            margin: 4px 0 2px;
-        }
-        .price-guide-item .price {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--accent);
-        }
-        .price-guide-item .sub {
-            font-size: 10px;
-            color: var(--text2);
-        }
+        /* ===== PRICE GUIDE ===== */
+        .price-guide-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-sm); }
+        .price-guide-item { padding: var(--space-md); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); text-align: center; }
+        .price-guide-item .emoji { font-size: 28px; }
+        .price-guide-item .name { font-size: 12px; font-weight: 500; }
+        .price-guide-item .price { font-size: 14px; font-weight: 700; color: var(--accent-bright); font-family: var(--font-mono); }
+        .price-guide-item .sub { font-size: 10px; color: var(--text2); }
 
-        .chat-message {
-            display: flex;
-            margin-bottom: var(--space-md);
-        }
-        .chat-message.sent {
-            justify-content: flex-end;
-        }
-        .chat-message .bubble {
-            max-width: 80%;
-            padding: var(--space-md) var(--space-lg);
-            border-radius: var(--radius-lg);
-            background: var(--surface);
-            border: 1px solid var(--border);
-        }
-        .chat-message.sent .bubble {
-            background: var(--primary);
-            border-color: var(--primary);
-        }
-        .chat-message .bubble .text {
-            font-size: 14px;
-        }
-        .chat-message .bubble .time {
-            font-size: 10px;
-            color: var(--text2);
-            margin-top: var(--space-xs);
-            text-align: right;
-        }
-        .chat-input {
-            display: flex;
-            gap: var(--space-sm);
-            padding: var(--space-md) 0;
-            border-top: 1px solid var(--border);
-        }
-        .chat-input input {
-            flex: 1;
-            padding: var(--space-md) var(--space-lg);
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--border);
-            background: var(--surface);
-            color: var(--text);
-            font-size: 14px;
-            outline: none;
-        }
-        .chat-input input::placeholder {
-            color: var(--text3);
-        }
-        .chat-input button {
-            background: var(--primary);
-            border: none;
-            color: #fff;
-            width: 48px;
-            height: 48px;
-            border-radius: var(--radius-full);
-            font-size: 20px;
-            cursor: pointer;
-            transition: all var(--transition);
-        }
-        .chat-input button:active {
-            transform: scale(0.92);
-        }
+        /* ===== CHAT ===== */
+        .chat-message { display: flex; margin-bottom: var(--space-md); }
+        .chat-message.sent { justify-content: flex-end; }
+        .chat-message .bubble { max-width: 80%; padding: var(--space-md) var(--space-lg); border-radius: var(--radius); background: var(--surface); border: 1px solid var(--border); }
+        .chat-message.sent .bubble { background: var(--primary); border-color: var(--primary-light); }
+        .chat-message .bubble .time { font-size: 10px; color: var(--text2); margin-top: 4px; text-align: right; font-family: var(--font-mono); }
+        .chat-input { display: flex; gap: var(--space-sm); padding: var(--space-md) 0; border-top: 1px solid var(--border); }
+        .chat-input input { flex: 1; padding: var(--space-md) var(--space-lg); border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: 14px; outline: none; }
+        .chat-input button { background: var(--primary); border: none; color: var(--text); width: 46px; height: 46px; border-radius: 50%; font-size: 18px; cursor: pointer; }
 
-        .notif-item {
-            display: flex;
-            gap: var(--space-md);
-            padding: var(--space-md);
-            background: var(--surface);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            margin-bottom: var(--space-sm);
-            cursor: pointer;
-            transition: all var(--transition);
-            border: none;
-            font-family: inherit;
-            color: inherit;
-            text-align: left;
-            width: 100%;
-        }
-        .notif-item .icon {
-            font-size: 24px;
-            flex-shrink: 0;
-        }
-        .notif-item .info {
-            flex: 1;
-        }
-        .notif-item .info .title {
-            font-weight: 500;
-            font-size: 14px;
-        }
-        .notif-item .info .body {
-            font-size: 13px;
-            color: var(--text2);
-        }
-        .notif-item .info .time {
-            font-size: 11px;
-            color: var(--text2);
-            margin-top: var(--space-xs);
-        }
-        .notif-item .dot {
-            width: 8px;
-            height: 8px;
-            background: var(--success);
-            border-radius: var(--radius-full);
-            flex-shrink: 0;
-            margin-top: 6px;
-            transition: background var(--transition);
-        }
-        .notif-item .dot.read {
-            background: transparent;
-        }
+        /* ===== NOTIFICATIONS ===== */
+        .notif-item { display: flex; gap: var(--space-md); padding: var(--space-md); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: var(--space-sm); cursor: pointer; transition: 0.2s; font-family: inherit; color: inherit; text-align: left; width: 100%; }
+        .notif-item:active { transform: scale(0.97); }
+        .notif-item .icon { font-size: 21px; }
+        .notif-item .info { flex: 1; }
+        .notif-item .info .title { font-weight: 500; font-size: 14px; }
+        .notif-item .info .body { font-size: 12px; color: var(--text2); }
+        .notif-item .info .time { font-size: 10px; color: var(--text2); margin-top: 2px; font-family: var(--font-mono); }
+        .notif-item .dot { width: 7px; height: 7px; background: var(--accent); border-radius: 50%; flex-shrink: 0; margin-top: 5px; transition: 0.2s; }
+        .notif-item .dot.read { background: transparent; }
 
-        .chart-bars {
-            display: flex;
-            align-items: flex-end;
-            gap: var(--space-sm);
-            height: 120px;
-            padding: var(--space-sm) 0;
-        }
-        .chart-bar {
-            flex: 1;
-            border-radius: var(--radius-sm) var(--radius-sm) 0 0;
-            min-height: 4px;
-            background: linear-gradient(180deg, var(--accent), var(--primary));
-            transition: height 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .chart-label {
-            text-align: center;
-            font-size: 10px;
-            color: var(--text2);
-            margin-top: var(--space-xs);
-        }
-        .donut-container {
-            display: flex;
-            justify-content: center;
-            padding: var(--space-md) 0;
-        }
-        .donut {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background: conic-gradient(var(--primary) 0% 40%, var(--accent) 40% 60%, var(--info) 60% 80%, var(--danger) 80% 100%);
-        }
-        .donut-legend {
-            display: flex;
-            gap: var(--space-lg);
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-top: var(--space-md);
-        }
+        /* ===== STATS ===== */
+        .chart-bars { display: flex; align-items: flex-end; gap: var(--space-sm); height: 110px; padding: var(--space-sm) 0; }
+        .chart-bar { flex: 1; border-radius: 4px 4px 0 0; min-height: 4px; background: linear-gradient(180deg, var(--accent-bright), var(--primary)); transition: height 0.8s ease; }
+        .chart-label { text-align: center; font-size: 9px; color: var(--text2); margin-top: 4px; font-family: var(--font-mono); }
+        .donut-container { display: flex; justify-content: center; padding: var(--space-md) 0; }
+        .donut { width: 100px; height: 100px; border-radius: 50%; background: conic-gradient(var(--primary-light) 0% 40%, var(--accent) 40% 60%, #6B8FA8 60% 80%, var(--danger) 80% 100%); }
+        .donut-legend { display: flex; gap: var(--space-lg); flex-wrap: wrap; justify-content: center; margin-top: var(--space-md); }
+        .donut-legend span.entry { font-size: 12px; color: var(--text2); }
+        .donut-legend .color { display: inline-block; width: 11px; height: 11px; border-radius: 4px; margin-right: 4px; vertical-align: middle; }
 
-        .profile-header {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: var(--space-xl) 0;
-        }
-        .profile-avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: var(--radius-full);
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 36px;
-            margin-bottom: var(--space-md);
-            box-shadow: 0 4px 20px rgba(45, 80, 22, 0.3);
-            cursor: pointer;
-            transition: all var(--transition);
-        }
-        .profile-avatar:active {
-            transform: scale(0.95);
-        }
-        .profile-name {
-            font-size: 20px;
-            font-weight: 700;
-            background: transparent;
-            border: none;
-            color: var(--text);
-            text-align: center;
-            outline: none;
-            width: 100%;
-            max-width: 250px;
-        }
-        .profile-name:focus {
-            border-bottom: 2px solid var(--accent);
-        }
-        .profile-username {
-            color: var(--text2);
-            font-size: 14px;
-            background: transparent;
-            border: none;
-            color: var(--text2);
-            text-align: center;
-            outline: none;
-            width: 100%;
-            max-width: 250px;
-        }
-        .profile-username:focus {
-            border-bottom: 2px solid var(--accent);
-        }
-        .profile-badge {
-            padding: var(--space-xs) var(--space-lg);
-            border-radius: var(--radius-full);
-            background: linear-gradient(135deg, var(--accent), #B8860B);
-            color: black;
-            font-size: 12px;
-            font-weight: 700;
-            margin-top: var(--space-sm);
-            display: inline-block;
-        }
-        .profile-menu {
-            display: flex;
-            flex-direction: column;
-            gap: var(--space-xs);
-            width: 100%;
-            margin-top: var(--space-sm);
-        }
-        .profile-menu .item {
-            display: flex;
-            align-items: center;
-            gap: var(--space-md);
-            padding: var(--space-md);
-            border-radius: var(--radius-lg);
-            background: var(--surface);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--border);
-            cursor: pointer;
-            transition: all var(--transition);
-            border: none;
-            font-family: inherit;
-            color: inherit;
-            text-align: left;
-            width: 100%;
-        }
-        .profile-menu .item:active {
-            transform: scale(0.97);
-        }
-        .profile-menu .item .icon {
-            font-size: 20px;
-        }
-        .profile-menu .item .label {
-            flex: 1;
-            font-size: 14px;
-            font-weight: 500;
-        }
-        .profile-menu .item .arrow {
-            color: var(--text2);
-        }
-        .profile-menu .item.danger .label {
-            color: var(--danger);
-        }
-        .profile-save-btn {
-            margin-top: var(--space-md);
-            max-width: 150px;
-        }
+        /* ===== PROFILE ===== */
+        .profile-header { display: flex; flex-direction: column; align-items: center; padding: var(--space-2xl) 0; }
+        .profile-avatar { width: 76px; height: 76px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--accent)); display: flex; align-items: center; justify-content: center; font-size: 34px; margin-bottom: var(--space-md); }
+        .profile-name { font-size: 19px; font-weight: 700; font-family: var(--font-display); }
+        .profile-username { color: var(--text2); font-size: 13px; font-family: var(--font-mono); }
+        .profile-badge { padding: 4px var(--space-lg); border-radius: 20px; background: linear-gradient(135deg, var(--accent-bright), var(--accent)); color: #1A1502; font-size: 11px; font-weight: 700; margin-top: var(--space-sm); font-family: var(--font-mono); }
+        .profile-menu { display: flex; flex-direction: column; gap: var(--space-xs); width: 100%; margin-top: var(--space-sm); }
+        .profile-menu .item { display: flex; align-items: center; gap: var(--space-md); padding: var(--space-md); border-radius: var(--radius); background: var(--surface); border: 1px solid var(--border); cursor: pointer; transition: 0.2s; font-family: inherit; color: inherit; text-align: left; width: 100%; }
+        .profile-menu .item:active { transform: scale(0.97); }
+        .profile-menu .item .icon { font-size: 18px; }
+        .profile-menu .item .label { flex: 1; font-size: 14px; font-weight: 500; }
+        .profile-menu .item .arrow { color: var(--text2); }
 
-        .publish-photos {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: var(--space-sm);
-            margin-bottom: var(--space-lg);
-        }
-        .photo-slot {
-            aspect-ratio: 1;
-            background: var(--surface);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 2px dashed var(--border);
-            border-radius: var(--radius-lg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            color: var(--text3);
-            cursor: pointer;
-            transition: all var(--transition);
-            border: none;
-            font-family: inherit;
-        }
-        .photo-slot:active {
-            transform: scale(0.95);
-        }
-        .photo-slot.filled {
-            border-style: solid;
-            border-color: var(--primary);
-            background: rgba(45, 80, 22, 0.2);
-        }
+        /* ===== PUBLISH — PHOTO ===== */
+        .photo-dropzone { border: 1.5px dashed var(--border); border-radius: var(--radius); background: var(--surface); min-height: 130px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: border-color 0.2s ease; overflow: hidden; position: relative; margin-top: 4px; }
+        .photo-dropzone:hover { border-color: var(--accent); }
+        .photo-dropzone.filled { border-style: solid; border-color: var(--primary-light); }
+        .photo-dropzone img { width: 100%; height: 150px; object-fit: cover; }
+        .quality-row { display: flex; gap: var(--space-sm); margin-top: 4px; }
+        .quality-opt { flex: 1; padding: 10px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface); text-align: center; font-size: 12px; font-weight: 600; cursor: pointer; color: var(--text2); }
+        .quality-opt.selected { border-color: var(--accent); color: var(--accent-bright); background: rgba(217,164,65,0.10); }
 
-        .provider-select {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: var(--space-md);
-            margin-bottom: var(--space-lg);
-        }
-        .provider-item {
-            padding: var(--space-xl);
-            text-align: center;
-            border-radius: var(--radius-lg);
-            border: 2px solid var(--border);
-            background: var(--surface);
-            cursor: pointer;
-            transition: all var(--transition);
-            border: none;
-            font-family: inherit;
-            color: inherit;
-        }
-        .provider-item:active {
-            transform: scale(0.95);
-        }
-        .provider-item.selected {
-            border-color: var(--accent);
-            background: rgba(255, 215, 0, 0.06);
-        }
-        .provider-item .emoji {
-            font-size: 32px;
-        }
-        .provider-item .name {
-            font-size: 14px;
-            font-weight: 600;
-            margin-top: var(--space-xs);
-        }
+        /* ===== WITHDRAWAL ===== */
+        .provider-select { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); margin-bottom: var(--space-lg); }
+        .provider-item { padding: var(--space-xl); text-align: center; border-radius: var(--radius); border: 2px solid var(--border); background: var(--surface); cursor: pointer; transition: 0.2s; font-family: inherit; color: inherit; }
+        .provider-item:active { transform: scale(0.95); }
+        .provider-item.selected { border-color: var(--accent); background: rgba(217,164,65,0.08); }
+        .provider-item .emoji { font-size: 28px; }
+        .provider-item .name { font-size: 13px; font-weight: 600; margin-top: 4px; }
 
-        .toast {
-            position: fixed;
-            bottom: calc(var(--nav-height) + var(--safe-bottom) + var(--space-xl));
-            left: 50%;
-            transform: translateX(-50%) translateY(20px);
-            background: rgba(0, 0, 0, 0.92);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            padding: var(--space-md) var(--space-xl);
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--border);
-            color: #fff;
-            font-size: 14px;
-            font-weight: 500;
-            opacity: 0;
-            transition: all var(--transition);
-            z-index: 200;
-            max-width: 90%;
-            text-align: center;
-            pointer-events: none;
-            box-shadow: var(--shadow);
-        }
-        .toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
-        .toast.success {
-            border-color: var(--success);
-        }
-        .toast.error {
-            border-color: var(--danger);
-        }
+        /* ===== TOAST ===== */
+        .toast { position: fixed; bottom: calc(var(--nav-height) + var(--safe-bottom) + var(--space-xl)); left: 50%; transform: translateX(-50%) translateY(20px); background: rgba(18,20,13,0.95); backdrop-filter: blur(20px); padding: var(--space-md) var(--space-xl); border-radius: var(--radius); border: 1px solid var(--border); color: var(--text); font-size: 13px; font-weight: 500; opacity: 0; transition: 0.4s; z-index: 200; max-width: 90%; text-align: center; pointer-events: none; }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .toast.success { border-color: var(--primary-light); }
+        .toast.error { border-color: var(--danger); }
 
-        .hidden {
-            display: none !important;
-        }
-        .text-center {
-            text-align: center;
-        }
-        .flex {
-            display: flex;
-        }
-        .items-center {
-            align-items: center;
-        }
-        .justify-between {
-            justify-content: space-between;
-        }
-        .gap-sm {
-            gap: var(--space-sm);
-        }
-        .gap-md {
-            gap: var(--space-md);
-        }
-        .mt-sm {
-            margin-top: var(--space-sm);
-        }
-        .mt-md {
-            margin-top: var(--space-md);
-        }
-        .mt-lg {
-            margin-top: var(--space-lg);
-        }
-        .mb-sm {
-            margin-bottom: var(--space-sm);
-        }
-        .mb-md {
-            margin-bottom: var(--space-md);
-        }
-        .mb-lg {
-            margin-bottom: var(--space-lg);
-        }
-        .w-full {
-            width: 100%;
-        }
+        /* ===== UTILITY ===== */
+        .hidden { display: none !important; }
+        .text-center { text-align: center; }
+        .flex { display: flex; } .flex-col { flex-direction: column; }
+        .items-center { align-items: center; } .justify-between { justify-content: space-between; }
+        .gap-sm { gap: var(--space-sm); } .gap-md { gap: var(--space-md); }
+        .mt-sm { margin-top: var(--space-sm); } .mt-md { margin-top: var(--space-md); } .mt-lg { margin-top: var(--space-lg); }
+        .mb-sm { margin-bottom: var(--space-sm); } .mb-md { margin-bottom: var(--space-md); } .mb-lg { margin-bottom: var(--space-lg); }
+        .w-full { width: 100%; }
+        .note { font-size: 11px; color: var(--text3); line-height: 1.5; margin-top: 6px; }
     </style>
 </head>
 <body>
+
+    <svg width="0" height="0" style="position:absolute">
+      <symbol id="logo-mark" viewBox="0 0 48 48">
+        <circle cx="24" cy="24" r="20.5" fill="none" stroke="currentColor" stroke-width="1.6"/>
+        <path d="M24 9c6.5 4.2 9.6 10.4 9.6 16.4 0 4.3-2.2 7.6-5.4 8.7-1-5.3-2.1-9.6-4.2-13-2.1 3.4-3.2 7.7-4.2 13-3.2-1.1-5.4-4.4-5.4-8.7C14.4 19.4 17.5 13.2 24 9z" fill="currentColor"/>
+        <path d="M24 34.5v-9.7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+      </symbol>
+    </svg>
 
     <div id="toast" class="toast"></div>
 
     <div id="app">
 
-        <!-- SPLASH -->
+        <!-- ===== SPLASH ===== -->
         <div id="splash" class="screen active">
-            <div class="emoji">♻️</div>
+            <svg class="logo" width="60" height="60"><use href="#logo-mark"/></svg>
             <h1>ReLife</h1>
             <div class="sub">CAMEROUN</div>
             <div class="loader-bar"><div class="fill" id="loader-fill"></div></div>
         </div>
 
-        <!-- ONBOARDING -->
+        <!-- ===== ONBOARDING ===== -->
         <div id="onboarding" class="screen">
             <div id="slide-0" class="onboarding-slide active">
-                <div class="emoji">♻️</div>
-                <h2>Valorisez vos déchets</h2>
-                <p>Transformez vos déchets recyclables en une source de revenus</p>
+                <svg class="logo" width="52" height="52"><use href="#logo-mark"/></svg>
+                <h2 data-i18n="onboarding_title_0">Valorisez vos déchets</h2>
+                <p data-i18n="onboarding_body_0">Transformez vos déchets recyclables en une source de revenus</p>
             </div>
             <div id="slide-1" class="onboarding-slide">
                 <div class="emoji">💰</div>
-                <h2>Gagnez de l'argent</h2>
-                <p>Recevez un paiement immédiat pour chaque kilogramme collecté</p>
+                <h2 data-i18n="onboarding_title_1">Gagnez de l'argent</h2>
+                <p data-i18n="onboarding_body_1">Recevez un paiement immédiat pour chaque kilogramme collecté</p>
             </div>
             <div id="slide-2" class="onboarding-slide">
                 <div class="emoji">🌍</div>
-                <h2>Protégez l'environnement</h2>
-                <p>Contribuez à un Cameroun plus propre et plus vert</p>
+                <h2 data-i18n="onboarding_title_2">Protégez l'environnement</h2>
+                <p data-i18n="onboarding_body_2">Contribuez à un Cameroun plus propre et plus vert</p>
             </div>
             <div id="slide-3" class="onboarding-slide">
                 <div class="emoji">⭐</div>
-                <h2>Devenez Premium</h2>
-                <p>Accédez à des tarifs préférentiels et des collectes prioritaires</p>
+                <h2 data-i18n="onboarding_title_3">Devenez Premium</h2>
+                <p data-i18n="onboarding_body_3">Accédez à des tarifs préférentiels et des collectes prioritaires</p>
             </div>
             <div class="dot-indicators">
                 <button class="dot active" data-slide="0"></button>
@@ -1230,39 +316,39 @@
                 <button class="dot" data-slide="2"></button>
                 <button class="dot" data-slide="3"></button>
             </div>
-            <button class="btn" id="onboarding-btn">Suivant</button>
+            <button class="btn btn-gold" id="onboarding-btn" data-i18n="onboarding_next">Suivant</button>
         </div>
 
-        <!-- LOGIN -->
+        <!-- ===== LOGIN ===== -->
         <div id="login" class="screen">
             <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:20px 0;">
                 <div class="text-center" style="margin-bottom:32px;">
-                    <div style="font-size:56px;margin-bottom:12px;">♻️</div>
-                    <h1 style="font-size:28px;font-weight:700;">Bienvenue</h1>
-                    <p style="color:var(--text2);font-size:14px;">Entrez votre numéro de téléphone</p>
+                    <svg class="logo" width="48" height="48" style="margin:0 auto 12px"><use href="#logo-mark"/></svg>
+                    <h1 style="font-size:26px" data-i18n="welcome">Bienvenue</h1>
+                    <p style="color:var(--text2);font-size:14px" data-i18n="enter_phone">Entrez votre numéro de téléphone</p>
                 </div>
                 <div class="form-group">
-                    <label>Numéro de téléphone</label>
+                    <label data-i18n="phone_label">Numéro de téléphone</label>
                     <div class="input-group">
                         <span class="prefix">+237</span>
                         <input type="tel" id="phone-input" class="input" placeholder="6XXXXXXXX" maxlength="9" inputmode="tel">
                     </div>
                 </div>
-                <button class="btn" id="login-btn" style="margin-top:12px;">Se connecter</button>
-                <button class="btn btn-ghost" id="login-skip">Continuer sans compte (test)</button>
+                <button class="btn btn-gold" id="login-btn" style="margin-top:12px;" data-i18n="login_btn">Se connecter</button>
+                <button class="btn-ghost" id="login-skip" data-i18n="login_skip">Continuer sans compte (test)</button>
             </div>
             <div id="recaptcha-container"></div>
         </div>
 
-        <!-- OTP -->
+        <!-- ===== OTP ===== -->
         <div id="otp" class="screen">
             <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:20px 0;">
                 <div class="text-center" style="margin-bottom:32px;">
-                    <div style="font-size:48px;margin-bottom:12px;">🔐</div>
-                    <h2 style="font-size:24px;font-weight:700;">Vérification</h2>
-                    <p style="color:var(--text2);font-size:14px;">Code envoyé au <span id="otp-phone">+237 6XXXXXXXX</span></p>
+                    <div style="font-size:44px;margin-bottom:12px;">🔐</div>
+                    <h2 style="font-size:22px" data-i18n="otp_title">Vérification</h2>
+                    <p style="color:var(--text2);font-size:13px"><span data-i18n="otp_sent_to">Code envoyé au</span> <span id="otp-phone" style="font-family:var(--font-mono)">+237 6XXXXXXXX</span></p>
                 </div>
-                <div class="otp-container" id="otp-group">
+                <div class="otp-container">
                     <input type="text" inputmode="numeric" maxlength="1" class="otp-input" data-index="0">
                     <input type="text" inputmode="numeric" maxlength="1" class="otp-input" data-index="1">
                     <input type="text" inputmode="numeric" maxlength="1" class="otp-input" data-index="2">
@@ -1270,88 +356,87 @@
                     <input type="text" inputmode="numeric" maxlength="1" class="otp-input" data-index="4">
                     <input type="text" inputmode="numeric" maxlength="1" class="otp-input" data-index="5">
                 </div>
-                <button class="btn" id="otp-btn">Vérifier</button>
-                <button class="btn btn-ghost" id="otp-resend">Renvoyer le code</button>
+                <button class="btn btn-gold" id="otp-btn" data-i18n="otp_verify">Vérifier</button>
+                <button class="btn-ghost" id="otp-resend" data-i18n="otp_resend">Renvoyer le code</button>
             </div>
         </div>
 
-        <!-- DASHBOARD -->
+        <!-- ===== DASHBOARD ===== -->
         <div id="dashboard" class="screen">
             <div class="flex justify-between items-center" style="margin-bottom:4px;">
                 <div>
-                    <div class="greeting" id="greeting-text">Bonjour <span class="highlight">👋</span></div>
-                    <div style="color:var(--text2);font-size:13px;" id="greeting-sub">Prêt à recycler aujourd'hui ?</div>
+                    <div class="greeting"><span data-i18n="greeting_hello">Bonjour</span> <span class="highlight">👋</span></div>
+                    <div style="color:var(--text2);font-size:12px" data-i18n="ready_recycle">Prêt à recycler aujourd'hui ?</div>
                 </div>
                 <div class="flex items-center gap-sm">
                     <button id="lang-toggle" class="btn-lang">🇫🇷 FR</button>
-                    <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;">R</div>
+                    <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;font-family:var(--font-display)">R</div>
                 </div>
             </div>
 
             <div class="quick-actions">
-                <button class="qa-item" data-target="map"><span class="icon">📍</span><span class="label">Carte</span></button>
-                <button class="qa-item" data-target="chat"><span class="icon">💬</span><span class="label">Messages</span></button>
-                <button class="qa-item" data-target="stats"><span class="icon">📊</span><span class="label">Stats</span></button>
-                <button class="qa-item" data-target="feed"><span class="icon">🛒</span><span class="label">Marché</span></button>
+                <button class="qa-item" data-target="map"><span class="icon">📍</span><span class="label" data-i18n="map">Carte</span></button>
+                <button class="qa-item" data-target="chat"><span class="icon">💬</span><span class="label" data-i18n="messages">Messages</span></button>
+                <button class="qa-item" data-target="stats"><span class="icon">📊</span><span class="label" data-i18n="stats">Stats</span></button>
+                <button class="qa-item" data-target="feed"><span class="icon">🛒</span><span class="label" data-i18n="marketplace">Marché</span></button>
             </div>
 
             <div class="balance-card">
+                <svg class="logo watermark" width="80" height="80"><use href="#logo-mark"/></svg>
                 <div>
-                    <div class="label">💰 Solde Mobile Money</div>
+                    <div class="label" data-i18n="balance">💰 Solde Mobile Money</div>
                     <div class="amount" id="balance-amount">5 000 FCFA</div>
                 </div>
-                <button class="btn btn-sm" id="goto-withdrawal">Retirer</button>
+                <button class="btn btn-gold btn-sm" id="goto-withdrawal" data-i18n="withdraw">Retirer</button>
             </div>
 
             <div class="stats-row">
-                <div class="stat-item"><div class="value" id="stat-sales">12</div><div class="label">Ventes</div></div>
-                <div class="stat-item"><div class="value" id="stat-recycled">45 kg</div><div class="label">Recyclés</div></div>
-                <div class="stat-item"><div class="value">⭐ <span id="stat-rating">4.8</span></div><div class="label">Note</div></div>
+                <div class="stat-item"><div class="value" id="stat-sales">12</div><div class="label" data-i18n="sales">Ventes</div></div>
+                <div class="stat-item"><div class="value" id="stat-recycled">45 kg</div><div class="label" data-i18n="recycled">Recyclés</div></div>
+                <div class="stat-item"><div class="value">⭐ <span id="stat-rating">4.8</span></div><div class="label" data-i18n="rating">Note</div></div>
             </div>
 
-            <div class="section-title">⚡ Activité récente</div>
-            <div id="activity-list">
-                <div class="activity-item"><div class="emoji">♻️</div><div class="info"><div class="title">Collecte de bouteilles PET</div><div class="sub">15kg • 2 250 FCFA</div></div><div class="time">Il y a 2h</div></div>
-                <div class="activity-item"><div class="emoji">🥫</div><div class="info"><div class="title">Canettes aluminium</div><div class="sub">5kg • 1 000 FCFA</div></div><div class="time">Hier</div></div>
-                <div class="activity-item"><div class="emoji">📦</div><div class="info"><div class="title">Cartons recyclables</div><div class="sub">10kg • 500 FCFA</div></div><div class="time">Hier</div></div>
-            </div>
+            <div class="section-title" data-i18n="recent">⚡ Activité récente</div>
+            <div class="activity-item"><div class="emoji">♻️</div><div class="info"><div class="title" data-i18n="pet">Collecte de bouteilles PET</div><div class="sub">15kg • 2 250 FCFA</div></div><div class="time" data-i18n="days_ago_hours">Il y a 2h</div></div>
+            <div class="activity-item"><div class="emoji">🥫</div><div class="info"><div class="title" data-i18n="aluminum">Canettes aluminium</div><div class="sub">5kg • 1 000 FCFA</div></div><div class="time" data-i18n="yesterday">Hier</div></div>
+            <div class="activity-item"><div class="emoji">📦</div><div class="info"><div class="title" data-i18n="cardboard">Cartons recyclables</div><div class="sub">10kg • 500 FCFA</div></div><div class="time" data-i18n="yesterday">Hier</div></div>
         </div>
 
-        <!-- FEED -->
+        <!-- ===== FEED ===== -->
         <div id="feed" class="screen">
             <div class="flex justify-between items-center" style="margin-bottom:12px;">
-                <h2 style="font-size:20px;">🛒 Marché</h2>
-                <button class="btn btn-sm" id="goto-publish">+ Publier</button>
+                <h2 style="font-size:19px" data-i18n="marketplace_title">🛒 Marché</h2>
+                <button class="btn btn-gold btn-sm" id="goto-publish" data-i18n="publish_btn">+ Publier</button>
             </div>
             <div class="feed-categories" id="feed-categories">
-                <button class="category-chip active" data-cat="Tous">Tous</button>
-                <button class="category-chip" data-cat="Plastique">Plastique</button>
-                <button class="category-chip" data-cat="Métal">Métal</button>
-                <button class="category-chip" data-cat="Carton">Carton</button>
-                <button class="category-chip" data-cat="Verre">Verre</button>
-                <button class="category-chip" data-cat="Huile">Huile</button>
-                <button class="category-chip" data-cat="Électronique">Électronique</button>
+                <button class="category-chip active" data-cat="Tous" data-i18n="all">Tous</button>
+                <button class="category-chip" data-cat="Plastique" data-i18n="plastic">Plastique</button>
+                <button class="category-chip" data-cat="Métal" data-i18n="metal">Métal</button>
+                <button class="category-chip" data-cat="Carton" data-i18n="cardboard_cat">Carton</button>
+                <button class="category-chip" data-cat="Verre" data-i18n="glass_cat">Verre</button>
+                <button class="category-chip" data-cat="Huile" data-i18n="oil">Huile</button>
+                <button class="category-chip" data-cat="Électronique" data-i18n="electronic">Électronique</button>
             </div>
             <div id="feed-list"></div>
         </div>
 
-        <!-- DETAIL -->
+        <!-- ===== DETAIL ===== -->
         <div id="detail" class="screen">
-            <button class="btn btn-ghost" id="detail-back" style="padding-left:0;margin-bottom:12px;">← Retour</button>
+            <button class="btn-ghost" id="detail-back" style="padding-left:0;margin-bottom:12px;" data-i18n="back">← Retour</button>
             <div class="detail-image" id="detail-emoji">🥤</div>
-            <h2 id="detail-title" style="font-size:20px;">Bouteilles PET transparentes</h2>
+            <h2 id="detail-title" style="font-size:19px;">Bouteilles PET transparentes</h2>
             <div style="color:var(--text2);font-size:14px;" id="detail-location">Douala, Bonapriso</div>
             <div class="detail-price" id="detail-price">200 FCFA/kg</div>
-            <div style="display:flex;gap:8px;margin:8px 0 16px;">
-                <span class="status-badge available" id="detail-status">Disponible</span>
-                <span style="padding:2px 12px;border-radius:100px;background:rgba(59,130,246,0.15);color:#3B82F6;font-size:12px;font-weight:600;">15kg en stock</span>
+            <div style="display:flex;gap:8px;margin:8px 0 16px;flex-wrap:wrap">
+                <span style="padding:2px 12px;border-radius:100px;background:rgba(111,168,65,0.15);color:#8FC17E;font-size:12px;font-weight:600;" data-i18n="available">Disponible</span>
+                <span id="detail-quality-badge" class="quality-tag hidden" style="font-size:12px;padding:2px 12px"></span>
             </div>
-            <div class="card" style="display:flex;align-items:center;gap:12px;padding:14px;margin-bottom:16px;">
+            <div style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--surface);border:1px solid var(--border);border-radius:14px;margin-bottom:16px;">
                 <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;font-size:20px;">👤</div>
                 <div style="flex:1;"><div style="font-weight:600;">Marie K.</div><div style="font-size:12px;color:var(--text2);">⭐ 4.9 · 23 ventes</div></div>
-                <button class="btn btn-sm" id="goto-chat-from-detail">Contacter</button>
+                <button class="btn btn-gold btn-sm" id="goto-chat-from-detail" data-i18n="contact">Contacter</button>
             </div>
-            <div class="section-title">⭐ Noter ce vendeur</div>
+            <div class="section-title" data-i18n="rate_seller">⭐ Noter ce vendeur</div>
             <div class="rating-stars" id="rating-stars">
                 <button class="star" data-val="1">☆</button>
                 <button class="star" data-val="2">☆</button>
@@ -1359,70 +444,85 @@
                 <button class="star" data-val="4">☆</button>
                 <button class="star" data-val="5">☆</button>
             </div>
-            <div class="section-title" style="margin-top:16px;">📝 Avis (12)</div>
-            <div class="card" style="margin-bottom:8px;"><div style="display:flex;justify-content:space-between;"><span style="font-weight:600;">Paul N.</span><span style="color:var(--text2);font-size:12px;">Il y a 2j</span></div><div style="font-size:13px;color:var(--text2);">⭐ 5/5 · Transaction rapide et fiable !</div></div>
-            <div class="card"><div style="display:flex;justify-content:space-between;"><span style="font-weight:600;">Aicha M.</span><span style="color:var(--text2);font-size:12px;">Il y a 5j</span></div><div style="font-size:13px;color:var(--text2);">⭐ 4/5 · Bon produit, livraison un peu lente</div></div>
+            <div class="section-title" style="margin-top:16px;" data-i18n="reviews">📝 Avis (12)</div>
+            <div style="padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:14px;margin-bottom:8px;"><div style="display:flex;justify-content:space-between;"><span style="font-weight:600;">Paul N.</span><span style="color:var(--text2);font-size:12px" data-i18n="days_ago_2">Il y a 2j</span></div><div style="font-size:13px;color:var(--text2);">⭐ 5/5 · Transaction rapide et fiable !</div></div>
+            <div style="padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:14px;margin-bottom:8px;"><div style="display:flex;justify-content:space-between;"><span style="font-weight:600;">Aicha M.</span><span style="color:var(--text2);font-size:12px" data-i18n="days_ago_5">Il y a 5j</span></div><div style="font-size:13px;color:var(--text2);">⭐ 4/5 · Bon produit, livraison un peu lente</div></div>
         </div>
 
-        <!-- PUBLISH -->
+        <!-- ===== PUBLISH ===== -->
         <div id="publish" class="screen">
-            <h2 style="font-size:20px;margin-bottom:16px;">➕ Nouvelle annonce</h2>
-            <div class="publish-photos">
-                <button class="photo-slot" data-photo="0">📷</button>
-                <button class="photo-slot" data-photo="1">📷</button>
-                <button class="photo-slot" data-photo="2">📷</button>
-            </div>
+            <h2 style="font-size:19px;margin-bottom:16px;" data-i18n="new_ad">➕ Nouvelle annonce</h2>
+
             <div class="form-group">
-                <label>Catégorie</label>
+                <label><span data-i18n="photo_label">Photo du produit</span> <span style="color:var(--accent);text-transform:none" data-i18n="photo_required">· requise</span></label>
+                <input type="file" id="publish-photo-input" accept="image/*" capture="environment" style="display:none">
+                <div id="photo-dropzone" class="photo-dropzone">
+                    <span id="photo-dropzone-icon" style="font-size:26px">📷</span>
+                    <span id="photo-dropzone-text" style="font-size:12px;color:var(--text3);margin-top:4px" data-i18n="photo_cta">Prendre une photo de la matière</span>
+                    <img id="photo-preview" class="hidden" alt="Aperçu">
+                </div>
+                <p class="note" data-i18n="photo_note">Une photo réelle rassure l'acheteur et évite les annonces refusées sur place.</p>
+            </div>
+
+            <div class="form-group">
+                <label data-i18n="quality_label">État de la matière</label>
+                <div class="quality-row" id="quality-row">
+                    <div class="quality-opt selected" data-quality="Propre et trié" data-i18n="quality_clean">Propre</div>
+                    <div class="quality-opt" data-quality="Mélangé" data-i18n="quality_mixed">Mélangé</div>
+                    <div class="quality-opt" data-quality="Sale" data-i18n="quality_dirty">Sale</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label data-i18n="category">Catégorie</label>
                 <select id="publish-cat" class="input">
                     <option>Plastique</option><option>Métal</option><option>Carton</option>
                     <option>Verre</option><option>Huile</option><option>Électronique</option>
                 </select>
             </div>
             <div class="form-group">
-                <label>Titre</label>
-                <input type="text" id="publish-title" class="input" placeholder="Ex: Bouteilles PET transparentes">
+                <label data-i18n="title_label">Titre</label>
+                <input type="text" id="publish-title" class="input" data-i18n-placeholder="placeholder_title" placeholder="Ex: Bouteilles PET transparentes">
             </div>
             <div class="form-group">
-                <label>Quantité</label>
-                <input type="text" id="publish-qty" class="input" placeholder="Ex: 15 kg">
+                <label data-i18n="quantity_label">Quantité</label>
+                <input type="text" id="publish-qty" class="input" data-i18n-placeholder="placeholder_qty" placeholder="Ex: 15 kg">
             </div>
             <div class="form-group">
-                <label>Prix (FCFA/kg)</label>
-                <input type="number" id="publish-price" class="input" placeholder="Ex: 200">
+                <label data-i18n="price_label">Prix (FCFA/kg)</label>
+                <input type="number" id="publish-price" class="input" data-i18n-placeholder="placeholder_price" placeholder="Ex: 200">
             </div>
             <div class="form-group">
-                <label>Ville</label>
-                <input type="text" id="publish-city" class="input" placeholder="Ex: Douala">
+                <label data-i18n="city_label">Ville</label>
+                <input type="text" id="publish-city" class="input" data-i18n-placeholder="placeholder_city" placeholder="Ex: Douala">
             </div>
-            <button class="btn" id="publish-submit">Publier l'annonce</button>
+            <button class="btn btn-gold" id="publish-submit" data-i18n="publish_ad">Publier l'annonce</button>
         </div>
 
-        <!-- WITHDRAWAL -->
+        <!-- ===== WITHDRAWAL ===== -->
         <div id="withdrawal" class="screen">
-            <h2 style="font-size:20px;margin-bottom:4px;">💰 Retrait MoMo</h2>
-            <div style="color:var(--text2);font-size:14px;margin-bottom:16px;">Solde : 5 000 FCFA</div>
+            <h2 style="font-size:19px;margin-bottom:4px;" data-i18n="withdraw_momo">💰 Retrait MoMo</h2>
+            <div style="color:var(--text2);font-size:14px;margin-bottom:16px;" id="withdrawal-balance-text">Solde : 5 000 FCFA</div>
             <div class="provider-select">
-                <button class="provider-item selected" data-provider="MTN"><div class="emoji">📡</div><div class="name">MTN</div></button>
-                <button class="provider-item" data-provider="Orange"><div class="emoji">📡</div><div class="name">Orange</div></button>
+                <button class="provider-item selected" data-provider="MTN"><div class="emoji">📡</div><div class="name">MTN MoMo</div></button>
+                <button class="provider-item" data-provider="Orange"><div class="emoji">📡</div><div class="name">Orange Money</div></button>
             </div>
             <div class="form-group">
-                <label>Montant (FCFA)</label>
-                <input type="number" id="withdrawal-amount" class="input" placeholder="Ex: 1000">
+                <label data-i18n="amount_label">Montant (FCFA)</label>
+                <input type="number" id="withdrawal-amount" class="input" data-i18n-placeholder="placeholder_amount" placeholder="Ex: 1000">
             </div>
             <div class="form-group">
-                <label>Numéro de téléphone</label>
+                <label data-i18n="phone_label">Numéro de téléphone</label>
                 <input type="tel" id="withdrawal-phone" class="input" placeholder="6XXXXXXXX">
             </div>
-            <button class="btn" id="withdrawal-submit">Confirmer le retrait</button>
-            <div style="text-align:center;font-size:12px;color:var(--text2);margin-top:12px;">Frais : 1.5% · Délai : instantané</div>
+            <button class="btn btn-gold" id="withdrawal-submit" data-i18n="confirm_withdraw">Confirmer le retrait</button>
+            <div style="text-align:center;font-size:12px;color:var(--text2);margin-top:12px;" data-i18n="fees">Frais : 1.5% · Délai : instantané</div>
         </div>
 
-        <!-- MAP -->
+        <!-- ===== MAP ===== -->
         <div id="map" class="screen">
-            <h2 style="font-size:20px;margin-bottom:12px;">📍 Points de collecte</h2>
+            <h2 style="font-size:19px;margin-bottom:12px;" data-i18n="collection_points">📍 Points de collecte</h2>
             <div class="map-container">
-                <div class="grid"></div>
                 <div class="map-pin">
                     <div class="emoji">📍</div>
                     <div class="city" id="map-current-city">Douala</div>
@@ -1432,174 +532,338 @@
             <div id="city-list"></div>
         </div>
 
-        <!-- PRICE GUIDE -->
+        <!-- ===== PRICE GUIDE ===== -->
         <div id="priceguide" class="screen">
-            <h2 style="font-size:20px;margin-bottom:12px;">📊 Guide des prix</h2>
-            <p style="color:var(--text2);font-size:13px;margin-bottom:16px;">Prix indicatifs du recyclage au Cameroun (FCFA/kg)</p>
+            <h2 style="font-size:19px;margin-bottom:12px;" data-i18n="price_guide_title">📊 Guide des prix</h2>
+            <p style="color:var(--text2);font-size:13px;margin-bottom:16px;" data-i18n="price_guide_sub">Prix indicatifs du recyclage au Cameroun (FCFA/kg)</p>
             <div class="price-guide-grid" id="price-guide-grid"></div>
-            <div class="card" style="margin-top:16px;padding:12px 16px;">
-                <p style="font-size:12px;color:var(--text2);">💡 <strong>Conseil :</strong> Les prix varient selon la qualité et la quantité. Ces prix sont indicatifs et peuvent être négociés.</p>
+            <div style="margin-top:16px;padding:12px 16px;background:rgba(217,164,65,0.06);border:1px solid rgba(217,164,65,0.12);border-radius:14px;">
+                <p style="font-size:12px;color:var(--text2);" data-i18n="price_advice">💡 Conseil : Les prix varient selon la qualité et la quantité. Ces prix sont indicatifs et peuvent être négociés.</p>
             </div>
         </div>
 
-        <!-- CHAT (CORRIGÉ) -->
+        <!-- ===== CHAT ===== -->
         <div id="chat" class="screen">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-                <h2 style="font-size:20px;">💬 Messages</h2>
-                <span style="font-size:12px;color:var(--text2);">3 discussions</span>
+                <h2 style="font-size:19px" data-i18n="messages_title">💬 Messages</h2>
+                <span style="font-size:12px;color:var(--text2)" data-i18n="chat_count">3 discussions</span>
             </div>
             <div id="chat-list"></div>
             <div id="chat-conversation" style="display:none;flex:1;flex-direction:column;gap:8px;padding-bottom:8px;">
-                <button class="btn btn-ghost" id="chat-back" style="padding-left:0;margin-bottom:8px;">← Retour</button>
+                <button class="btn-ghost" id="chat-back" style="padding-left:0;margin-bottom:8px;" data-i18n="back">← Retour</button>
                 <div id="chat-messages" style="flex:1;display:flex;flex-direction:column;gap:8px;overflow-y:auto;padding-bottom:12px;"></div>
                 <div class="chat-input">
-                    <input type="text" id="chat-input-text" placeholder="Écrire un message...">
+                    <input type="text" id="chat-input-text" data-i18n-placeholder="chat_placeholder" placeholder="Écrire un message...">
                     <button id="chat-send-btn">📤</button>
                 </div>
             </div>
         </div>
 
-        <!-- NOTIFICATIONS -->
+        <!-- ===== NOTIFICATIONS ===== -->
         <div id="notifications" class="screen">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-                <h2 style="font-size:20px;">🔔 Notifications</h2>
-                <button class="btn btn-ghost" id="notif-mark-all" style="font-size:12px;">Tout marquer comme lu</button>
+                <h2 style="font-size:19px" data-i18n="notif_title">🔔 Notifications</h2>
+                <button class="btn-ghost" id="notif-mark-all" style="font-size:12px" data-i18n="mark_all">Tout marquer comme lu</button>
             </div>
             <div id="notif-list"></div>
         </div>
 
-        <!-- STATS -->
+        <!-- ===== STATS ===== -->
         <div id="stats" class="screen">
-            <h2 style="font-size:20px;margin-bottom:12px;">📊 Statistiques</h2>
+            <h2 style="font-size:19px;margin-bottom:12px;" data-i18n="stats_title">📊 Statistiques</h2>
             <div class="stats-row">
-                <div class="stat-item"><div class="value">12</div><div class="label">Ventes</div></div>
-                <div class="stat-item"><div class="value">45 kg</div><div class="label">Recyclés</div></div>
-                <div class="stat-item"><div class="value">⭐ 4.8</div><div class="label">Note</div></div>
+                <div class="stat-item"><div class="value">12</div><div class="label" data-i18n="sales">Ventes</div></div>
+                <div class="stat-item"><div class="value">45 kg</div><div class="label" data-i18n="recycled">Recyclés</div></div>
+                <div class="stat-item"><div class="value">⭐ 4.8</div><div class="label" data-i18n="rating">Note</div></div>
             </div>
-            <div class="section-title">📈 Collectes par semaine</div>
+            <div class="section-title" data-i18n="weekly">📈 Collectes par semaine</div>
             <div class="chart-bars" id="chart-bars"></div>
-            <div class="section-title" style="margin-top:16px;">🧩 Répartition des déchets</div>
+            <div class="section-title" style="margin-top:16px;" data-i18n="waste_distribution">🧩 Répartition des déchets</div>
             <div class="donut-container"><div class="donut"></div></div>
             <div class="donut-legend">
-                <span><span class="color" style="background:var(--primary);"></span>Plastique 40%</span>
-                <span><span class="color" style="background:var(--accent);"></span>Métal 20%</span>
-                <span><span class="color" style="background:var(--info);"></span>Verre 20%</span>
-                <span><span class="color" style="background:var(--danger);"></span>Carton 20%</span>
+                <span class="entry"><span class="color" style="background:var(--primary-light);"></span><span data-i18n="plastic_pct">Plastique 40%</span></span>
+                <span class="entry"><span class="color" style="background:var(--accent);"></span><span data-i18n="metal_pct">Métal 20%</span></span>
+                <span class="entry"><span class="color" style="background:#6B8FA8;"></span><span data-i18n="glass_pct">Verre 20%</span></span>
+                <span class="entry"><span class="color" style="background:var(--danger);"></span><span data-i18n="cardboard_pct">Carton 20%</span></span>
             </div>
-            <div class="section-title" style="margin-top:16px;">💰 Revenus mensuels</div>
+            <div class="section-title" style="margin-top:16px;" data-i18n="monthly_revenue">💰 Revenus mensuels</div>
             <div id="revenue-bars" style="display:flex;flex-direction:column;gap:6px;"></div>
         </div>
 
-        <!-- PROFILE (MODIFIABLE) -->
+        <!-- ===== PROFILE ===== -->
         <div id="profile" class="screen">
             <div class="profile-header">
-                <div class="profile-avatar" id="profile-avatar">👤</div>
-                <input type="text" id="profile-name" class="profile-name" value="Jean Dupont" placeholder="Votre nom">
-                <input type="text" id="profile-username" class="profile-username" value="@jean_dupont_237" placeholder="@utilisateur">
+                <div class="profile-avatar">👤</div>
+                <div class="profile-name" id="profile-name-display">Jean Dupont</div>
+                <div class="profile-username" id="profile-phone-display">@jean_dupont_237</div>
                 <div class="profile-badge">⭐ PREMIUM</div>
-                <button class="btn btn-sm profile-save-btn" id="save-profile">💾 Enregistrer</button>
+                <button class="btn-ghost" id="goto-editprofile" style="margin-top:8px" data-i18n="edit_profile">✏️ Modifier mon profil</button>
             </div>
             <div class="stats-row">
-                <div class="stat-item"><div class="value">12</div><div class="label">Ventes</div></div>
-                <div class="stat-item"><div class="value">45kg</div><div class="label">Recyclés</div></div>
-                <div class="stat-item"><div class="value">⭐ 4.8</div><div class="label">Note</div></div>
+                <div class="stat-item"><div class="value">12</div><div class="label" data-i18n="sales">Ventes</div></div>
+                <div class="stat-item"><div class="value">45kg</div><div class="label" data-i18n="recycled">Recyclés</div></div>
+                <div class="stat-item"><div class="value">⭐ 4.8</div><div class="label" data-i18n="rating">Note</div></div>
             </div>
             <div class="profile-menu">
-                <button class="item" id="goto-priceguide"><span class="icon">📊</span><span class="label">Guide des prix</span><span class="arrow">›</span></button>
-                <button class="item"><span class="icon">📍</span><span class="label">Douala, Cameroun</span><span class="arrow">›</span></button>
-                <button class="item"><span class="icon">📞</span><span class="label">+237 677 123 456</span><span class="arrow">›</span></button>
-                <button class="item"><span class="icon">🔒</span><span class="label">Changer le mot de passe</span><span class="arrow">›</span></button>
-                <button class="item"><span class="icon">🔔</span><span class="label">Notifications</span><span style="color:#22C55E;font-size:12px;font-weight:600;">Actives</span></button>
-                <button class="item"><span class="icon">🌐</span><span class="label">Langue</span><span class="arrow">Français ›</span></button>
-                <button class="item"><span class="icon">🌙</span><span class="label">Mode sombre</span><span style="color:#22C55E;font-size:12px;font-weight:600;">Activé</span></button>
-                <button class="item"><span class="icon">📋</span><span class="label">Mes annonces</span><span class="arrow">3 ›</span></button>
-                <button class="item"><span class="icon">⭐</span><span class="label">Mon abonnement Premium</span><span style="color:var(--accent);font-size:12px;font-weight:600;">Actif</span></button>
-                <button class="item danger"><span class="icon">🚪</span><span class="label" style="color:#EF4444;">Déconnexion</span><span class="arrow">›</span></button>
+                <button class="item" id="goto-priceguide"><span class="icon">📊</span><span class="label" data-i18n="price_guide">Guide des prix</span><span class="arrow">›</span></button>
+                <button class="item" id="goto-editprofile-city"><span class="icon">📍</span><span class="label" id="profile-city-label">Douala, Cameroun</span><span class="arrow">›</span></button>
+                <button class="item" id="goto-editprofile-phone"><span class="icon">📞</span><span class="label" id="profile-phone-label">+237 677 123 456</span><span class="arrow">›</span></button>
+                <button class="item" id="toggle-notifications"><span class="icon">🔔</span><span class="label" data-i18n="notifications">Notifications</span><span id="notif-status" style="color:#8FC17E;font-size:12px;font-weight:600;" data-i18n="active">Actives</span></button>
+                <button class="item"><span class="icon">🌐</span><span class="label" data-i18n="language">Langue</span><span class="arrow" id="profile-lang-display">Français ›</span></button>
+                <button class="item"><span class="icon">📋</span><span class="label" data-i18n="my_ads">Mes annonces</span><span class="arrow">3 ›</span></button>
+                <button class="item"><span class="icon">⭐</span><span class="label" data-i18n="my_premium">Mon abonnement Premium</span><span style="color:var(--accent-bright);font-size:12px;font-weight:600;" data-i18n="active_premium">Actif</span></button>
+                <button class="item danger" id="logout-btn"><span class="icon">🚪</span><span class="label" style="color:var(--danger);" data-i18n="logout">Déconnexion</span><span class="arrow">›</span></button>
             </div>
         </div>
 
-        <!-- BOTTOM NAV -->
+        <!-- ===== EDIT PROFILE ===== -->
+        <div id="editprofile" class="screen">
+            <button class="btn-ghost" id="editprofile-back" style="padding-left:0;margin-bottom:12px;" data-i18n="back">← Retour</button>
+            <h2 style="font-size:19px;margin-bottom:16px;" data-i18n="edit_profile_title">✏️ Modifier mon profil</h2>
+            <div class="form-group">
+                <label data-i18n="name_label">Nom complet</label>
+                <input type="text" id="editprofile-name" class="input" placeholder="Ex: Jean Dupont">
+            </div>
+            <div class="form-group">
+                <label data-i18n="city_label">Ville</label>
+                <input type="text" id="editprofile-city" class="input" placeholder="Ex: Douala, Cameroun">
+            </div>
+            <div class="form-group">
+                <label data-i18n="phone_label">Numéro de téléphone</label>
+                <input type="text" id="editprofile-phone" class="input" disabled style="opacity:0.6">
+                <p class="note" data-i18n="phone_locked_note">Le numéro est lié à votre connexion et ne peut pas être modifié ici.</p>
+            </div>
+            <button class="btn btn-gold" id="editprofile-save" data-i18n="save_profile">Enregistrer</button>
+        </div>
+
+        <!-- ===== BOTTOM NAV ===== -->
         <div id="bottom-nav">
-            <button class="nav-item active" data-screen="dashboard"><span class="icon">🏠</span><span class="label">Accueil</span></button>
-            <button class="nav-item" data-screen="feed"><span class="icon">🛒</span><span class="label">Marché</span></button>
-            <button class="nav-item" data-screen="publish"><span class="icon">➕</span><span class="label">Publier</span></button>
-            <button class="nav-item" data-screen="notifications"><span class="icon">🔔</span><span class="label">Notif.</span><span class="badge" id="notif-badge">4</span></button>
-            <button class="nav-item" data-screen="profile"><span class="icon">👤</span><span class="label">Profil</span></button>
+            <button class="nav-item active" data-screen="dashboard"><span class="icon">🏠</span><span class="label" data-i18n="home">Accueil</span></button>
+            <button class="nav-item" data-screen="feed"><span class="icon">🛒</span><span class="label" data-i18n="marketplace">Marché</span></button>
+            <button class="nav-item" data-screen="publish"><span class="icon">➕</span><span class="label" data-i18n="publish">Publier</span></button>
+            <button class="nav-item" data-screen="notifications"><span class="icon">🔔</span><span class="label" data-i18n="notif">Notif.</span><span class="badge" id="notif-badge">4</span></button>
+            <button class="nav-item" data-screen="profile"><span class="icon">👤</span><span class="label" data-i18n="profile">Profil</span></button>
         </div>
 
     </div>
 
     <script>
         // ==========================================
-        // DONNÉES
+        // DONNÉES STATIQUES (bilingues — utilisées quand aucune annonce Firestore n'est chargée)
         // ==========================================
-        const staticProducts = [
-            { emoji: '🥤', title: 'Bouteilles PET transparentes', loc: 'Douala, Bonapriso', price: '200 FCFA/kg',
-                qty: '15kg', cat: 'Plastique' },
-            { emoji: '🥤', title: 'Bouteilles PET colorées', loc: 'Yaoundé, Bastos', price: '100 FCFA/kg', qty: '10kg',
-                cat: 'Plastique' },
-            { emoji: '🥫', title: 'Canettes aluminium', loc: 'Bafoussam', price: '700 FCFA/kg', qty: '8kg',
-                cat: 'Métal' },
-            { emoji: '🔩', title: 'Cuivre dénudé', loc: 'Douala, Akwa', price: '2 200 FCFA/kg', qty: '5kg',
-                cat: 'Métal' },
-            { emoji: '📦', title: 'Carton ondulé propre', loc: 'Bamenda', price: '75 FCFA/kg', qty: '20kg',
-                cat: 'Carton' },
-            { emoji: '🍾', title: 'Verre transparent', loc: 'Garoua', price: '50 FCFA/kg', qty: '25kg', cat: 'Verre' },
-            { emoji: '🛢️', title: 'Huile de friture usagée', loc: 'Douala, Akwa', price: '300 FCFA/L', qty: '10L',
-                cat: 'Huile' },
-            { emoji: '💻', title: 'Ordinateurs complets', loc: 'Douala, Bonapriso', price: '400 FCFA/kg', qty: '30kg',
-                cat: 'Électronique' }
-        ];
+        const staticProducts = {
+            fr: [
+                { emoji: '🥤', title: 'Bouteilles PET transparentes', loc: 'Douala, Bonapriso', price: '200 FCFA/kg', qty: '15kg', cat: 'Plastique' },
+                { emoji: '🥤', title: 'Bouteilles PET colorées', loc: 'Yaoundé, Bastos', price: '100 FCFA/kg', qty: '10kg', cat: 'Plastique' },
+                { emoji: '🥫', title: 'Canettes aluminium', loc: 'Bafoussam', price: '700 FCFA/kg', qty: '8kg', cat: 'Métal' },
+                { emoji: '🔩', title: 'Cuivre dénudé', loc: 'Douala, Akwa', price: '2 200 FCFA/kg', qty: '5kg', cat: 'Métal' },
+                { emoji: '🔩', title: 'Fer lourd', loc: 'Yaoundé, Mvog-Mbi', price: '150 FCFA/kg', qty: '50kg', cat: 'Métal' },
+                { emoji: '📦', title: 'Carton ondulé propre', loc: 'Bamenda', price: '75 FCFA/kg', qty: '20kg', cat: 'Carton' },
+                { emoji: '📄', title: 'Papier blanc de bureau', loc: 'Douala, Bonapriso', price: '100 FCFA/kg', qty: '12kg', cat: 'Carton' },
+                { emoji: '🍾', title: 'Verre transparent', loc: 'Garoua', price: '50 FCFA/kg', qty: '25kg', cat: 'Verre' },
+                { emoji: '🍾', title: 'Verre coloré (brun/vert)', loc: 'Bafoussam', price: '30 FCFA/kg', qty: '18kg', cat: 'Verre' },
+                { emoji: '🛢️', title: 'Huile de friture usagée', loc: 'Douala, Akwa', price: '300 FCFA/L', qty: '10L', cat: 'Huile' },
+                { emoji: '🛢️', title: 'Huile moteur usagée', loc: 'Yaoundé, Bastos', price: '150 FCFA/L', qty: '20L', cat: 'Huile' },
+                { emoji: '💻', title: 'Ordinateurs complets', loc: 'Douala, Bonapriso', price: '400 FCFA/kg', qty: '30kg', cat: 'Électronique' }
+            ],
+            en: [
+                { emoji: '🥤', title: 'Clear PET bottles', loc: 'Douala, Bonapriso', price: '200 FCFA/kg', qty: '15kg', cat: 'Plastique' },
+                { emoji: '🥤', title: 'Coloured PET bottles', loc: 'Yaoundé, Bastos', price: '100 FCFA/kg', qty: '10kg', cat: 'Plastique' },
+                { emoji: '🥫', title: 'Aluminium cans', loc: 'Bafoussam', price: '700 FCFA/kg', qty: '8kg', cat: 'Métal' },
+                { emoji: '🔩', title: 'Stripped copper', loc: 'Douala, Akwa', price: '2,200 FCFA/kg', qty: '5kg', cat: 'Métal' },
+                { emoji: '🔩', title: 'Heavy iron', loc: 'Yaoundé, Mvog-Mbi', price: '150 FCFA/kg', qty: '50kg', cat: 'Métal' },
+                { emoji: '📦', title: 'Clean corrugated cardboard', loc: 'Bamenda', price: '75 FCFA/kg', qty: '20kg', cat: 'Carton' },
+                { emoji: '📄', title: 'White office paper', loc: 'Douala, Bonapriso', price: '100 FCFA/kg', qty: '12kg', cat: 'Carton' },
+                { emoji: '🍾', title: 'Clear glass', loc: 'Garoua', price: '50 FCFA/kg', qty: '25kg', cat: 'Verre' },
+                { emoji: '🍾', title: 'Coloured glass (brown/green)', loc: 'Bafoussam', price: '30 FCFA/kg', qty: '18kg', cat: 'Verre' },
+                { emoji: '🛢️', title: 'Used cooking oil', loc: 'Douala, Akwa', price: '300 FCFA/L', qty: '10L', cat: 'Huile' },
+                { emoji: '🛢️', title: 'Used motor oil', loc: 'Yaoundé, Bastos', price: '150 FCFA/L', qty: '20L', cat: 'Huile' },
+                { emoji: '💻', title: 'Complete computers', loc: 'Douala, Bonapriso', price: '400 FCFA/kg', qty: '30kg', cat: 'Électronique' }
+            ]
+        };
 
-        const cityData = [
-            { name: 'Douala - Bonaberi', address: 'En face du marché central', city: 'Douala' },
-            { name: 'Douala - Akwa', address: 'Rue des palmiers, immeuble ReLife', city: 'Douala' },
-            { name: 'Yaoundé - Bastos', address: 'Carrefour de la poste', city: 'Yaoundé' },
-            { name: 'Yaoundé - Mvog-Mbi', address: 'En face de l\'hôpital', city: 'Yaoundé' },
-            { name: 'Bafoussam', address: 'Marché A, côté station Total', city: 'Bafoussam' },
-            { name: 'Garoua', address: 'Rue du commerce, chez Marie', city: 'Garoua' }
-        ];
+        const cityData = {
+            fr: [
+                { name: 'Douala - Bonaberi', address: 'En face du marché central' },
+                { name: 'Douala - Akwa', address: 'Rue des palmiers, immeuble ReLife' },
+                { name: 'Yaoundé - Bastos', address: 'Carrefour de la poste' },
+                { name: 'Yaoundé - Mvog-Mbi', address: "En face de l'hôpital" },
+                { name: 'Bafoussam', address: 'Marché A, côté station Total' },
+                { name: 'Garoua', address: 'Rue du commerce, chez Marie' }
+            ],
+            en: [
+                { name: 'Douala - Bonaberi', address: 'Opposite the central market' },
+                { name: 'Douala - Akwa', address: 'Rue des Palmiers, ReLife building' },
+                { name: 'Yaoundé - Bastos', address: 'Post office intersection' },
+                { name: 'Yaoundé - Mvog-Mbi', address: 'Opposite the hospital' },
+                { name: 'Bafoussam', address: 'Market A, next to the Total station' },
+                { name: 'Garoua', address: "Commerce street, at Marie's" }
+            ]
+        };
 
-        const priceGuideData = [
-            { emoji: '🥤', name: 'PET transparent', price: '150-200', sub: 'Bouteilles d\'eau' },
-            { emoji: '🥤', name: 'PET coloré', price: '75-100', sub: 'Bouteilles colorées' },
-            { emoji: '🥫', name: 'Aluminium', price: '500-800', sub: 'Canettes, casseroles' },
-            { emoji: '🔩', name: 'Cuivre dénudé', price: '2 000-2 500', sub: 'Haute valeur' },
-            { emoji: '📦', name: 'Carton ondulé', price: '50-75', sub: 'Propre, sec' },
-            { emoji: '🍾', name: 'Verre transparent', price: '25-50', sub: 'Bouteilles, bocaux' },
-            { emoji: '🛢️', name: 'Huile de friture', price: '200-300', sub: 'Par litre' },
-            { emoji: '💻', name: 'Ordinateurs', price: '200-500', sub: 'Complets' }
-        ];
+        const priceGuideData = {
+            fr: [
+                { emoji: '🥤', name: 'PET transparent', price: '150-200', sub: "Bouteilles d'eau" },
+                { emoji: '🥤', name: 'PET coloré', price: '75-100', sub: 'Bouteilles colorées' },
+                { emoji: '🥫', name: 'Aluminium', price: '500-800', sub: 'Canettes, casseroles' },
+                { emoji: '🔩', name: 'Cuivre dénudé', price: '2 000-2 500', sub: 'Haute valeur' },
+                { emoji: '🔩', name: 'Fer/Acier', price: '100-150', sub: 'Lourd, bonne qualité' },
+                { emoji: '📦', name: 'Carton ondulé', price: '50-75', sub: 'Propre, sec' },
+                { emoji: '📄', name: 'Papier blanc', price: '75-100', sub: 'Bureau, impression' },
+                { emoji: '🍾', name: 'Verre transparent', price: '25-50', sub: 'Bouteilles, bocaux' },
+                { emoji: '🍾', name: 'Verre coloré', price: '20-40', sub: 'Brun, vert' },
+                { emoji: '🛢️', name: 'Huile de friture', price: '200-300', sub: 'Par litre' },
+                { emoji: '🛢️', name: 'Huile moteur', price: '100-200', sub: 'Par litre' },
+                { emoji: '💻', name: 'Ordinateurs', price: '200-500', sub: 'Complets' }
+            ],
+            en: [
+                { emoji: '🥤', name: 'Clear PET', price: '150-200', sub: 'Water bottles' },
+                { emoji: '🥤', name: 'Coloured PET', price: '75-100', sub: 'Coloured bottles' },
+                { emoji: '🥫', name: 'Aluminium', price: '500-800', sub: 'Cans, pots' },
+                { emoji: '🔩', name: 'Stripped copper', price: '2,000-2,500', sub: 'High value' },
+                { emoji: '🔩', name: 'Iron/Steel', price: '100-150', sub: 'Heavy, good condition' },
+                { emoji: '📦', name: 'Corrugated cardboard', price: '50-75', sub: 'Clean, dry' },
+                { emoji: '📄', name: 'White paper', price: '75-100', sub: 'Office, print' },
+                { emoji: '🍾', name: 'Clear glass', price: '25-50', sub: 'Bottles, jars' },
+                { emoji: '🍾', name: 'Coloured glass', price: '20-40', sub: 'Brown, green' },
+                { emoji: '🛢️', name: 'Cooking oil', price: '200-300', sub: 'Per litre' },
+                { emoji: '🛢️', name: 'Motor oil', price: '100-200', sub: 'Per litre' },
+                { emoji: '💻', name: 'Computers', price: '200-500', sub: 'Complete units' }
+            ]
+        };
 
-        const revenueData = [
-            { month: 'Jan', amount: 12500, pct: 25 },
-            { month: 'Fév', amount: 18200, pct: 36 },
-            { month: 'Mar', amount: 22800, pct: 46 },
-            { month: 'Avr', amount: 30500, pct: 61 }
-        ];
-
-        // Données du chat (sans messages automatiques)
         const chatMessages = {
             paul: [
                 { text: "Bonjour, je suis intéressé par vos bouteilles PET", sent: false, time: "12:20" },
                 { text: "Bonjour ! Oui je les ai encore", sent: true, time: "12:22" },
+                { text: "Ok je suis dispo", sent: false, time: "12:30" }
             ],
-            marie: [
-                { text: "Merci pour votre confiance", sent: false, time: "Hier" }
+            marie: [{ text: "Merci pour votre confiance", sent: false, time: "Hier" }],
+            jean: [{ text: "Quand pouvez-vous passer ?", sent: false, time: "Hier" }]
+        };
+
+        const notifications = {
+            fr: [
+                { icon: '💬', title: 'Nouveau message de Paul', body: '"Ok je suis dispo pour la collecte"', time: 'Il y a 10 min' },
+                { icon: '♻️', title: 'Collecte confirmée', body: 'Votre collecte de 15kg est planifiée demain', time: 'Il y a 2h' },
+                { icon: '⭐', title: 'Offre Premium disponible', body: 'Devenez Premium pour 5000 FCFA/mois', time: 'Il y a 1j' },
+                { icon: '📝', title: 'Nouvel avis reçu', body: '"Excellent service, je recommande !"', time: 'Il y a 2j' }
             ],
-            jean: [
-                { text: "Quand pouvez-vous passer ?", sent: false, time: "Hier" }
+            en: [
+                { icon: '💬', title: 'New message from Paul', body: '"Ok I\u2019m available for pickup"', time: '10 min ago' },
+                { icon: '♻️', title: 'Pickup confirmed', body: 'Your 15kg pickup is scheduled tomorrow', time: '2h ago' },
+                { icon: '⭐', title: 'Premium offer available', body: 'Go Premium for 5,000 FCFA/month', time: '1 day ago' },
+                { icon: '📝', title: 'New review received', body: '"Excellent service, I recommend it!"', time: '2 days ago' }
             ]
         };
 
-        const notifications = [
-            { icon: '💬', title: 'Nouveau message de Paul', body: '"Ok je suis dispo pour la collecte"', time: 'Il y a 10 min' },
-            { icon: '♻️', title: 'Collecte confirmée', body: 'Votre collecte de 15kg est planifiée demain',
-                time: 'Il y a 2h' },
-            { icon: '⭐', title: 'Offre Premium disponible', body: 'Devenez Premium pour 5000 FCFA/mois',
-                time: 'Il y a 1j' },
-            { icon: '📝', title: 'Nouvel avis reçu', body: '"Excellent service, je recommande !"', time: 'Il y a 2j' }
-        ];
+        const revenueData = {
+            fr: [
+                { month: 'Jan', amount: 12500, pct: 25 }, { month: 'Fév', amount: 18200, pct: 36 },
+                { month: 'Mar', amount: 22800, pct: 46 }, { month: 'Avr', amount: 30500, pct: 61 }
+            ],
+            en: [
+                { month: 'Jan', amount: 12500, pct: 25 }, { month: 'Feb', amount: 18200, pct: 36 },
+                { month: 'Mar', amount: 22800, pct: 46 }, { month: 'Apr', amount: 30500, pct: 61 }
+            ]
+        };
+
+        const chartDays = {
+            fr: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
+            en: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+        };
+
+        // ==========================================
+        // TRADUCTIONS
+        // ==========================================
+        const translations = {
+            fr: {
+                home: 'Accueil', marketplace: 'Marché', publish: 'Publier', notif: 'Notif.', profile: 'Profil',
+                map: 'Carte', messages: 'Messages', stats: 'Stats',
+                balance: '💰 Solde Mobile Money', withdraw: 'Retirer', sales: 'Ventes', recycled: 'Recyclés', rating: 'Note',
+                recent: '⚡ Activité récente', pet: 'Collecte de bouteilles PET', aluminum: 'Canettes aluminium', cardboard: 'Cartons recyclables',
+                yesterday: 'Hier', days_ago_hours: 'Il y a 2h',
+                marketplace_title: '🛒 Marché', publish_btn: '+ Publier',
+                all: 'Tous', plastic: 'Plastique', metal: 'Métal', cardboard_cat: 'Carton', glass_cat: 'Verre', oil: 'Huile', electronic: 'Électronique',
+                back: '← Retour', available: 'Disponible', contact: 'Contacter', rate_seller: '⭐ Noter ce vendeur', reviews: '📝 Avis (12)',
+                days_ago_2: 'Il y a 2j', days_ago_5: 'Il y a 5j',
+                new_ad: '➕ Nouvelle annonce', photo_label: 'Photo du produit', photo_required: '· requise',
+                photo_cta: 'Prendre une photo de la matière', photo_note: "Une photo réelle rassure l'acheteur et évite les annonces refusées sur place.",
+                quality_label: 'État de la matière', quality_clean: 'Propre', quality_mixed: 'Mélangé', quality_dirty: 'Sale',
+                category: 'Catégorie', title_label: 'Titre', quantity_label: 'Quantité', price_label: 'Prix (FCFA/kg)', city_label: 'Ville',
+                placeholder_title: 'Ex: Bouteilles PET transparentes', placeholder_qty: 'Ex: 15 kg', placeholder_price: 'Ex: 200', placeholder_city: 'Ex: Douala',
+                placeholder_amount: 'Ex: 1000', chat_placeholder: 'Écrire un message...',
+                publish_ad: "Publier l'annonce",
+                withdraw_momo: '💰 Retrait MoMo', balance_prefix: 'Solde :',
+                amount_label: 'Montant (FCFA)', phone_label: 'Numéro de téléphone', confirm_withdraw: 'Confirmer le retrait',
+                fees: 'Frais : 1.5% · Délai : instantané',
+                collection_points: '📍 Points de collecte',
+                price_guide_title: '📊 Guide des prix', price_guide_sub: 'Prix indicatifs du recyclage au Cameroun (FCFA/kg)', price_guide: 'Guide des prix',
+                price_advice: '💡 Conseil : Les prix varient selon la qualité et la quantité. Ces prix sont indicatifs et peuvent être négociés.',
+                messages_title: '💬 Messages', chat_count: '3 discussions',
+                notif_title: '🔔 Notifications', mark_all: 'Tout marquer comme lu',
+                stats_title: '📊 Statistiques', weekly: '📈 Collectes par semaine', waste_distribution: '🧩 Répartition des déchets',
+                plastic_pct: 'Plastique 40%', metal_pct: 'Métal 20%', glass_pct: 'Verre 20%', cardboard_pct: 'Carton 20%',
+                monthly_revenue: '💰 Revenus mensuels',
+                change_password: 'Changer le mot de passe', notifications: 'Notifications', active: 'Actives', language: 'Langue',
+                my_ads: 'Mes annonces', my_premium: 'Mon abonnement Premium', active_premium: 'Actif', logout: 'Déconnexion',
+                welcome: 'Bienvenue', enter_phone: 'Entrez votre numéro de téléphone', login_btn: 'Se connecter', login_skip: 'Continuer sans compte (test)',
+                otp_title: 'Vérification', otp_sent_to: 'Code envoyé au', otp_verify: 'Vérifier', otp_resend: 'Renvoyer le code',
+                edit_profile: '✏️ Modifier mon profil', edit_profile_title: '✏️ Modifier mon profil', name_label: 'Nom complet',
+                phone_locked_note: 'Le numéro est lié à votre connexion et ne peut pas être modifié ici.', save_profile: 'Enregistrer',
+                notif_on: 'Actives', notif_off: 'Désactivées', logged_out: 'Déconnecté', profile_saved: '✅ Profil enregistré',
+                default_city: 'Douala, Cameroun', no_phone: 'Compte test',
+                greeting_hello: 'Bonjour', ready_recycle: 'Prêt à recycler aujourd\u2019hui ?',
+                onboarding_title_0: 'Valorisez vos déchets', onboarding_body_0: 'Transformez vos déchets recyclables en une source de revenus',
+                onboarding_title_1: "Gagnez de l'argent", onboarding_body_1: 'Recevez un paiement immédiat pour chaque kilogramme collecté',
+                onboarding_title_2: "Protégez l'environnement", onboarding_body_2: 'Contribuez à un Cameroun plus propre et plus vert',
+                onboarding_title_3: 'Devenez Premium', onboarding_body_3: 'Accédez à des tarifs préférentiels et des collectes prioritaires',
+                onboarding_next: 'Suivant', onboarding_start: '🚀 Démarrer'
+            },
+            en: {
+                home: 'Home', marketplace: 'Marketplace', publish: 'Publish', notif: 'Notif.', profile: 'Profile',
+                map: 'Map', messages: 'Messages', stats: 'Stats',
+                balance: '💰 Mobile Money Balance', withdraw: 'Withdraw', sales: 'Sales', recycled: 'Recycled', rating: 'Rating',
+                recent: '⚡ Recent Activity', pet: 'PET bottles collection', aluminum: 'Aluminum cans', cardboard: 'Recyclable cardboard',
+                yesterday: 'Yesterday', days_ago_hours: '2h ago',
+                marketplace_title: '🛒 Marketplace', publish_btn: '+ Publish',
+                all: 'All', plastic: 'Plastic', metal: 'Metal', cardboard_cat: 'Cardboard', glass_cat: 'Glass', oil: 'Oil', electronic: 'Electronics',
+                back: '← Back', available: 'Available', contact: 'Contact', rate_seller: '⭐ Rate this seller', reviews: '📝 Reviews (12)',
+                days_ago_2: '2 days ago', days_ago_5: '5 days ago',
+                new_ad: '➕ New ad', photo_label: 'Product photo', photo_required: '· required',
+                photo_cta: 'Take a photo of the material', photo_note: 'A real photo builds buyer trust and avoids ads being refused on-site.',
+                quality_label: 'Material condition', quality_clean: 'Clean', quality_mixed: 'Mixed', quality_dirty: 'Dirty',
+                category: 'Category', title_label: 'Title', quantity_label: 'Quantity', price_label: 'Price (FCFA/kg)', city_label: 'City',
+                placeholder_title: 'E.g. Clear PET bottles', placeholder_qty: 'E.g. 15 kg', placeholder_price: 'E.g. 200', placeholder_city: 'E.g. Douala',
+                placeholder_amount: 'E.g. 1000', chat_placeholder: 'Write a message...',
+                publish_ad: 'Publish ad',
+                withdraw_momo: '💰 MoMo Withdrawal', balance_prefix: 'Balance:',
+                amount_label: 'Amount (FCFA)', phone_label: 'Phone number', confirm_withdraw: 'Confirm withdrawal',
+                fees: 'Fees: 1.5% · Instant delivery',
+                collection_points: '📍 Collection points',
+                price_guide_title: '📊 Price guide', price_guide_sub: 'Indicative recycling prices in Cameroon (FCFA/kg)', price_guide: 'Price guide',
+                price_advice: '💡 Tip: Prices vary by quality and quantity. These are indicative and negotiable.',
+                messages_title: '💬 Messages', chat_count: '3 conversations',
+                notif_title: '🔔 Notifications', mark_all: 'Mark all as read',
+                stats_title: '📊 Statistics', weekly: '📈 Weekly collections', waste_distribution: '🧩 Waste distribution',
+                plastic_pct: 'Plastic 40%', metal_pct: 'Metal 20%', glass_pct: 'Glass 20%', cardboard_pct: 'Cardboard 20%',
+                monthly_revenue: '💰 Monthly revenue',
+                change_password: 'Change password', notifications: 'Notifications', active: 'Active', language: 'Language',
+                my_ads: 'My ads', my_premium: 'My Premium subscription', active_premium: 'Active', logout: 'Logout',
+                welcome: 'Welcome', enter_phone: 'Enter your phone number', login_btn: 'Log in', login_skip: 'Continue without account (test)',
+                otp_title: 'Verification', otp_sent_to: 'Code sent to', otp_verify: 'Verify', otp_resend: 'Resend code',
+                greeting_hello: 'Hello', ready_recycle: 'Ready to recycle today?',
+                onboarding_title_0: 'Turn your waste into value', onboarding_body_0: 'Turn your recyclable waste into a source of income',
+                onboarding_title_1: 'Earn money', onboarding_body_1: 'Get paid instantly for every kilogram collected',
+                onboarding_title_2: 'Protect the environment', onboarding_body_2: 'Help make Cameroon cleaner and greener',
+                onboarding_title_3: 'Go Premium', onboarding_body_3: 'Unlock preferential rates and priority pickups',
+                onboarding_next: 'Next', onboarding_start: '🚀 Get started',
+                edit_profile: '✏️ Edit my profile', edit_profile_title: '✏️ Edit my profile', name_label: 'Full name',
+                phone_locked_note: 'Your phone number is linked to your login and cannot be changed here.', save_profile: 'Save',
+                notif_on: 'Active', notif_off: 'Disabled', logged_out: 'Logged out', profile_saved: '✅ Profile saved',
+                default_city: 'Douala, Cameroon', no_phone: 'Test account',
+            }
+        };
 
         // ==========================================
         // ÉTAT GLOBAL
@@ -1611,12 +875,20 @@
         let confirmationResult = null;
         let recaptchaVerifier = null;
         let currentFilter = 'Tous';
-        let products = [];
+        let liveProducts = null; // null = pas encore de données Firestore -> repli catalogue démo localisé
         let lang = 'fr';
         let productsUnsubscribe = null;
+        let balance = 5000;
+        let publishPhotoData = null;
+        let publishQuality = 'Propre et trié';
+        let notifsEnabled = true;
+        let currentUserProfile = { name: 'Jean Dupont', city: 'Douala, Cameroun', phone: '' };
 
         // ==========================================
         // FIREBASE CONFIG
+        // Sécurité : cette clé est publique par conception (Firebase). La vraie protection
+        // vient des règles Firestore (Console Firebase > Firestore > Règles). Sans règles
+        // restrictives, quiconque peut lire/écrire "products" et toute autre collection.
         // ==========================================
         const firebaseConfig = {
             apiKey: "AIzaSyADPKnfoIsqMaK1J7imfRcSKaaR4GRzpU8",
@@ -1627,12 +899,20 @@
             appId: "1:175227858090:web:be5b5a5ed381301dc334d3"
         };
 
-        if (typeof firebase !== 'undefined' && !firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-            console.log('🔥 Firebase connecté');
+        let db = null;
+        let firebaseReady = false;
+        try {
+            if (typeof firebase !== 'undefined') {
+                if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+                db = firebase.firestore ? firebase.firestore() : null;
+                firebaseReady = true;
+                console.log('🔥 Firebase connecté');
+            } else {
+                console.warn('⚠️ SDK Firebase non chargé (scripts bloqués ou hors ligne) — mode démo local actif');
+            }
+        } catch (err) {
+            console.warn('⚠️ Erreur d\u2019initialisation Firebase — mode démo local actif', err);
         }
-
-        const db = firebase.firestore ? firebase.firestore() : null;
 
         // ==========================================
         // TOAST
@@ -1645,6 +925,8 @@
             t._timeout = setTimeout(() => t.className = 'toast', 2500);
         }
 
+        function formatFCFA(n) { return Number(n).toLocaleString('fr-FR') + ' FCFA'; }
+
         // ==========================================
         // NAVIGATION
         // ==========================================
@@ -1655,9 +937,7 @@
             if (target) {
                 target.classList.add('active');
                 target.style.animation = 'none';
-                requestAnimationFrame(() => {
-                    target.style.animation = 'fadeUp 0.4s ease';
-                });
+                requestAnimationFrame(() => { target.style.animation = 'fadeUp 0.4s ease'; });
             }
             currentScreen = screen;
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -1668,10 +948,7 @@
         function updateBadge() {
             const unread = document.querySelectorAll('.notif-item .dot:not(.read)').length;
             const badge = document.getElementById('notif-badge');
-            if (badge) {
-                badge.textContent = unread || '0';
-                badge.classList.toggle('hidden', unread === 0);
-            }
+            if (badge) { badge.textContent = unread || '0'; badge.classList.toggle('hidden', unread === 0); }
         }
 
         // ==========================================
@@ -1680,68 +957,50 @@
         let progress = 0;
         const loaderInterval = setInterval(() => {
             progress += 2;
-            if (progress >= 100) { progress = 100;
-                clearInterval(loaderInterval); }
+            if (progress >= 100) { progress = 100; clearInterval(loaderInterval); }
             document.getElementById('loader-fill').style.width = progress + '%';
-            if (progress >= 100) {
-                setTimeout(() => navigateTo('onboarding'), 500);
-            }
+            if (progress >= 100) setTimeout(() => navigateTo('onboarding'), 500);
         }, 30);
 
         // ==========================================
         // ONBOARDING
         // ==========================================
         function updateOnboarding() {
-            document.querySelectorAll('.onboarding-slide').forEach((el, i) => {
-                el.classList.toggle('active', i === onboardingSlide);
-            });
-            document.querySelectorAll('.dot').forEach((el, i) => {
-                el.classList.toggle('active', i === onboardingSlide);
-            });
-            document.getElementById('onboarding-btn').textContent = onboardingSlide === 3 ? '🚀 Démarrer' : 'Suivant';
+            document.querySelectorAll('.onboarding-slide').forEach((el, i) => el.classList.toggle('active', i === onboardingSlide));
+            document.querySelectorAll('.dot').forEach((el, i) => el.classList.toggle('active', i === onboardingSlide));
+            document.getElementById('onboarding-btn').textContent = onboardingSlide === 3 ? translations[lang].onboarding_start : translations[lang].onboarding_next;
         }
-
         document.getElementById('onboarding-btn').addEventListener('click', function() {
-            if (onboardingSlide < 3) { onboardingSlide++;
-                updateOnboarding(); } else { navigateTo('login'); }
+            if (onboardingSlide < 3) { onboardingSlide++; updateOnboarding(); } else { navigateTo('login'); }
         });
-
         document.querySelectorAll('.dot').forEach(d => {
-            d.addEventListener('click', function() {
-                onboardingSlide = parseInt(this.dataset.slide);
-                updateOnboarding();
-            });
+            d.addEventListener('click', function() { onboardingSlide = parseInt(this.dataset.slide); updateOnboarding(); });
         });
 
         // ==========================================
         // AUTHENTIFICATION
         // ==========================================
         function getRecaptchaVerifier() {
-            if (!recaptchaVerifier) {
-                recaptchaVerifier = new firebase.auth.RecaptchaVerifier('login-btn', { size: 'invisible' });
-            }
+            if (!recaptchaVerifier) recaptchaVerifier = new firebase.auth.RecaptchaVerifier('login-btn', { size: 'invisible' });
             return recaptchaVerifier;
         }
 
         document.querySelectorAll('.otp-input').forEach((input, idx) => {
             input.addEventListener('input', function() {
-                if (this.value.length === 1 && idx < 5) {
-                    document.querySelectorAll('.otp-input')[idx + 1].focus();
-                }
+                this.value = this.value.replace(/[^0-9]/g, '');
+                if (this.value.length === 1 && idx < 5) document.querySelectorAll('.otp-input')[idx + 1].focus();
             });
             input.addEventListener('keydown', function(e) {
-                if (e.key === 'Backspace' && this.value.length === 0 && idx > 0) {
-                    document.querySelectorAll('.otp-input')[idx - 1].focus();
-                }
+                if (e.key === 'Backspace' && this.value.length === 0 && idx > 0) document.querySelectorAll('.otp-input')[idx - 1].focus();
             });
         });
 
         document.getElementById('login-btn').addEventListener('click', function() {
+            if (!firebaseReady) { showToast('⚠️ Service SMS indisponible — utilisez "Continuer sans compte"', 'error'); return; }
             const phone = document.getElementById('phone-input').value.trim();
             if (phone.length < 8) { showToast('Numéro invalide. Format: 6XXXXXXXX', 'error'); return; }
             const fullPhone = '+237' + phone;
             const appVerifier = getRecaptchaVerifier();
-
             firebase.auth().signInWithPhoneNumber(fullPhone, appVerifier)
                 .then(function(result) {
                     confirmationResult = result;
@@ -1749,9 +1008,7 @@
                     navigateTo('otp');
                     showToast('📱 Code SMS envoyé !', 'success');
                 })
-                .catch(function(error) {
-                    showToast('❌ ' + error.message, 'error');
-                });
+                .catch(function(error) { showToast('❌ ' + error.message, 'error'); });
         });
 
         document.getElementById('login-skip').addEventListener('click', function() {
@@ -1759,227 +1016,68 @@
             document.getElementById('bottom-nav').classList.add('active');
             navigateTo('dashboard');
             showToast('🔓 Mode test (sans SMS)', 'success');
+            loadProfile();
         });
 
         document.getElementById('otp-btn').addEventListener('click', function() {
             let code = '';
             document.querySelectorAll('.otp-input').forEach(inp => code += inp.value);
             if (code.length < 6) { showToast('Entrez les 6 chiffres du code', 'error'); return; }
-
-            // Mode test 123456
             if (code === '123456') {
                 isLoggedIn = true;
                 document.getElementById('bottom-nav').classList.add('active');
                 navigateTo('dashboard');
                 showToast('✅ Mode test (123456)', 'success');
+                loadProfile();
                 return;
             }
-
-            if (!confirmationResult) {
-                showToast('❌ Aucun code envoyé. Recommencez.', 'error');
-                return;
-            }
-
+            if (!confirmationResult) { showToast('❌ Aucun code envoyé. Recommencez.', 'error'); return; }
             confirmationResult.confirm(code)
                 .then(function() {
                     isLoggedIn = true;
                     document.getElementById('bottom-nav').classList.add('active');
                     navigateTo('dashboard');
                     showToast('✅ Connexion réussie !', 'success');
+                    loadProfile();
                 })
-                .catch(function() {
-                    showToast('❌ Code incorrect. Réessayez.', 'error');
-                });
+                .catch(function() { showToast('❌ Code incorrect. Réessayez.', 'error'); });
         });
 
         document.getElementById('otp-resend').addEventListener('click', function() {
+            if (!firebaseReady) { showToast('⚠️ Service SMS indisponible', 'error'); return; }
             const phone = document.getElementById('phone-input').value.trim();
-            if (phone.length < 8) { showToast('Entrez d\'abord un numéro', 'error'); return; }
+            if (phone.length < 8) { showToast("Entrez d'abord un numéro", 'error'); return; }
             const fullPhone = '+237' + phone;
             const appVerifier = getRecaptchaVerifier();
             firebase.auth().signInWithPhoneNumber(fullPhone, appVerifier)
-                .then(function(result) {
-                    confirmationResult = result;
-                    showToast('📱 Nouveau code envoyé !', 'success');
-                })
-                .catch(function(error) {
-                    showToast('❌ ' + error.message, 'error');
-                });
+                .then(function(result) { confirmationResult = result; showToast('📱 Nouveau code envoyé !', 'success'); })
+                .catch(function(error) { showToast('❌ ' + error.message, 'error'); });
         });
 
         // ==========================================
         // BILINGUISME
         // ==========================================
-        const translations = {
-            fr: {
-                greeting: 'Bonjour',
-                greeting_sub: 'Prêt à recycler aujourd\'hui ?',
-                map: 'Carte',
-                messages: 'Messages',
-                stats: 'Stats',
-                marketplace: 'Marché',
-                balance: '💰 Solde Mobile Money',
-                withdraw: 'Retirer',
-                sales: 'Ventes',
-                recycled: 'Recyclés',
-                rating: 'Note',
-                recent: '⚡ Activité récente',
-                pet: 'Collecte de bouteilles PET',
-                aluminum: 'Canettes aluminium',
-                cardboard: 'Cartons recyclables',
-                marketplace_title: '🛒 Marché',
-                publish: 'Publier',
-                all: 'Tous',
-                plastic: 'Plastique',
-                metal: 'Métal',
-                cardboard_cat: 'Carton',
-                glass_cat: 'Verre',
-                oil: 'Huile',
-                electronic: 'Électronique',
-                back: '← Retour',
-                available: 'Disponible',
-                contact: 'Contacter',
-                rate_seller: '⭐ Noter ce vendeur',
-                reviews: '📝 Avis (12)',
-                days_ago_2: 'Il y a 2j',
-                days_ago_5: 'Il y a 5j',
-                new_ad: '➕ Nouvelle annonce',
-                category: 'Catégorie',
-                title_label: 'Titre',
-                quantity_label: 'Quantité',
-                price_label: 'Prix (FCFA/kg)',
-                city_label: 'Ville',
-                publish_ad: 'Publier l\'annonce',
-                withdraw_momo: '💰 Retrait MoMo',
-                balance_label: 'Solde : 5 000 FCFA',
-                amount_label: 'Montant (FCFA)',
-                phone_label: 'Numéro de téléphone',
-                confirm_withdraw: 'Confirmer le retrait',
-                fees: 'Frais : 1.5% · Délai : instantané',
-                collection_points: '📍 Points de collecte',
-                price_guide_title: '📊 Guide des prix',
-                price_guide_sub: 'Prix indicatifs du recyclage au Cameroun (FCFA/kg)',
-                price_guide: 'Guide des prix',
-                price_advice: '💡 Conseil : Les prix varient selon la qualité et la quantité. Ces prix sont indicatifs et peuvent être négociés.',
-                messages_title: '💬 Messages',
-                notif_title: '🔔 Notifications',
-                mark_all: 'Tout marquer comme lu',
-                notif_msg1: 'Nouveau message de Paul',
-                notif_msg2: 'Collecte confirmée',
-                notif_msg3: 'Offre Premium disponible',
-                notif_msg4: 'Nouvel avis reçu',
-                stats_title: '📊 Statistiques',
-                weekly: '📈 Collectes par semaine',
-                waste_distribution: '🧩 Répartition des déchets',
-                plastic_pct: 'Plastique 40%',
-                metal_pct: 'Métal 20%',
-                glass_pct: 'Verre 20%',
-                cardboard_pct: 'Carton 20%',
-                monthly_revenue: '💰 Revenus mensuels',
-                change_password: 'Changer le mot de passe',
-                notifications: 'Notifications',
-                active: 'Actives',
-                language: 'Langue',
-                dark_mode: 'Mode sombre',
-                enabled: 'Activé',
-                my_ads: 'Mes annonces',
-                my_premium: 'Mon abonnement Premium',
-                active_premium: 'Actif',
-                logout: 'Déconnexion',
-                home: 'Accueil',
-                notif: 'Notif.',
-                profile: 'Profil'
-            },
-            en: {
-                greeting: 'Hello',
-                greeting_sub: 'Ready to recycle today?',
-                map: 'Map',
-                messages: 'Messages',
-                stats: 'Stats',
-                marketplace: 'Marketplace',
-                balance: '💰 Mobile Money Balance',
-                withdraw: 'Withdraw',
-                sales: 'Sales',
-                recycled: 'Recycled',
-                rating: 'Rating',
-                recent: '⚡ Recent Activity',
-                pet: 'PET bottles collection',
-                aluminum: 'Aluminum cans',
-                cardboard: 'Recyclable cardboard',
-                marketplace_title: '🛒 Marketplace',
-                publish: 'Publish',
-                all: 'All',
-                plastic: 'Plastic',
-                metal: 'Metal',
-                cardboard_cat: 'Cardboard',
-                glass_cat: 'Glass',
-                oil: 'Oil',
-                electronic: 'Electronics',
-                back: '← Back',
-                available: 'Available',
-                contact: 'Contact',
-                rate_seller: '⭐ Rate this seller',
-                reviews: '📝 Reviews (12)',
-                days_ago_2: '2 days ago',
-                days_ago_5: '5 days ago',
-                new_ad: '➕ New ad',
-                category: 'Category',
-                title_label: 'Title',
-                quantity_label: 'Quantity',
-                price_label: 'Price (FCFA/kg)',
-                city_label: 'City',
-                publish_ad: 'Publish ad',
-                withdraw_momo: '💰 MoMo Withdrawal',
-                balance_label: 'Balance: 5,000 FCFA',
-                amount_label: 'Amount (FCFA)',
-                phone_label: 'Phone number',
-                confirm_withdraw: 'Confirm withdrawal',
-                fees: 'Fees: 1.5% · Instant delivery',
-                collection_points: '📍 Collection points',
-                price_guide_title: '📊 Price guide',
-                price_guide_sub: 'Indicative recycling prices in Cameroon (FCFA/kg)',
-                price_guide: 'Price guide',
-                price_advice: '💡 Tip: Prices vary by quality and quantity. These are indicative and negotiable.',
-                messages_title: '💬 Messages',
-                notif_title: '🔔 Notifications',
-                mark_all: 'Mark all as read',
-                notif_msg1: 'New message from Paul',
-                notif_msg2: 'Collection confirmed',
-                notif_msg3: 'Premium offer available',
-                notif_msg4: 'New review received',
-                stats_title: '📊 Statistics',
-                weekly: '📈 Weekly collections',
-                waste_distribution: '🧩 Waste distribution',
-                plastic_pct: 'Plastic 40%',
-                metal_pct: 'Metal 20%',
-                glass_pct: 'Glass 20%',
-                cardboard_pct: 'Cardboard 20%',
-                monthly_revenue: '💰 Monthly revenue',
-                change_password: 'Change password',
-                notifications: 'Notifications',
-                active: 'Active',
-                language: 'Language',
-                dark_mode: 'Dark mode',
-                enabled: 'Enabled',
-                my_ads: 'My ads',
-                my_premium: 'My Premium subscription',
-                active_premium: 'Active',
-                logout: 'Logout',
-                home: 'Home',
-                notif: 'Notif.',
-                profile: 'Profile'
-            }
-        };
-
         function updateLanguage() {
-            const langCode = lang;
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.dataset.i18n;
-                if (translations[langCode] && translations[langCode][key]) {
-                    el.textContent = translations[langCode][key];
-                }
+                if (translations[lang] && translations[lang][key] !== undefined) el.textContent = translations[lang][key];
+            });
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.dataset.i18nPlaceholder;
+                if (translations[lang] && translations[lang][key] !== undefined) el.placeholder = translations[lang][key];
             });
             document.getElementById('lang-toggle').textContent = lang === 'fr' ? '🇫🇷 FR' : '🇬🇧 EN';
+            document.getElementById('onboarding-btn').textContent = onboardingSlide === 3 ? translations[lang].onboarding_start : translations[lang].onboarding_next;
+            const wLabel = document.getElementById('withdrawal-balance-text');
+            if (wLabel) wLabel.textContent = translations[lang].balance_prefix + ' ' + formatFCFA(balance);
+            const langArrow = document.getElementById('profile-lang-display');
+            if (langArrow) langArrow.textContent = (lang === 'fr' ? 'Français' : 'English') + ' ›';
+            // Redessine tout le contenu dynamique (démo produits, villes, guide des prix, notifs, stats)
+            renderFeed(currentFilter);
+            renderCities();
+            renderPriceGuide();
+            renderNotifications();
+            renderStats();
         }
 
         document.getElementById('lang-toggle').addEventListener('click', function() {
@@ -1989,102 +1087,177 @@
         });
 
         // ==========================================
-        // BOTTOM NAV
+        // PROFIL — chargement, édition, sauvegarde réelle
         // ==========================================
-        document.querySelectorAll('.nav-item').forEach(btn => {
-            btn.addEventListener('click', function() {
-                navigateTo(this.dataset.screen);
-            });
+        function renderProfileHeader() {
+            document.getElementById('profile-name-display').textContent = currentUserProfile.name || 'Jean Dupont';
+            document.getElementById('profile-phone-display').textContent = currentUserProfile.phone || translations[lang].no_phone;
+            document.getElementById('profile-city-label').textContent = currentUserProfile.city || translations[lang].default_city;
+            document.getElementById('profile-phone-label').textContent = currentUserProfile.phone || translations[lang].no_phone;
+        }
+
+        function loadProfile() {
+            const user = firebaseReady ? firebase.auth().currentUser : null;
+            currentUserProfile.phone = user ? user.phoneNumber : '';
+
+            if (db && user) {
+                db.collection('users').doc(user.uid).get().then(function(doc) {
+                    if (doc.exists) {
+                        const data = doc.data();
+                        currentUserProfile.name = data.name || currentUserProfile.name;
+                        currentUserProfile.city = data.city || currentUserProfile.city;
+                    } else {
+                        db.collection('users').doc(user.uid).set({
+                            name: currentUserProfile.name, city: currentUserProfile.city, phone: user.phoneNumber
+                        }, { merge: true });
+                    }
+                    renderProfileHeader();
+                }).catch(function(err) {
+                    console.warn('Chargement du profil impossible, mode local', err);
+                    renderProfileHeader();
+                });
+            } else {
+                // Mode démo (sans compte / hors ligne) : profil conservé en mémoire pour la session
+                renderProfileHeader();
+            }
+        }
+
+        document.getElementById('goto-editprofile').addEventListener('click', openEditProfile);
+        document.getElementById('goto-editprofile-city').addEventListener('click', openEditProfile);
+        document.getElementById('goto-editprofile-phone').addEventListener('click', openEditProfile);
+        document.getElementById('editprofile-back').addEventListener('click', function() { navigateTo('profile'); });
+
+        function openEditProfile() {
+            document.getElementById('editprofile-name').value = currentUserProfile.name || '';
+            document.getElementById('editprofile-city').value = currentUserProfile.city || '';
+            document.getElementById('editprofile-phone').value = currentUserProfile.phone || translations[lang].no_phone;
+            navigateTo('editprofile');
+        }
+
+        document.getElementById('editprofile-save').addEventListener('click', function() {
+            const name = document.getElementById('editprofile-name').value.trim();
+            const city = document.getElementById('editprofile-city').value.trim();
+            if (!name) { showToast('Le nom ne peut pas être vide', 'error'); return; }
+            if (!city) { showToast('La ville ne peut pas être vide', 'error'); return; }
+
+            currentUserProfile.name = name;
+            currentUserProfile.city = city;
+            renderProfileHeader();
+
+            const user = firebaseReady ? firebase.auth().currentUser : null;
+            if (db && user) {
+                db.collection('users').doc(user.uid).set({ name, city, phone: user.phoneNumber }, { merge: true })
+                    .then(function() { showToast(translations[lang].profile_saved, 'success'); navigateTo('profile'); })
+                    .catch(function(err) { showToast('❌ Erreur: ' + err.message, 'error'); });
+            } else {
+                showToast(translations[lang].profile_saved + ' (local)', 'success');
+                navigateTo('profile');
+            }
+        });
+
+        document.getElementById('toggle-notifications').addEventListener('click', function() {
+            notifsEnabled = !notifsEnabled;
+            document.getElementById('notif-status').textContent = notifsEnabled ? translations[lang].notif_on : translations[lang].notif_off;
+            document.getElementById('notif-status').style.color = notifsEnabled ? '#8FC17E' : 'var(--text3)';
+            showToast(notifsEnabled ? '🔔 Notifications activées' : '🔕 Notifications désactivées', 'success');
+        });
+
+        document.getElementById('logout-btn').addEventListener('click', function() {
+            if (firebaseReady && firebase.auth().currentUser) {
+                firebase.auth().signOut().catch(() => {});
+            }
+            isLoggedIn = false;
+            currentUserProfile = { name: 'Jean Dupont', city: 'Douala, Cameroun', phone: '' };
+            document.getElementById('bottom-nav').classList.remove('active');
+            document.querySelectorAll('.otp-input').forEach(i => i.value = '');
+            document.getElementById('phone-input').value = '';
+            navigateTo('login');
+            showToast(translations[lang].logged_out, 'success');
         });
 
         // ==========================================
-        // QUICK ACTIONS
+        // BOTTOM NAV / QUICK ACTIONS
         // ==========================================
-        document.querySelectorAll('.qa-item').forEach(el => {
-            el.addEventListener('click', function() {
-                navigateTo(this.dataset.target);
-            });
-        });
+        document.querySelectorAll('.nav-item').forEach(btn => btn.addEventListener('click', function() { navigateTo(this.dataset.screen); }));
+        document.querySelectorAll('.qa-item').forEach(el => el.addEventListener('click', function() { navigateTo(this.dataset.target); }));
 
         // ==========================================
-        // FEED - FIRESTORE
+        // FEED
         // ==========================================
-        function renderFeed(productsData, filter) {
+        function qualityClass(q) {
+            if (q === 'Propre et trié') return 'clean';
+            if (q === 'Mélangé') return 'mixed';
+            return 'dirty';
+        }
+
+        function getDisplayProducts() {
+            // Annonces réelles Firestore (non traduites, ce sont les mots du vendeur) si disponibles,
+            // sinon catalogue de démonstration dans la langue actuelle.
+            return liveProducts !== null ? liveProducts : staticProducts[lang];
+        }
+
+        function renderFeed(filter) {
+            filter = filter || currentFilter;
             const container = document.getElementById('feed-list');
-            const filtered = filter === 'Tous' ? productsData : productsData.filter(p => p.cat === filter);
+            const source = getDisplayProducts();
+            const filtered = filter === 'Tous' ? source : source.filter(p => p.cat === filter);
 
             if (!filtered || filtered.length === 0) {
-                container.innerHTML =
-                    '<div style="text-align:center;padding:40px 0;color:var(--text2);">Aucune annonce disponible</div>';
+                container.innerHTML = `<div style="text-align:center;padding:40px 0;color:var(--text2);">${lang === 'fr' ? 'Aucune annonce disponible' : 'No ads available'}</div>`;
                 return;
             }
 
             container.innerHTML = filtered.map((p, i) => `
                 <div class="product-card" data-index="${i}">
-                    <div class="emoji">${p.emoji || '📦'}</div>
+                    <div class="emoji">${p.photo ? `<img src="${p.photo}" alt="${p.title}">` : (p.emoji || '📦')}</div>
                     <div class="info">
                         <div class="title">${p.title || 'Annonce'}</div>
                         <div class="location">${p.loc || p.city || 'Cameroun'}</div>
-                        <span class="status-badge available">${p.status || 'Disponible'}</span>
+                        ${p.quality ? `<span class="quality-tag ${qualityClass(p.quality)}">${p.quality}</span>` : ''}
                     </div>
                     <div>
                         <div class="price">${p.price || 'Prix non défini'}</div>
                         <div class="qty">${p.qty || 'Quantité'}</div>
                     </div>
-                </div>
-            `).join('');
+                </div>`
+            ).join('');
 
             container.querySelectorAll('.product-card').forEach(el => {
                 el.addEventListener('click', function() {
                     const idx = parseInt(this.dataset.index);
-                    const p = filtered[idx];
-                    openDetail(p);
+                    openDetail(filtered[idx]);
                 });
             });
         }
 
         function listenToProducts() {
-            if (!db) {
-                products = staticProducts;
-                renderFeed(products, currentFilter);
-                return;
-            }
-
-            if (productsUnsubscribe) {
-                productsUnsubscribe();
-                productsUnsubscribe = null;
-            }
+            if (!db) { renderFeed(currentFilter); return; }
+            if (productsUnsubscribe) { productsUnsubscribe(); productsUnsubscribe = null; }
 
             productsUnsubscribe = db.collection('products')
                 .where('status', '==', 'available')
                 .orderBy('createdAt', 'desc')
                 .onSnapshot(function(snapshot) {
-                    if (snapshot.empty) {
-                        products = [];
-                        renderFeed(products, currentFilter);
-                        return;
-                    }
-
-                    products = [];
+                    liveProducts = [];
                     snapshot.forEach(function(doc) {
                         const data = doc.data();
-                        products.push({
+                        liveProducts.push({
                             id: doc.id,
                             emoji: data.emoji || '📦',
+                            photo: data.photo || null,
+                            quality: data.quality || null,
                             title: data.title || 'Annonce',
                             loc: data.loc || data.city || 'Cameroun',
                             price: data.price || 'Prix non défini',
                             qty: data.qty || 'Quantité',
-                            cat: data.category || 'Autre',
-                            status: data.status || 'Disponible'
+                            cat: data.category || data.cat || 'Autre'
                         });
                     });
-
-                    renderFeed(products, currentFilter);
+                    renderFeed(currentFilter);
                 }, function(error) {
                     console.error('Erreur Firestore:', error);
-                    products = staticProducts;
-                    renderFeed(products, currentFilter);
+                    liveProducts = null; // repli sur le catalogue de démonstration localisé
+                    renderFeed(currentFilter);
                 });
         }
 
@@ -2093,24 +1266,37 @@
                 document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
                 this.classList.add('active');
                 currentFilter = this.dataset.cat;
-                renderFeed(products, currentFilter);
+                renderFeed(currentFilter);
             });
         });
+
+        document.getElementById('goto-publish').addEventListener('click', function() { navigateTo('publish'); });
 
         // ==========================================
         // DETAIL
         // ==========================================
         function openDetail(p) {
-            document.getElementById('detail-emoji').textContent = p.emoji || '📦';
+            const img = document.getElementById('detail-emoji');
+            img.innerHTML = p.photo ? `<img src="${p.photo}" alt="${p.title}">` : (p.emoji || '📦');
             document.getElementById('detail-title').textContent = p.title || 'Annonce';
             document.getElementById('detail-location').textContent = p.loc || p.city || 'Cameroun';
             document.getElementById('detail-price').textContent = p.price || 'Prix non défini';
-            document.getElementById('detail-status').textContent = p.status || 'Disponible';
+            const qBadge = document.getElementById('detail-quality-badge');
+            if (p.quality) {
+                qBadge.textContent = p.quality;
+                qBadge.className = 'quality-tag ' + qualityClass(p.quality);
+                qBadge.classList.remove('hidden');
+            } else {
+                qBadge.classList.add('hidden');
+            }
             navigateTo('detail');
         }
 
         document.getElementById('detail-back').addEventListener('click', function() { navigateTo('feed'); });
 
+        // ==========================================
+        // RATING
+        // ==========================================
         document.querySelectorAll('#rating-stars .star').forEach(star => {
             star.addEventListener('click', function() {
                 const val = parseInt(this.dataset.val);
@@ -2124,17 +1310,70 @@
         });
 
         // ==========================================
-        // PUBLISH
+        // PUBLISH — PHOTO (compressée côté client, limite Firestore 1 Mo/document)
         // ==========================================
-        document.querySelectorAll('.photo-slot').forEach(slot => {
-            slot.addEventListener('click', function() {
-                this.classList.toggle('filled');
-                this.textContent = this.classList.contains('filled') ? '✅' : '📷';
-                if (this.classList.contains('filled')) showToast('📸 Photo ajoutée', 'success');
+        const photoDropzone = document.getElementById('photo-dropzone');
+        const photoInput = document.getElementById('publish-photo-input');
+        const photoPreview = document.getElementById('photo-preview');
+
+        function compressImage(file, maxWidth, quality) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const scale = Math.min(1, maxWidth / img.width);
+                        const canvas = document.createElement('canvas');
+                        canvas.width = Math.round(img.width * scale);
+                        canvas.height = Math.round(img.height * scale);
+                        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+                        resolve(canvas.toDataURL('image/jpeg', quality));
+                    };
+                    img.onerror = reject;
+                    img.src = e.target.result;
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        photoDropzone.addEventListener('click', () => photoInput.click());
+        photoInput.addEventListener('change', async function() {
+            const file = this.files[0];
+            if (!file) return;
+            try {
+                publishPhotoData = await compressImage(file, 640, 0.7);
+                photoPreview.src = publishPhotoData;
+                photoPreview.classList.remove('hidden');
+                document.getElementById('photo-dropzone-icon').classList.add('hidden');
+                document.getElementById('photo-dropzone-text').textContent = lang === 'fr' ? 'Photo ajoutée · toucher pour changer' : 'Photo added · tap to change';
+                photoDropzone.classList.add('filled');
+            } catch (err) {
+                showToast('❌ Erreur de lecture de la photo', 'error');
+            }
+        });
+
+        document.querySelectorAll('#quality-row .quality-opt').forEach(el => {
+            el.addEventListener('click', function() {
+                document.querySelectorAll('#quality-row .quality-opt').forEach(m => m.classList.remove('selected'));
+                this.classList.add('selected');
+                publishQuality = this.dataset.quality;
             });
         });
 
-        document.getElementById('goto-publish').addEventListener('click', function() { navigateTo('publish'); });
+        function resetPublishForm() {
+            document.getElementById('publish-title').value = '';
+            document.getElementById('publish-qty').value = '';
+            document.getElementById('publish-price').value = '';
+            document.getElementById('publish-city').value = '';
+            publishPhotoData = null;
+            photoPreview.classList.add('hidden');
+            photoPreview.src = '';
+            document.getElementById('photo-dropzone-icon').classList.remove('hidden');
+            document.getElementById('photo-dropzone-text').textContent = translations[lang].photo_cta;
+            photoDropzone.classList.remove('filled');
+            photoInput.value = '';
+        }
 
         document.getElementById('publish-submit').addEventListener('click', function() {
             const title = document.getElementById('publish-title').value.trim();
@@ -2143,32 +1382,27 @@
             const city = document.getElementById('publish-city').value.trim();
             const category = document.getElementById('publish-cat').value;
 
-            if (!title || !qty || !price || !city) {
-                showToast('Veuillez remplir tous les champs', 'error');
-                return;
-            }
+            if (!publishPhotoData) { showToast('Ajoutez une photo de la matière', 'error'); return; }
+            if (!title || !qty || !price || !city) { showToast('Veuillez remplir tous les champs', 'error'); return; }
 
             if (!db) {
                 showToast('✅ Annonce publiée (simulation)', 'success');
-                clearPublishForm();
+                resetPublishForm();
                 navigateTo('feed');
                 return;
             }
 
             const user = firebase.auth().currentUser;
-            if (!user) {
-                showToast('❌ Connectez-vous d\'abord', 'error');
-                return;
-            }
+            if (!user) { showToast("❌ Connectez-vous d'abord", 'error'); return; }
 
             const productData = {
-                title: title,
-                qty: qty,
+                title, qty, city, category,
+                cat: category,
                 price: price + ' FCFA/kg',
-                city: city,
-                category: category,
-                emoji: '📦',
                 loc: city,
+                photo: publishPhotoData,
+                quality: publishQuality,
+                emoji: '📦',
                 userId: user.uid,
                 userPhone: user.phoneNumber,
                 status: 'available',
@@ -2177,67 +1411,38 @@
 
             db.collection('products').add(productData)
                 .then(function() {
-                    showToast('✅ Annonce publiée !', 'success');
-                    clearPublishForm();
+                    showToast('✅ Annonce publiée avec photo !', 'success');
+                    resetPublishForm();
                     navigateTo('feed');
                 })
-                .catch(function(error) {
-                    showToast('❌ Erreur: ' + error.message, 'error');
-                });
+                .catch(function(error) { showToast('❌ Erreur: ' + error.message, 'error'); });
         });
 
-        function clearPublishForm() {
-            document.getElementById('publish-title').value = '';
-            document.getElementById('publish-qty').value = '';
-            document.getElementById('publish-price').value = '';
-            document.getElementById('publish-city').value = '';
-            document.querySelectorAll('.photo-slot').forEach(s => { s.classList.remove('filled');
-                s.textContent = '📷'; });
-        }
-
         // ==========================================
-        // CHAT (CORRIGÉ - SANS RÉPONSES AUTO)
+        // CHAT
         // ==========================================
         function renderChatList() {
-            const container = document.getElementById('chat-list');
-            container.innerHTML = `
+            document.getElementById('chat-list').innerHTML = `
                 <div class="product-card" data-chat="paul" style="cursor:pointer;">
                     <div class="emoji">👤</div>
-                    <div class="info">
-                        <div class="title">Paul N.</div>
-                        <div class="location">Dernier message : "Bonjour ! Oui je les ai encore"</div>
-                    </div>
+                    <div class="info"><div class="title">Paul N.</div><div class="location">Dernier message : "Ok je suis dispo"</div></div>
                     <div style="text-align:right;">
-                        <div style="font-size:12px;color:var(--text2);">12:22</div>
-                        <div style="background:var(--danger);width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;margin-top:4px;margin-left:auto;color:#fff;">1</div>
+                        <div style="font-size:12px;color:var(--text2);">12:30</div>
+                        <div style="background:var(--danger);width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;margin-top:4px;margin-left:auto;color:#fff;">2</div>
                     </div>
                 </div>
                 <div class="product-card" data-chat="marie" style="cursor:pointer;">
                     <div class="emoji">👤</div>
-                    <div class="info">
-                        <div class="title">Marie K.</div>
-                        <div class="location">Dernier message : "Merci pour votre confiance"</div>
-                    </div>
-                    <div style="text-align:right;">
-                        <div style="font-size:12px;color:var(--text2);">Hier</div>
-                    </div>
+                    <div class="info"><div class="title">Marie K.</div><div class="location">Dernier message : "Merci pour votre confiance"</div></div>
+                    <div style="text-align:right;"><div style="font-size:12px;color:var(--text2);">Hier</div></div>
                 </div>
                 <div class="product-card" data-chat="jean" style="cursor:pointer;">
                     <div class="emoji">👤</div>
-                    <div class="info">
-                        <div class="title">Jean D.</div>
-                        <div class="location">Dernier message : "Quand pouvez-vous passer ?"</div>
-                    </div>
-                    <div style="text-align:right;">
-                        <div style="font-size:12px;color:var(--text2);">Hier</div>
-                    </div>
-                </div>
-            `;
-
-            container.querySelectorAll('.product-card').forEach(el => {
-                el.addEventListener('click', function() {
-                    openChat(this.dataset.chat);
-                });
+                    <div class="info"><div class="title">Jean D.</div><div class="location">Dernier message : "Quand pouvez-vous passer ?"</div></div>
+                    <div style="text-align:right;"><div style="font-size:12px;color:var(--text2);">Hier</div></div>
+                </div>`;
+            document.querySelectorAll('#chat-list .product-card').forEach(el => {
+                el.addEventListener('click', function() { openChat(this.dataset.chat); });
             });
         }
 
@@ -2257,44 +1462,45 @@
         function renderChatMessages() {
             const container = document.getElementById('chat-messages');
             const msgs = chatMessages[chatActive] || [];
-            container.innerHTML = msgs.map(m =>
-                `<div class="chat-message ${m.sent ? 'sent' : ''}">
-                    <div class="bubble">
-                        <div class="text">${m.text}</div>
-                        <div class="time">${m.time}</div>
-                    </div>
+            container.innerHTML = msgs.map(m => `
+                <div class="chat-message ${m.sent ? 'sent' : ''}">
+                    <div class="bubble"><div class="text">${m.text}</div><div class="time">${m.time}</div></div>
                 </div>`
             ).join('');
             container.scrollTop = container.scrollHeight;
         }
 
         document.getElementById('chat-send-btn').addEventListener('click', sendMessage);
-        document.getElementById('chat-input-text').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') sendMessage();
-        });
+        document.getElementById('chat-input-text').addEventListener('keydown', function(e) { if (e.key === 'Enter') sendMessage(); });
 
-        // ===== CHAT CORRIGÉ : PLUS DE RÉPONSES AUTOMATIQUES =====
         function sendMessage() {
             const input = document.getElementById('chat-input-text');
             const text = input.value.trim();
             if (!text || !chatActive) return;
-
             const now = new Date();
             const time = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
-
             if (!chatMessages[chatActive]) chatMessages[chatActive] = [];
             chatMessages[chatActive].push({ text, sent: true, time });
             input.value = '';
             renderChatMessages();
-
-            // ✅ PLUS DE RÉPONSE AUTOMATIQUE — l'utilisateur attend une vraie réponse
-            showToast('💬 Message envoyé', 'success');
+            setTimeout(() => {
+                const replies = ["Merci pour votre message ! Je vous réponds dans la journée.", "Parfait, je confirme la collecte pour demain.", "Très bien, je suis disponible.", "D'accord, à bientôt !", "Je prends note de votre demande."];
+                const reply = replies[Math.floor(Math.random() * replies.length)];
+                chatMessages[chatActive].push({ text: reply, sent: false, time: 'Maintenant' });
+                renderChatMessages();
+                showToast('📩 Nouveau message reçu', 'success');
+            }, 1500);
         }
+
+        renderChatList();
 
         // ==========================================
         // WITHDRAWAL
         // ==========================================
-        document.getElementById('goto-withdrawal').addEventListener('click', function() { navigateTo('withdrawal'); });
+        document.getElementById('goto-withdrawal').addEventListener('click', function() {
+            navigateTo('withdrawal');
+            document.getElementById('withdrawal-balance-text').textContent = translations[lang].balance_prefix + ' ' + formatFCFA(balance);
+        });
 
         document.querySelectorAll('.provider-item').forEach(el => {
             el.addEventListener('click', function() {
@@ -2303,48 +1509,45 @@
             });
         });
 
+        // Remarque : simulation client. Un vrai décaissement MoMo doit passer par une
+        // Cloud Function authentifiée côté serveur, jamais depuis le navigateur.
         document.getElementById('withdrawal-submit').addEventListener('click', function() {
-            const amount = document.getElementById('withdrawal-amount').value;
-            const phone = document.getElementById('withdrawal-phone').value;
-            if (!amount || parseFloat(amount) <= 0) { showToast('Veuillez entrer un montant valide', 'error'); return; }
+            const amount = parseFloat(document.getElementById('withdrawal-amount').value);
+            const phone = document.getElementById('withdrawal-phone').value.trim();
+            if (!amount || amount <= 0) { showToast('Veuillez entrer un montant valide', 'error'); return; }
+            if (amount > balance) { showToast('Solde insuffisant', 'error'); return; }
             if (!phone || phone.length < 8) { showToast('Veuillez entrer un numéro valide', 'error'); return; }
-            showToast('✅ Demande de retrait de ' + amount + ' FCFA envoyée !', 'success');
+            balance -= amount;
+            document.getElementById('balance-amount').textContent = formatFCFA(balance);
             document.getElementById('withdrawal-amount').value = '';
             document.getElementById('withdrawal-phone').value = '';
+            showToast('✅ Demande de retrait de ' + formatFCFA(amount) + ' envoyée !', 'success');
         });
 
         // ==========================================
         // NOTIFICATIONS
         // ==========================================
         function renderNotifications() {
-            const container = document.getElementById('notif-list');
-            container.innerHTML = notifications.map((n, i) =>
-                `<div class="notif-item" data-index="${i}">
+            document.getElementById('notif-list').innerHTML = notifications[lang].map((n, i) => `
+                <div class="notif-item" data-index="${i}">
                     <div class="icon">${n.icon}</div>
-                    <div class="info">
-                        <div class="title">${n.title}</div>
-                        <div class="body">${n.body}</div>
-                        <div class="time">${n.time}</div>
-                    </div>
+                    <div class="info"><div class="title">${n.title}</div><div class="body">${n.body}</div><div class="time">${n.time}</div></div>
                     <div class="dot"></div>
                 </div>`
             ).join('');
-
-            container.querySelectorAll('.notif-item').forEach(el => {
+            document.querySelectorAll('.notif-item').forEach(el => {
                 el.addEventListener('click', function() {
                     const dot = this.querySelector('.dot');
                     if (dot) dot.classList.add('read');
-                    showToast('✅ Notification marquée comme lue', 'success');
+                    showToast(lang === 'fr' ? '✅ Notification marquée comme lue' : '✅ Notification marked as read', 'success');
                     updateBadge();
                 });
             });
         }
-
         renderNotifications();
-
         document.getElementById('notif-mark-all').addEventListener('click', function() {
             document.querySelectorAll('.notif-item .dot').forEach(d => d.classList.add('read'));
-            showToast('✅ Toutes les notifications sont lues', 'success');
+            showToast(lang === 'fr' ? '✅ Toutes les notifications sont lues' : '✅ All notifications marked as read', 'success');
             updateBadge();
         });
 
@@ -2353,36 +1556,30 @@
         // ==========================================
         function renderCities() {
             const list = document.getElementById('city-list');
-            list.innerHTML = cityData.map(c =>
-                `<button class="city-item" data-city="${c.city}">
+            list.innerHTML = cityData[lang].map(c => `
+                <button class="city-item">
                     <div class="emoji">📍</div>
-                    <div class="info">
-                        <div class="name">${c.name}</div>
-                        <div class="address">${c.address}</div>
-                    </div>
+                    <div class="info"><div class="name">${c.name}</div><div class="address">${c.address}</div></div>
                 </button>`
             ).join('');
-
             list.querySelectorAll('.city-item').forEach(el => {
                 el.addEventListener('click', function() {
                     const name = this.querySelector('.name').textContent;
                     const address = this.querySelector('.address').textContent;
                     document.getElementById('map-current-city').textContent = name;
                     document.getElementById('map-current-address').textContent = address;
-                    showToast('📍 ' + name + ' sélectionné', 'success');
+                    showToast('📍 ' + name, 'success');
                 });
             });
         }
-
         renderCities();
 
         // ==========================================
         // PRICE GUIDE
         // ==========================================
         function renderPriceGuide() {
-            const grid = document.getElementById('price-guide-grid');
-            grid.innerHTML = priceGuideData.map(p =>
-                `<div class="price-guide-item">
+            document.getElementById('price-guide-grid').innerHTML = priceGuideData[lang].map(p => `
+                <div class="price-guide-item">
                     <div class="emoji">${p.emoji}</div>
                     <div class="name">${p.name}</div>
                     <div class="price">${p.price}</div>
@@ -2390,7 +1587,6 @@
                 </div>`
             ).join('');
         }
-
         renderPriceGuide();
         document.getElementById('goto-priceguide').addEventListener('click', function() { navigateTo('priceguide'); });
 
@@ -2398,68 +1594,39 @@
         // STATS
         // ==========================================
         function renderStats() {
-            const chartData = [
-                { day: 'Lun', value: 40 },
-                { day: 'Mar', value: 60 },
-                { day: 'Mer', value: 30 },
-                { day: 'Jeu', value: 90 },
-                { day: 'Ven', value: 70 },
-                { day: 'Sam', value: 50 },
-                { day: 'Dim', value: 20 }
-            ];
-
-            const chartContainer = document.getElementById('chart-bars');
-            chartContainer.innerHTML = chartData.map(d =>
-                `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
-                    <div class="chart-bar" style="height:${d.value}%;"></div>
-                    <div class="chart-label">${d.day}</div>
+            const values = [40, 60, 30, 90, 70, 50, 20];
+            const days = chartDays[lang];
+            document.getElementById('chart-bars').innerHTML = values.map((v, i) => `
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+                    <div class="chart-bar" style="height:${v}%;"></div>
+                    <div class="chart-label">${days[i]}</div>
                 </div>`
             ).join('');
 
-            const revenueContainer = document.getElementById('revenue-bars');
-            revenueContainer.innerHTML = revenueData.map(r =>
-                `<div>
+            document.getElementById('revenue-bars').innerHTML = revenueData[lang].map(r => `
+                <div>
                     <div style="display:flex;justify-content:space-between;font-size:13px;">
-                        <span>${r.month}</span>
-                        <span>${r.amount.toLocaleString()} FCFA</span>
+                        <span>${r.month}</span><span style="font-family:var(--font-mono)">${r.amount.toLocaleString('fr-FR')} FCFA</span>
                     </div>
                     <div style="width:100%;height:6px;background:var(--surface);border-radius:4px;overflow:hidden;">
-                        <div style="width:${r.pct}%;height:100%;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:4px;"></div>
+                        <div style="width:${r.pct}%;height:100%;background:linear-gradient(90deg,var(--primary-light),var(--accent));border-radius:4px;transition:width 0.8s ease;"></div>
                     </div>
                 </div>`
             ).join('');
         }
-
         renderStats();
 
         // ==========================================
-        // PROFIL MODIFIABLE
-        // ==========================================
-        document.getElementById('save-profile').addEventListener('click', function() {
-            const name = document.getElementById('profile-name').value.trim();
-            const username = document.getElementById('profile-username').value.trim();
-
-            if (!name) {
-                showToast('Veuillez entrer un nom', 'error');
-                return;
-            }
-
-            // Sauvegarder les données (simulé ou Firebase)
-            showToast('✅ Profil mis à jour !', 'success');
-        });
-
-        // ==========================================
-        // GEOLOCALISATION
+        // GÉOLOCALISATION
         // ==========================================
         function getUserLocation() {
             if ('geolocation' in navigator) {
                 navigator.geolocation.getCurrentPosition(
                     function() { showToast('📍 Position trouvée !', 'success'); },
-                    function() { showToast('⚠️ Impossible de localiser', 'error'); }
+                    function() { /* silencieux */ }
                 );
             }
         }
-
         setTimeout(getUserLocation, 3000);
 
         // ==========================================
@@ -2468,14 +1635,8 @@
         function handleDeepLink() {
             const params = new URLSearchParams(window.location.search);
             const productId = params.get('product');
-            if (productId) {
-                setTimeout(() => {
-                    navigateTo('detail');
-                    showToast('📦 Produit chargé !', 'success');
-                }, 1000);
-            }
+            if (productId) setTimeout(() => showToast('📦 Produit chargé !', 'success'), 1000);
         }
-
         document.addEventListener('DOMContentLoaded', handleDeepLink);
         setTimeout(handleDeepLink, 500);
 
@@ -2485,12 +1646,9 @@
         setTimeout(listenToProducts, 500);
         updateBadge();
         updateLanguage();
-        renderChatList();
 
-        console.log('♻️ ReLife Cameroun v2.0 - Application chargée');
+        console.log('♻️ ReLife Cameroun v3.0 - Application chargée');
         console.log('🔑 Code OTP : 123456 (test) ou vrai SMS');
-        console.log('📊 Chat corrigé - plus de réponses automatiques');
-        console.log('👤 Profil modifiable');
     </script>
 
 </body>
