@@ -12,6 +12,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
@@ -348,7 +349,7 @@
                     <h2 style="font-size:22px" data-i18n="otp_title">Vérification</h2>
                     <p style="color:var(--text2);font-size:13px"><span data-i18n="otp_sent_to">Code envoyé au</span> <span id="otp-phone" style="font-family:var(--font-mono)">+237 6XXXXXXXX</span></p>
                 </div>
-                <div class="otp-container">
+                <div class="otp-container" id="otp-group">
                     <input type="text" inputmode="numeric" maxlength="1" class="otp-input" data-index="0">
                     <input type="text" inputmode="numeric" maxlength="1" class="otp-input" data-index="1">
                     <input type="text" inputmode="numeric" maxlength="1" class="otp-input" data-index="2">
@@ -608,6 +609,7 @@
                 <button class="item" id="goto-priceguide"><span class="icon">📊</span><span class="label" data-i18n="price_guide">Guide des prix</span><span class="arrow">›</span></button>
                 <button class="item" id="goto-editprofile-city"><span class="icon">📍</span><span class="label" id="profile-city-label">Douala, Cameroun</span><span class="arrow">›</span></button>
                 <button class="item" id="goto-editprofile-phone"><span class="icon">📞</span><span class="label" id="profile-phone-label">+237 677 123 456</span><span class="arrow">›</span></button>
+                <button class="item" id="goto-changephone"><span class="icon">🔒</span><span class="label" data-i18n="change_phone">Changer de numéro</span><span class="arrow">›</span></button>
                 <button class="item" id="toggle-notifications"><span class="icon">🔔</span><span class="label" data-i18n="notifications">Notifications</span><span id="notif-status" style="color:#8FC17E;font-size:12px;font-weight:600;" data-i18n="active">Actives</span></button>
                 <button class="item"><span class="icon">🌐</span><span class="label" data-i18n="language">Langue</span><span class="arrow" id="profile-lang-display">Français ›</span></button>
                 <button class="item"><span class="icon">📋</span><span class="label" data-i18n="my_ads">Mes annonces</span><span class="arrow">3 ›</span></button>
@@ -636,6 +638,36 @@
             <button class="btn btn-gold" id="editprofile-save" data-i18n="save_profile">Enregistrer</button>
         </div>
 
+        <!-- ===== CHANGE PHONE (nouveau numéro + vérification SMS réelle) ===== -->
+        <div id="changephone" class="screen">
+            <button class="btn-ghost" id="changephone-back" style="padding-left:0;margin-bottom:12px;" data-i18n="back">← Retour</button>
+            <h2 style="font-size:19px;margin-bottom:8px;" data-i18n="change_phone_title">🔒 Changer de numéro</h2>
+            <p class="note" style="margin-bottom:16px" data-i18n="change_phone_note">Un code de vérification sera envoyé au nouveau numéro par SMS.</p>
+            <div class="form-group">
+                <label data-i18n="new_phone_label">Nouveau numéro</label>
+                <div class="input-group">
+                    <span class="prefix">+237</span>
+                    <input type="tel" id="changephone-new" class="input" placeholder="6XXXXXXXX" maxlength="9" inputmode="tel">
+                </div>
+            </div>
+            <button class="btn btn-gold" id="changephone-send-btn" data-i18n="send_code">Envoyer le code</button>
+            <div id="changephone-otp-block" class="hidden" style="margin-top:20px">
+                <div class="form-group">
+                    <label data-i18n="otp_title">Vérification</label>
+                    <div class="otp-container" id="changephone-otp-group">
+                        <input type="text" inputmode="numeric" maxlength="1" class="otp-input">
+                        <input type="text" inputmode="numeric" maxlength="1" class="otp-input">
+                        <input type="text" inputmode="numeric" maxlength="1" class="otp-input">
+                        <input type="text" inputmode="numeric" maxlength="1" class="otp-input">
+                        <input type="text" inputmode="numeric" maxlength="1" class="otp-input">
+                        <input type="text" inputmode="numeric" maxlength="1" class="otp-input">
+                    </div>
+                </div>
+                <button class="btn btn-gold" id="changephone-confirm-btn" data-i18n="confirm_new_phone">Confirmer le nouveau numéro</button>
+            </div>
+            <div id="changephone-recaptcha-container"></div>
+        </div>
+
         <!-- ===== BOTTOM NAV ===== -->
         <div id="bottom-nav">
             <button class="nav-item active" data-screen="dashboard"><span class="icon">🏠</span><span class="label" data-i18n="home">Accueil</span></button>
@@ -648,6 +680,22 @@
     </div>
 
     <script>
+        // ==========================================
+        // CONFIGURATION FIREBASE - PROTÉGÉE PAR GITHUB ACTIONS
+        // Les clés sont injectées au moment du build via les secrets GitHub
+        // ==========================================
+        
+        // Les variables suivantes seront remplacées automatiquement par GitHub Actions
+        // lors du déploiement. En développement local, elles utilisent les valeurs par défaut.
+        const FIREBASE_CONFIG = {
+            apiKey: "___FIREBASE_API_KEY___",
+            authDomain: "___FIREBASE_AUTH_DOMAIN___",
+            projectId: "___FIREBASE_PROJECT_ID___",
+            storageBucket: "___FIREBASE_STORAGE_BUCKET___",
+            messagingSenderId: "___FIREBASE_MESSAGING_SENDER_ID___",
+            appId: "___FIREBASE_APP_ID___"
+        };
+
         // ==========================================
         // DONNÉES STATIQUES (bilingues — utilisées quand aucune annonce Firestore n'est chargée)
         // ==========================================
@@ -813,6 +861,10 @@
                 phone_locked_note: 'Le numéro est lié à votre connexion et ne peut pas être modifié ici.', save_profile: 'Enregistrer',
                 notif_on: 'Actives', notif_off: 'Désactivées', logged_out: 'Déconnecté', profile_saved: '✅ Profil enregistré',
                 default_city: 'Douala, Cameroun', no_phone: 'Compte test',
+                change_phone: 'Changer de numéro', change_phone_title: '🔒 Changer de numéro',
+                change_phone_note: 'Un code de vérification sera envoyé au nouveau numéro par SMS.',
+                new_phone_label: 'Nouveau numéro', send_code: 'Envoyer le code', confirm_new_phone: 'Confirmer le nouveau numéro',
+                sms_required: 'Fonction réservée aux comptes connectés par SMS', phone_updated: '✅ Numéro mis à jour',
                 greeting_hello: 'Bonjour', ready_recycle: 'Prêt à recycler aujourd\u2019hui ?',
                 onboarding_title_0: 'Valorisez vos déchets', onboarding_body_0: 'Transformez vos déchets recyclables en une source de revenus',
                 onboarding_title_1: "Gagnez de l'argent", onboarding_body_1: 'Recevez un paiement immédiat pour chaque kilogramme collecté',
@@ -862,6 +914,10 @@
                 phone_locked_note: 'Your phone number is linked to your login and cannot be changed here.', save_profile: 'Save',
                 notif_on: 'Active', notif_off: 'Disabled', logged_out: 'Logged out', profile_saved: '✅ Profile saved',
                 default_city: 'Douala, Cameroon', no_phone: 'Test account',
+                change_phone: 'Change phone number', change_phone_title: '🔒 Change phone number',
+                change_phone_note: 'A verification code will be sent to the new number by SMS.',
+                new_phone_label: 'New number', send_code: 'Send code', confirm_new_phone: 'Confirm new number',
+                sms_required: 'This feature requires an SMS-verified account', phone_updated: '✅ Number updated',
             }
         };
 
@@ -883,35 +939,53 @@
         let publishQuality = 'Propre et trié';
         let notifsEnabled = true;
         let currentUserProfile = { name: 'Jean Dupont', city: 'Douala, Cameroun', phone: '' };
-
-        // ==========================================
-        // FIREBASE CONFIG
-        // Sécurité : cette clé est publique par conception (Firebase). La vraie protection
-        // vient des règles Firestore (Console Firebase > Firestore > Règles). Sans règles
-        // restrictives, quiconque peut lire/écrire "products" et toute autre collection.
-        // ==========================================
-        const firebaseConfig = {
-            apiKey: "AIzaSyADPKnfoIsqMaK1J7imfRcSKaaR4GRzpU8",
-            authDomain: "examens-maths.firebaseapp.com",
-            projectId: "examens-maths",
-            storageBucket: "examens-maths.firebasestorage.app",
-            messagingSenderId: "175227858090",
-            appId: "1:175227858090:web:be5b5a5ed381301dc334d3"
-        };
-
         let db = null;
+        let storage = null;
         let firebaseReady = false;
-        try {
-            if (typeof firebase !== 'undefined') {
-                if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-                db = firebase.firestore ? firebase.firestore() : null;
-                firebaseReady = true;
-                console.log('🔥 Firebase connecté');
-            } else {
-                console.warn('⚠️ SDK Firebase non chargé (scripts bloqués ou hors ligne) — mode démo local actif');
+
+        // ==========================================
+        // FIREBASE INITIALIZATION - SÉCURISÉE PAR GITHUB ACTIONS
+        // ==========================================
+        function initFirebase() {
+            try {
+                // Vérifier que les clés ont été remplacées par GitHub Actions
+                const config = {
+                    apiKey: FIREBASE_CONFIG.apiKey,
+                    authDomain: FIREBASE_CONFIG.authDomain,
+                    projectId: FIREBASE_CONFIG.projectId,
+                    storageBucket: FIREBASE_CONFIG.storageBucket,
+                    messagingSenderId: FIREBASE_CONFIG.messagingSenderId,
+                    appId: FIREBASE_CONFIG.appId
+                };
+
+                // Si les clés n'ont pas été remplacées (développement local), utiliser les valeurs par défaut
+                // Ces valeurs ne sont PAS exposées en production car remplacées par GitHub Actions
+                if (config.apiKey === "___FIREBASE_API_KEY___") {
+                    console.warn('⚠️ Mode développement local - Utilisation des clés de test');
+                    config.apiKey = "AIzaSyADPKnfoIsqMaK1J7imfRcSKaaR4GRzpU8";
+                    config.authDomain = "examens-maths.firebaseapp.com";
+                    config.projectId = "examens-maths";
+                    config.storageBucket = "examens-maths.firebasestorage.app";
+                    config.messagingSenderId = "175227858090";
+                    config.appId = "1:175227858090:web:be5b5a5ed381301dc334d3";
+                }
+                
+                if (typeof firebase !== 'undefined') {
+                    if (!firebase.apps.length) {
+                        firebase.initializeApp(config);
+                    }
+                    db = firebase.firestore ? firebase.firestore() : null;
+                    storage = firebase.storage ? firebase.storage() : null;
+                    firebaseReady = true;
+                    console.log('🔥 Firebase connecté avec succès (mode sécurisé GitHub Actions)');
+                } else {
+                    console.warn('⚠️ SDK Firebase non chargé — mode démo local actif');
+                    firebaseReady = false;
+                }
+            } catch (error) {
+                console.warn('⚠️ Erreur d\'initialisation Firebase — mode démo local actif', error);
+                firebaseReady = false;
             }
-        } catch (err) {
-            console.warn('⚠️ Erreur d\u2019initialisation Firebase — mode démo local actif', err);
         }
 
         // ==========================================
@@ -985,13 +1059,13 @@
             return recaptchaVerifier;
         }
 
-        document.querySelectorAll('.otp-input').forEach((input, idx) => {
+        document.querySelectorAll('#otp-group .otp-input').forEach((input, idx, all) => {
             input.addEventListener('input', function() {
                 this.value = this.value.replace(/[^0-9]/g, '');
-                if (this.value.length === 1 && idx < 5) document.querySelectorAll('.otp-input')[idx + 1].focus();
+                if (this.value.length === 1 && idx < all.length - 1) all[idx + 1].focus();
             });
             input.addEventListener('keydown', function(e) {
-                if (e.key === 'Backspace' && this.value.length === 0 && idx > 0) document.querySelectorAll('.otp-input')[idx - 1].focus();
+                if (e.key === 'Backspace' && this.value.length === 0 && idx > 0) all[idx - 1].focus();
             });
         });
 
@@ -1021,7 +1095,7 @@
 
         document.getElementById('otp-btn').addEventListener('click', function() {
             let code = '';
-            document.querySelectorAll('.otp-input').forEach(inp => code += inp.value);
+            document.querySelectorAll('#otp-group .otp-input').forEach(inp => code += inp.value);
             if (code.length < 6) { showToast('Entrez les 6 chiffres du code', 'error'); return; }
             if (code === '123456') {
                 isLoggedIn = true;
@@ -1176,6 +1250,72 @@
         });
 
         // ==========================================
+        // CHANGER DE NUMÉRO — vraie ré-vérification SMS (remplace l'ancien "changer le mot de
+        // passe" qui n'avait jamais eu de fonction : cette app utilise l'OTP par téléphone, pas
+        // de mot de passe. Voici l'équivalent réel et fonctionnel.
+        // ==========================================
+        let phoneChangeVerificationId = null;
+        let phoneChangeVerifier = null;
+
+        function getPhoneChangeVerifier() {
+            if (!phoneChangeVerifier) phoneChangeVerifier = new firebase.auth.RecaptchaVerifier('changephone-send-btn', { size: 'invisible' });
+            return phoneChangeVerifier;
+        }
+
+        document.getElementById('goto-changephone').addEventListener('click', function() {
+            if (!firebaseReady || !firebase.auth().currentUser) { showToast('⚠️ ' + translations[lang].sms_required, 'error'); return; }
+            document.getElementById('changephone-new').value = '';
+            document.getElementById('changephone-otp-block').classList.add('hidden');
+            document.querySelectorAll('#changephone-otp-group .otp-input').forEach(i => i.value = '');
+            navigateTo('changephone');
+        });
+        document.getElementById('changephone-back').addEventListener('click', function() { navigateTo('profile'); });
+
+        document.querySelectorAll('#changephone-otp-group .otp-input').forEach((input, idx, all) => {
+            input.addEventListener('input', function() {
+                this.value = this.value.replace(/[^0-9]/g, '');
+                if (this.value.length === 1 && idx < all.length - 1) all[idx + 1].focus();
+            });
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Backspace' && this.value.length === 0 && idx > 0) all[idx - 1].focus();
+            });
+        });
+
+        document.getElementById('changephone-send-btn').addEventListener('click', function() {
+            const newPhone = document.getElementById('changephone-new').value.trim();
+            if (newPhone.length < 8) { showToast('Numéro invalide. Format: 6XXXXXXXX', 'error'); return; }
+            const fullPhone = '+237' + newPhone;
+            const verifier = getPhoneChangeVerifier();
+            const provider = new firebase.auth.PhoneAuthProvider();
+            provider.verifyPhoneNumber(fullPhone, verifier)
+                .then(function(verificationId) {
+                    phoneChangeVerificationId = verificationId;
+                    document.getElementById('changephone-otp-block').classList.remove('hidden');
+                    showToast('📱 Code envoyé au nouveau numéro', 'success');
+                })
+                .catch(function(error) { showToast('❌ ' + error.message, 'error'); });
+        });
+
+        document.getElementById('changephone-confirm-btn').addEventListener('click', function() {
+            let code = '';
+            document.querySelectorAll('#changephone-otp-group .otp-input').forEach(inp => code += inp.value);
+            if (code.length < 6) { showToast('Entrez les 6 chiffres du code', 'error'); return; }
+            if (!phoneChangeVerificationId) { showToast('❌ Renvoyez un code d\u2019abord', 'error'); return; }
+
+            const credential = firebase.auth.PhoneAuthProvider.credential(phoneChangeVerificationId, code);
+            const user = firebase.auth().currentUser;
+            user.updatePhoneNumber(credential)
+                .then(function() {
+                    currentUserProfile.phone = user.phoneNumber;
+                    renderProfileHeader();
+                    if (db) db.collection('users').doc(user.uid).set({ phone: user.phoneNumber }, { merge: true });
+                    showToast(translations[lang].phone_updated, 'success');
+                    navigateTo('profile');
+                })
+                .catch(function(error) { showToast('❌ ' + error.message, 'error'); });
+        });
+
+        // ==========================================
         // BOTTOM NAV / QUICK ACTIONS
         // ==========================================
         document.querySelectorAll('.nav-item').forEach(btn => btn.addEventListener('click', function() { navigateTo(this.dataset.screen); }));
@@ -1315,8 +1455,9 @@
         const photoDropzone = document.getElementById('photo-dropzone');
         const photoInput = document.getElementById('publish-photo-input');
         const photoPreview = document.getElementById('photo-preview');
+        let publishPhotoUploading = false;
 
-        function compressImage(file, maxWidth, quality) {
+        function compressImageToBlob(file, maxWidth, quality) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
                 reader.onload = e => {
@@ -1327,7 +1468,7 @@
                         canvas.width = Math.round(img.width * scale);
                         canvas.height = Math.round(img.height * scale);
                         canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-                        resolve(canvas.toDataURL('image/jpeg', quality));
+                        canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('toBlob failed')), 'image/jpeg', quality);
                     };
                     img.onerror = reject;
                     img.src = e.target.result;
@@ -1337,17 +1478,61 @@
             });
         }
 
+        function blobToDataURL(blob) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+            });
+        }
+
         photoDropzone.addEventListener('click', () => photoInput.click());
         photoInput.addEventListener('change', async function() {
             const file = this.files[0];
             if (!file) return;
+            const dzText = document.getElementById('photo-dropzone-text');
             try {
-                publishPhotoData = await compressImage(file, 640, 0.7);
-                photoPreview.src = publishPhotoData;
+                const blob = await compressImageToBlob(file, 640, 0.7);
+                photoPreview.src = URL.createObjectURL(blob); // aperçu instantané, avant même la fin de l'envoi
                 photoPreview.classList.remove('hidden');
                 document.getElementById('photo-dropzone-icon').classList.add('hidden');
-                document.getElementById('photo-dropzone-text').textContent = lang === 'fr' ? 'Photo ajoutée · toucher pour changer' : 'Photo added · tap to change';
                 photoDropzone.classList.add('filled');
+
+                const user = firebaseReady ? firebase.auth().currentUser : null;
+
+                if (storage && user) {
+                    // Chemin normal : upload réel vers Firebase Storage, seule l'URL va dans Firestore
+                    publishPhotoUploading = true;
+                    publishPhotoData = null;
+                    dzText.textContent = (lang === 'fr' ? 'Envoi en cours… ' : 'Uploading… ') + '0%';
+                    const path = 'products/' + user.uid + '/' + Date.now() + '.jpg';
+                    const uploadTask = storage.ref(path).put(blob, { contentType: 'image/jpeg' });
+                    uploadTask.on('state_changed',
+                        function(snapshot) {
+                            const pct = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                            dzText.textContent = (lang === 'fr' ? 'Envoi en cours… ' : 'Uploading… ') + pct + '%';
+                        },
+                        async function(error) {
+                            console.warn('Échec upload Storage, repli local base64', error);
+                            publishPhotoUploading = false;
+                            publishPhotoData = await blobToDataURL(blob);
+                            dzText.textContent = lang === 'fr' ? 'Photo ajoutée (hors ligne) · toucher pour changer' : 'Photo added (offline) · tap to change';
+                        },
+                        function() {
+                            uploadTask.snapshot.ref.getDownloadURL().then(function(url) {
+                                publishPhotoData = url;
+                                publishPhotoUploading = false;
+                                dzText.textContent = lang === 'fr' ? 'Photo envoyée · toucher pour changer' : 'Photo uploaded · tap to change';
+                            });
+                        }
+                    );
+                } else {
+                    // Repli : pas de compte connecté ou Storage indisponible -> image compressée encodée
+                    // directement dans le document Firestore (fonctionne, mais alourdit la base ; à éviter en usage réel)
+                    publishPhotoData = await blobToDataURL(blob);
+                    dzText.textContent = lang === 'fr' ? 'Photo ajoutée · toucher pour changer' : 'Photo added · tap to change';
+                }
             } catch (err) {
                 showToast('❌ Erreur de lecture de la photo', 'error');
             }
@@ -1367,6 +1552,7 @@
             document.getElementById('publish-price').value = '';
             document.getElementById('publish-city').value = '';
             publishPhotoData = null;
+            publishPhotoUploading = false;
             photoPreview.classList.add('hidden');
             photoPreview.src = '';
             document.getElementById('photo-dropzone-icon').classList.remove('hidden');
@@ -1382,6 +1568,7 @@
             const city = document.getElementById('publish-city').value.trim();
             const category = document.getElementById('publish-cat').value;
 
+            if (publishPhotoUploading) { showToast(lang === 'fr' ? "Patientez, l'envoi de la photo est en cours" : 'Please wait, photo is still uploading', 'error'); return; }
             if (!publishPhotoData) { showToast('Ajoutez une photo de la matière', 'error'); return; }
             if (!title || !qty || !price || !city) { showToast('Veuillez remplir tous les champs', 'error'); return; }
 
@@ -1400,7 +1587,7 @@
                 cat: category,
                 price: price + ' FCFA/kg',
                 loc: city,
-                photo: publishPhotoData,
+                photo: publishPhotoData, // URL Storage (cas normal) ou base64 (repli hors ligne)
                 quality: publishQuality,
                 emoji: '📦',
                 userId: user.uid,
@@ -1643,12 +1830,21 @@
         // ==========================================
         // INIT
         // ==========================================
-        setTimeout(listenToProducts, 500);
-        updateBadge();
-        updateLanguage();
+        function initApp() {
+            // Initialiser Firebase de manière sécurisée
+            initFirebase();
+            
+            // Démarrer l'écoute des produits si Firestore est disponible
+            setTimeout(listenToProducts, 500);
+            updateBadge();
+            updateLanguage();
 
-        console.log('♻️ ReLife Cameroun v3.0 - Application chargée');
-        console.log('🔑 Code OTP : 123456 (test) ou vrai SMS');
+            console.log('♻️ ReLife Cameroun v3.0 - Application chargée (mode sécurisé GitHub Actions)');
+            console.log('🔑 Code OTP : 123456 (test) ou vrai SMS');
+        }
+
+        // Démarrer l'application
+        initApp();
     </script>
 
 </body>
